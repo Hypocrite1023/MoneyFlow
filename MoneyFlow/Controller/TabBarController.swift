@@ -50,10 +50,15 @@ class TabBarController: UITabBarController {
         accountingButton.widthAnchor.constraint(equalToConstant: tabBar.bounds.height + 10).isActive = true
         accountingButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         accountingButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        
     }
     
     @objc func handleAddButtonTapped() {
-        
+        let vc = AccountingPageViewController()
+//        vc.view.backgroundColor = .white
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
     }
     /*
     // MARK: - Navigation
