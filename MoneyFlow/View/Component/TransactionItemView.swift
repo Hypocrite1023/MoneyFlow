@@ -15,7 +15,7 @@ class TransactionItemView: UIView {
     private var itemValueLabel: UILabel?
     private var dividerLine: UIView?
     
-    init(itemName: String, itemCategory: TransactionCategory, itemValue: Int) {
+    init(itemName: String, itemCategory: AccountingTransactionCategory, itemValue: Int) {
         super.init(frame: .zero)
         setupViews(itemName: itemName, itemCategory: itemCategory, itemValue: itemValue)
     }
@@ -24,7 +24,7 @@ class TransactionItemView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews(itemName: String, itemCategory: TransactionCategory, itemValue: Int) {
+    private func setupViews(itemName: String, itemCategory: AccountingTransactionCategory, itemValue: Int) {
         setCategoryImageView(itemCategory: itemCategory)
         setItemNameLabel(itemCategory: itemCategory)
         setItemDescriptionLabel(itemName: itemName)
@@ -32,7 +32,7 @@ class TransactionItemView: UIView {
         setDivider()
     }
     
-    private func setCategoryImageView(itemCategory: TransactionCategory) {
+    private func setCategoryImageView(itemCategory: AccountingTransactionCategory) {
         categoryImageView = UIImageView(image: UIImage(systemName: itemCategory.imageName))
         guard let categoryImageView else { return }
         categoryImageView.layer.cornerRadius = 20
@@ -48,7 +48,7 @@ class TransactionItemView: UIView {
         categoryImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
     
-    private func setItemNameLabel(itemCategory: TransactionCategory) {
+    private func setItemNameLabel(itemCategory: AccountingTransactionCategory) {
         itemCategoryLabel = UILabel()
         guard let itemCategoryLabel else { return }
         itemCategoryLabel.text = itemCategory.description

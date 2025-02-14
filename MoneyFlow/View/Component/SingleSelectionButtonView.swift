@@ -10,6 +10,8 @@ import UIKit
 class SingleSelectionButtonView: UIView {
 
     var selectionList: [String]?
+    var mayNil: Bool?
+    
     private let horizonScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
@@ -28,8 +30,9 @@ class SingleSelectionButtonView: UIView {
     internal var buttonList: [UIButton] = []
     internal var selected: Set<String> = []
     
-    init(selectionList: [String]?) {
+    init(selectionList: [String]?, mayNil: Bool = false) {
         self.selectionList = selectionList
+        self.mayNil = mayNil
         super.init(frame: .zero)
         setView()
     }
@@ -38,19 +41,8 @@ class SingleSelectionButtonView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setView() {
-        if selectionList == nil {
-            let addTagLabel = UILabel()
-            addTagLabel.text = "尚未設定任何標籤"
-            addTagLabel.textColor = .secondaryLabel
-            addTagLabel.translatesAutoresizingMaskIntoConstraints = false
-            self.addSubview(addTagLabel)
-            addTagLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            addTagLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            addTagLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-            addTagLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-            return
-        }
+    func setView() {
+        
         subviews.forEach { $0.removeFromSuperview() }
         for (_, selection) in selectionList!.enumerated() {
             let button = UIButton(configuration: .plain())

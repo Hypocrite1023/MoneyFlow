@@ -70,20 +70,24 @@ class AccountingPage: UIView {
     private let amountLabel: UILabel = createLabel(title: "金額")
     private let amountTextField: UITextField = UITextField()
     private let categoryLabel: UILabel = createLabel(title: "類別")
-    private let categoryControl: SingleSelectionButtonView = SingleSelectionButtonView(selectionList: ["飲食", "交通", "生活", "購物", "旅行", "居住", "健康", "醫療", "車輛", "教育", "娛樂", "保險", "通訊", "其他"])
+    private let categoryControl: SingleSelectionButtonView?
     private let paymentMethodLabel: UILabel = createLabel(title: "支付方式")
-    private let paymentMethodControl: SingleSelectionButtonView = SingleSelectionButtonView(selectionList: ["現金", "行動支付", "信用卡", "轉帳", "其他"])
+    private let paymentMethodControl: SingleSelectionButtonView?
     private let tagLabel: UILabel = createLabel(title: "標籤")
     let addTagButton: UIButton = UIButton(configuration: .plain())
-    let tagControl: MultiSelectionButtonView = MultiSelectionButtonView(selectionList: AccountingTagManager.shared.getTags() == nil ? nil : Array(AccountingTagManager.shared.getTags()!))
+    let tagControl: MultiSelectionButtonView?
     
     private let noteLabel: UILabel = createLabel(title: "備註")
     private let noteTextField: UITextField = UITextField()
     
     private let accountingButton: UIButton = UIButton(configuration: .tinted())
-    var delegate: CloseAccountingPage?
+    private let cancelAccountingButton: UIButton = UIButton(configuration: .tinted())
+    weak var delegate: CloseAccountingPage?
     
-    init() {
+    init(categoryList: [String]?, paymentMethodList: [String]?, tagList: [String]?) {
+        categoryControl = SingleSelectionButtonView(selectionList: categoryList)
+        paymentMethodControl = SingleSelectionButtonView(selectionList: paymentMethodList)
+        tagControl = MultiSelectionButtonView(selectionList: tagList, mayNil: true)
         super.init(frame: .zero)
         setupView()
     }
@@ -112,7 +116,7 @@ class AccountingPage: UIView {
         pageStack.widthAnchor.constraint(equalTo: pageScrollView.widthAnchor).isActive = true
         setupDateBlock()
         setupTypeBlock()
-        setupItemNameLabel()
+        setupItemNameBlock()
         setupAmountBlock()
         setupCategoryBlock()
         setupPaymentMethodBlock()
@@ -128,16 +132,36 @@ class AccountingPage: UIView {
     }
     
     @objc private func accounting() {
-        delegate?.closeAccountingPage()
+        delegate?.makeAccounting()
+    }
+    
+    @objc private func cancelAccounting() {
+        delegate?.cancelAccounting()
     }
     
     private func setFlowAccountingButton() {
-        accountingButton.translatesAutoresizingMaskIntoConstraints = false
+        let horizonStack = UIStackView(arrangedSubviews: [cancelAccountingButton, accountingButton])
+        horizonStack.translatesAutoresizingMaskIntoConstraints = false
+        horizonStack.axis = .horizontal
+        horizonStack.spacing = 10
+        horizonStack.alignment = .center
+        horizonStack.distribution = .fillEqually
+        pageScrollView.addSubview(horizonStack)
+//        accountingButton.translatesAutoresizingMaskIntoConstraints = false
         accountingButton.setTitle("紀錄！", for: .normal)
-        pageScrollView.addSubview(accountingButton)
-        accountingButton.bottomAnchor.constraint(equalTo: pageScrollView.frameLayoutGuide.bottomAnchor, constant: -15).isActive = true
-        accountingButton.centerXAnchor.constraint(equalTo: pageScrollView.frameLayoutGuide.centerXAnchor).isActive = true
+//        pageScrollView.addSubview(accountingButton)
         accountingButton.addTarget(self, action: #selector(accounting), for: .touchUpInside)
+        
+        
+//        cancelAccountingButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelAccountingButton.setTitle("取消", for: .normal)
+        cancelAccountingButton.addTarget(self, action: #selector(cancelAccounting), for: .touchUpInside)
+        cancelAccountingButton.tintColor = .darkGray
+        
+        horizonStack.bottomAnchor.constraint(equalTo: pageScrollView.frameLayoutGuide.bottomAnchor, constant: -15).isActive = true
+        horizonStack.centerXAnchor.constraint(equalTo: pageScrollView.frameLayoutGuide.centerXAnchor).isActive = true
+        
+        
     }
     
     private func setupDateBlock() {
@@ -168,11 +192,11 @@ class AccountingPage: UIView {
         constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
     }
     
-    private func setupItemNameLabel() {
+    private func setupItemNameBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(itemNameLabel)
         vstack.addArrangedSubview(itemNameTextField)
-        itemNameTextField.keyboardType = .asciiCapable
+        itemNameTextField.keyboardType = .default
         itemNameTextField.borderStyle = .roundedRect
         
         constraintToWidth(innerView: itemNameLabel, outerView: vstack, constant: 0)
@@ -201,11 +225,11 @@ class AccountingPage: UIView {
     private func setupCategoryBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(categoryLabel)
-        vstack.addArrangedSubview(categoryControl)
+        vstack.addArrangedSubview(categoryControl!)
         
         
         constraintToWidth(innerView: categoryLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: categoryControl, outerView: vstack, constant: 0)
+        constraintToWidth(innerView: categoryControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -215,10 +239,10 @@ class AccountingPage: UIView {
     private func setupPaymentMethodBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(paymentMethodLabel)
-        vstack.addArrangedSubview(paymentMethodControl)
+        vstack.addArrangedSubview(paymentMethodControl!)
         
         constraintToWidth(innerView: paymentMethodLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: paymentMethodControl, outerView: vstack, constant: 0)
+        constraintToWidth(innerView: paymentMethodControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -257,10 +281,10 @@ class AccountingPage: UIView {
 //        addTagButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         vstack.addArrangedSubview(view)
-        vstack.addArrangedSubview(tagControl)
+        vstack.addArrangedSubview(tagControl!)
         
         constraintToWidth(innerView: view, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: tagControl, outerView: vstack, constant: 0)
+        constraintToWidth(innerView: tagControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -333,9 +357,62 @@ class AccountingPage: UIView {
         innerView.leadingAnchor.constraint(equalTo: outerView.leadingAnchor, constant: constant).isActive = true
         innerView.trailingAnchor.constraint(equalTo: outerView.trailingAnchor, constant: -constant).isActive = true
     }
+    
+    // MARK: - Accounting getter
+    // accounting getter
+    func getAccountingDate() -> Date {
+        accountingDatePicker.date
+    }
+    
+    func getAccountingType() -> String? {
+        switch typeSegmentControl.selectedSegmentIndex {
+            case 0:
+                return "支出"
+            case 1:
+                return "收入"
+            default:
+                return nil
+        }
+    }
+    
+    func getAccountingItemName() -> String? {
+        itemNameTextField.text
+    }
+    
+    func getAccountingAmount() -> Double? {
+        if let amountString = amountTextField.text {
+            if amountString.isEmpty {
+                return nil
+            } else {
+                return Double(amountString)
+            }
+        }
+        return nil
+    }
+    
+    func getAccountingCategory() -> String? {
+        categoryControl?.selected.first
+    }
+    
+    func getAccountingPaymentMethod() -> String? {
+        paymentMethodControl?.selected.first
+    }
+    
+    func getAccountingTags() -> [String]? {
+        if let selected = tagControl?.selected {
+            return Array(selected)
+        } else {
+            return nil
+        }
+    }
+    
+    func getAccountingNotes() -> String? {
+        noteTextField.text
+    }
 
 }
 
 protocol CloseAccountingPage: AnyObject {
-    func closeAccountingPage()
+    func makeAccounting()
+    func cancelAccounting()
 }

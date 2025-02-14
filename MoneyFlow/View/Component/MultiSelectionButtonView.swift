@@ -8,6 +8,23 @@
 import UIKit
 
 class MultiSelectionButtonView: SingleSelectionButtonView {
+    
+    override func setView() {
+        print(selectionList)
+        if let mayNil, mayNil && selectionList == nil {
+            let addTagLabel = UILabel()
+            addTagLabel.text = "尚未設定任何標籤"
+            addTagLabel.textColor = .secondaryLabel
+            addTagLabel.translatesAutoresizingMaskIntoConstraints = false
+            self.addSubview(addTagLabel)
+            addTagLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+            addTagLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+            addTagLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+            addTagLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+            return
+        }
+        super.setView()
+    }
 
     override func updateButtonStatus() {
         for button in buttonList {

@@ -9,15 +9,15 @@ import Foundation
 
 class Transaction {
     var date: Date
-    var type: TransactionType
+    var type: String
     var itemName: String
     var amount: Double
-    var category: TransactionCategory
-    var payMethod: PayMethod
+    var category: String
+    var payMethod: String
     var tags: [String]
     var note: String
     
-    init(date: Date, type: TransactionType, itemName: String, amount: Double, category: TransactionCategory, payMethod: PayMethod, tags: [String], note: String) {
+    init(date: Date, type: String, itemName: String, amount: Double, category: String, payMethod: String, tags: [String], note: String) {
         self.date = date
         self.type = type
         self.itemName = itemName
@@ -43,7 +43,7 @@ enum PayMethod: Int, CaseIterable {
     case mobilePayment = 3
 }
 
-enum TransactionCategory: Int, CaseIterable {
+enum AccountingTransactionCategory: Int, CaseIterable {
     case dining = 0, transport = 1, entertainemnt = 2, shopping = 3, other = 4
     
     var description: String {

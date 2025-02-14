@@ -11,9 +11,23 @@ class AccountingPageViewController: UIViewController {
     
     private var activeTextField: UITextField?
     private var accountingTagManager: AccountingTagManager = AccountingTagManager.shared
+    private var transactionCategory: [String]?
+    private var transactionPaymentMethod: [String]?
+    private var transactionTag: [String]?
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        self.transactionCategory = CoreDataManager.shared.fetchAllTransactionCategories()
+        self.transactionPaymentMethod = CoreDataManager.shared.fetchAllTransactionPaymentMethods()
+        self.transactionTag = CoreDataManager.shared.fetchAllTransactionTags()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
-        view = AccountingPage()
+        view = AccountingPage(categoryList: transactionCategory, paymentMethodList: transactionPaymentMethod, tagList: transactionTag)
     }
 
     override func viewDidLoad() {
@@ -31,6 +45,7 @@ class AccountingPageViewController: UIViewController {
             
             accountingPage.addTagButton.addTarget(self, action: #selector(addTag), for: .touchUpInside)
         }
+//        CoreDataManager.shared.fetchAllTransactionCategories()
     }
     
     deinit {
@@ -51,9 +66,10 @@ class AccountingPageViewController: UIViewController {
                 return
             }
             print(inputTag)
-            self.accountingTagManager.addTag(inputTag)
+            CoreDataManager.shared.addTransactionTag(inputTag)
         }))
         self.present(alertController, animated: true)
+        alertController.textFields?.first?.becomeFirstResponder()
     }
     
     @objc func handleMultiSelectionButtonStatus() {
@@ -61,7 +77,7 @@ class AccountingPageViewController: UIViewController {
         if let accountingPage = view as? AccountingPage {
             print("handle")
             DispatchQueue.main.async {
-                accountingPage.tagControl.updateTagsButtons(tags: Array(AccountingTagManager.shared.getTags()!))
+                accountingPage.tagControl?.updateTagsButtons(tags: CoreDataManager.shared.fetchAllTransactionTags()!)
             }
         }
     }
@@ -97,9 +113,21 @@ extension AccountingPageViewController: UIScrollViewDelegate {
 }
 
 extension AccountingPageViewController: CloseAccountingPage {
-    func closeAccountingPage() {
+    func makeAccounting() {
+        print("transaction")
+        if let accountingPage = view as? AccountingPage {
+            guard let type = accountingPage.getAccountingType(), let itemName = accountingPage.getAccountingItemName(), let amount = accountingPage.getAccountingAmount(), let category = accountingPage.getAccountingCategory(), let payMethod = accountingPage.getAccountingPaymentMethod(), let tags = accountingPage.getAccountingTags(), let notes = accountingPage.getAccountingNotes() else {
+                print("Accounting Error")
+                return
+            }
+            let transaction = Transaction(date: accountingPage.getAccountingDate(), type: type, itemName: itemName, amount: amount, category: category, payMethod: payMethod, tags: tags, note: notes)
+            CoreDataManager.shared.addTransaction(transaction)
+        }
         self.dismiss(animated: true)
     }
     
+    func cancelAccounting() {
+        self.dismiss(animated: true)
+    }
     
 }
