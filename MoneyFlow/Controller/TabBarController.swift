@@ -25,7 +25,7 @@ class TabBarController: UITabBarController {
         let home = UINavigationController(rootViewController: HomeViewController())
         home.tabBarItem = UITabBarItem(title: "總覽", image: UIImage(systemName: "house"), tag: 0)
         
-        let placeholderVC1 = UIViewController()
+        let placeholderVC1 = TransactionDetailViewController()
         placeholderVC1.tabBarItem = UITabBarItem(title: "收入支出", image: UIImage(systemName: "creditcard"), tag: 1)
 //        placeholderVC1.tabBarItem.isEnabled = false
         

@@ -11,11 +11,11 @@ class HomeView: UIView {
     
     /// summary
     private var summaryLabel: UILabel = UILabel()
-    private var segementControl: UISegmentedControl = UISegmentedControl(items: ["今天", "本週", "本月"])
+    var segementControl: UISegmentedControl = UISegmentedControl(items: ["今天", "本週", "本月", "今年"])
     private let horizonStack: UIStackView = UIStackView()
-    private var totalSpent: MoneyBalanceView = MoneyBalanceView(itemLabelText: "總花費", balance: 5000)
-    private var totalIncome: MoneyBalanceView = MoneyBalanceView(itemLabelText: "總收入", balance: 10000)
-    private var viewDetailButton: UIButton = UIButton(type: .system)
+    private var totalSpent: MoneyBalanceView = MoneyBalanceView(itemLabelText: "總花費", balance: AppData.shared.expense(index: 0) ?? 0)
+    private var totalIncome: MoneyBalanceView = MoneyBalanceView(itemLabelText: "總收入", balance: AppData.shared.income(index: 0) ?? 0)
+    var viewDetailButton: UIButton = UIButton(type: .system)
     private var summaryBottomAnchor: NSLayoutYAxisAnchor {
         get {
             viewDetailButton.bottomAnchor
@@ -25,7 +25,7 @@ class HomeView: UIView {
     /// chart
     private var chartLabel: UILabel = UILabel()
     private var chartScrollView: UIScrollView = UIScrollView()
-    private var chartView: [UIView] = [UIView(), UIView(), UIView()] // 0: 長條圖, 1: 圓餅圖, 2: 趨勢圖
+    private var chartView: [UIView] = [TransactionLineChartView(), UIView(), UIView()] // 0: 長條圖, 1: 圓餅圖, 2: 趨勢圖
     private var chartPageControl: UIPageControl = UIPageControl()
     
     /// fast navigate button
@@ -61,6 +61,7 @@ class HomeView: UIView {
         // segement control
         self.addSubview(segementControl)
         segementControl.translatesAutoresizingMaskIntoConstraints = false
+        segementControl.selectedSegmentIndex = 0
         
         // summary stack
         self.addSubview(horizonStack)
@@ -120,7 +121,6 @@ class HomeView: UIView {
         chartScrollView.showsHorizontalScrollIndicator = false
         chartScrollView.showsVerticalScrollIndicator = false
         chartScrollView.isPagingEnabled = true
-        chartScrollView.delegate = self
         
         // chart
         for i in 0..<chartView.count {
@@ -219,8 +219,18 @@ class HomeView: UIView {
         fastNavigateButtonStackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
         fastNavigateButtonStackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
     }
+    
+    func updateTotalSpentLabel(value: Double) {
+        totalSpent.updateValue(value: value)
+    }
+    
+    func updateTotalIncomeLabel(value: Double) {
+        totalIncome.updateValue(value: value)
+    }
+    
+    // 0: day, 1: week, 2: month, 3: year
+    func updateChart(chartType: Int) {
+        (chartView[0] as? TransactionLineChartView)?.reloadTransactionLineChart(unit: .init(rawValue: chartType)!)
+    }
 }
 
-extension HomeView: UIScrollViewDelegate {
-    
-}

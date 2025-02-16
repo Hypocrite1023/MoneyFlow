@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A37F13242D6097C2001A8D6A /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = A37F13232D6097C2001A8D6A /* DGCharts */; };
 		A3DB6D042D38FF9B00857D26 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A3DB6D032D38FF9B00857D26 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A37F13242D6097C2001A8D6A /* DGCharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +86,7 @@
 			);
 			name = MoneyFlow;
 			packageProductDependencies = (
+				A37F13232D6097C2001A8D6A /* DGCharts */,
 			);
 			productName = MoneyFlow;
 			productReference = A3DB6CEB2D38FB2300857D26 /* MoneyFlow.app */;
@@ -113,6 +116,9 @@
 			);
 			mainGroup = A3DB6CE22D38FB2300857D26;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A37F13222D6097C2001A8D6A /* XCRemoteSwiftPackageReference "Charts" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A3DB6CEC2D38FB2300857D26 /* Products */;
 			projectDirPath = "";
@@ -340,6 +346,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A37F13222D6097C2001A8D6A /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A37F13232D6097C2001A8D6A /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A37F13222D6097C2001A8D6A /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = DGCharts;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A3DB6CE32D38FB2300857D26 /* Project object */;
 }

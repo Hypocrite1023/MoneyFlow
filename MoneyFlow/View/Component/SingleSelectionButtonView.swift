@@ -11,6 +11,7 @@ class SingleSelectionButtonView: UIView {
 
     var selectionList: [String]?
     var mayNil: Bool?
+    static let singleSelectionButtonStateChangeNotification: NSNotification.Name = NSNotification.Name("SingleSelectionButtonStateChangeNotification")
     
     private let horizonScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -92,8 +93,11 @@ class SingleSelectionButtonView: UIView {
     }
     
     @objc func buttonAction(_ sender: UIButton) {
-        selected = [sender.title(for: .normal)!]
-        updateButtonStatus()
+        if !selected.contains(sender.title(for: .normal)!) {
+            selected = [sender.title(for: .normal)!]
+            updateButtonStatus()
+            NotificationCenter.default.post(name: SingleSelectionButtonView.singleSelectionButtonStateChangeNotification, object: self)
+        }
     }
     
 }

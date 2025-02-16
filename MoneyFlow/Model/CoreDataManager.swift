@@ -25,30 +25,6 @@ class CoreDataManager {
 }
 
 extension CoreDataManager {
-    func save() {
-        guard persistentContainer.viewContext.hasChanges else {
-            return
-        }
-        do {
-            try persistentContainer.viewContext.save()
-        } catch {
-            print("persistent container save error: \(error)")
-        }
-        
-    }
-    
-    func insert(transaction: Transaction) {
-        let transactionEntity = NSEntityDescription.entity(forEntityName: "Transaction", in: persistentContainer.viewContext)!
-        let newTransaction = NSManagedObject(entity: transactionEntity, insertInto: persistentContainer.viewContext)
-        newTransaction.setValue(transaction.date, forKey: "date")
-        newTransaction.setValue(transaction.type, forKey: "type")
-        newTransaction.setValue(transaction.amount, forKey: "amount")
-        newTransaction.setValue(transaction.itemName, forKey: "itemName")
-        newTransaction.setValue(transaction.note, forKey: "note")
-       
-        save()
-    }
-    
     func resetCoreDataStore() {
         let fileManager = FileManager.default
         let storeURL = persistentContainer.persistentStoreDescriptions.first?.url
@@ -88,13 +64,16 @@ extension CoreDataManager {
         }
         
         var transactionTagSet: Set<TransactionTag> = []
-        for transactionTag in transaction.tags {
-            let tagsFetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
-            tagsFetchRequest.predicate = NSPredicate(format: "name == %@", transactionTag)
-            if let tag = try? context.fetch(tagsFetchRequest).first {
-                transactionTagSet.insert(tag)
+        if let transactionTags = transaction.tags {
+            for transactionTag in transactionTags {
+                let tagsFetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
+                tagsFetchRequest.predicate = NSPredicate(format: "name == %@", transactionTag)
+                if let tag = try? context.fetch(tagsFetchRequest).first {
+                    transactionTagSet.insert(tag)
+                }
             }
         }
+        
         newTransaction.transactionTag = transactionTagSet as NSSet
         
         do {
@@ -102,6 +81,93 @@ extension CoreDataManager {
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func fetchAllTransactions() -> [Transaction]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+        
+        do {
+            let transactionEntities = try context.fetch(fetchRequest)
+            return transactionEntities.map({
+                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                    guard let tag = tag as? TransactionTag else { return nil }
+                    return tag.name
+                }
+                let transaction = Transaction(date: $0.date!,
+                                              type: $0.type!,
+                                              itemName: $0.itemName!,
+                                              amount: $0.amount,
+                                              category: ($0.transactionCategory?.category)!,
+                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              tags: tags,
+                                              note: $0.note)
+                return transaction
+            })
+            
+        } catch {
+            print(error.localizedDescription)
+        }
+        return nil
+    }
+    
+    func fetchTransaction(withPredicate: NSPredicate) -> [Transaction]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+        fetchRequest.predicate = withPredicate
+        do {
+            let transactionEntities = try context.fetch(fetchRequest)
+            return transactionEntities.map({
+                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                    guard let tag = tag as? TransactionTag else { return nil }
+                    return tag.name
+                }
+                let transaction = Transaction(date: $0.date!,
+                                              type: $0.type!,
+                                              itemName: $0.itemName!,
+                                              amount: $0.amount,
+                                              category: ($0.transactionCategory?.category)!,
+                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              tags: tags,
+                                              note: $0.note)
+                return transaction
+            })
+        } catch {
+            print(error.localizedDescription)
+        }
+        return nil
+    }
+    
+    func fetchTransactionWith(withSpecifyDateRange: (start: Date, end: Date), type: AppConfig.TransactionTypePredicate) -> [Transaction]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+        
+        let datePredicate = NSPredicate(format: "(date >= %@) AND (date < %@)", withSpecifyDateRange.start as NSDate, withSpecifyDateRange.end as NSDate)
+        let typePredicate = type.predicate
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [datePredicate, typePredicate])
+        print(predicate)
+        fetchRequest.predicate = predicate
+        do {
+            let transactionEntities = try context.fetch(fetchRequest)
+            return transactionEntities.map({
+                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                    guard let tag = tag as? TransactionTag else { return nil }
+                    return tag.name
+                }
+                let transaction = Transaction(date: $0.date!,
+                                              type: $0.type!,
+                                              itemName: $0.itemName!,
+                                              amount: $0.amount,
+                                              category: ($0.transactionCategory?.category)!,
+                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              tags: tags,
+                                              note: $0.note)
+                return transaction
+            })
+        } catch {
+            print(error.localizedDescription)
+        }
+        return nil
     }
 }
 // MARK: - Transaction Category

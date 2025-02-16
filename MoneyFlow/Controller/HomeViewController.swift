@@ -23,8 +23,24 @@ class HomeViewController: UIViewController {
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.isHidden = true
         
+//        let randomGenerateTransaction = RandomGenerateTransaction()
+//        randomGenerateTransaction.createRandomTransactionRecord()
+        (view as? HomeView)?.segementControl.addTarget(self, action: #selector(handleSegmentControlValueChanged), for: .valueChanged)
+        (view as? HomeView)?.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
+        
     }
-
+    
+    // 0: day, 1: week, 2: month, 3: year
+    @objc func handleSegmentControlValueChanged(sender: UISegmentedControl) {
+        print(sender.selectedSegmentIndex)
+        (view as? HomeView)?.updateTotalSpentLabel(value: AppData.shared.expense(index: sender.selectedSegmentIndex) ?? 0)
+        (view as? HomeView)?.updateTotalIncomeLabel(value: AppData.shared.income(index: sender.selectedSegmentIndex) ?? 0)
+        (view as? HomeView)?.updateChart(chartType: sender.selectedSegmentIndex)
+    }
+    
+    @objc func jumpToDetailView() {
+        tabBarController?.selectedIndex = 1
+    }
 
 }
 

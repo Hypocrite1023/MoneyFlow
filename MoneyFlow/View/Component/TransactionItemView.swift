@@ -15,7 +15,7 @@ class TransactionItemView: UIView {
     private var itemValueLabel: UILabel?
     private var dividerLine: UIView?
     
-    init(itemName: String, itemCategory: AccountingTransactionCategory, itemValue: Int) {
+    init(itemName: String, itemCategory: AccountingTransactionCategory, itemValue: Double) {
         super.init(frame: .zero)
         setupViews(itemName: itemName, itemCategory: itemCategory, itemValue: itemValue)
     }
@@ -24,7 +24,7 @@ class TransactionItemView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews(itemName: String, itemCategory: AccountingTransactionCategory, itemValue: Int) {
+    private func setupViews(itemName: String, itemCategory: AccountingTransactionCategory, itemValue: Double) {
         setCategoryImageView(itemCategory: itemCategory)
         setItemNameLabel(itemCategory: itemCategory)
         setItemDescriptionLabel(itemName: itemName)
@@ -34,6 +34,7 @@ class TransactionItemView: UIView {
     
     private func setCategoryImageView(itemCategory: AccountingTransactionCategory) {
         categoryImageView = UIImageView(image: UIImage(systemName: itemCategory.imageName))
+        categoryImageView?.tintColor = .darkGray
         guard let categoryImageView else { return }
         categoryImageView.layer.cornerRadius = 20
         categoryImageView.clipsToBounds = true
@@ -51,7 +52,7 @@ class TransactionItemView: UIView {
     private func setItemNameLabel(itemCategory: AccountingTransactionCategory) {
         itemCategoryLabel = UILabel()
         guard let itemCategoryLabel else { return }
-        itemCategoryLabel.text = itemCategory.description
+        itemCategoryLabel.text = itemCategory.rawValue
         itemCategoryLabel.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(itemCategoryLabel)
         
@@ -72,7 +73,7 @@ class TransactionItemView: UIView {
         itemDescriptionLabel.bottomAnchor.constraint(greaterThanOrEqualTo: self.bottomAnchor, constant: -15).isActive = true
     }
     
-    private func setItemValueLabel(itemValue: Int) {
+    private func setItemValueLabel(itemValue: Double) {
         itemValueLabel = UILabel()
         guard let itemValueLabel else { return }
         itemValueLabel.text = "$\(itemValue)"
