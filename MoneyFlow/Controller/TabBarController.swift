@@ -33,7 +33,7 @@ class TabBarController: UITabBarController {
         placeholderVC2.tabBarItem = UITabBarItem(title: nil, image: nil, tag: 2)
         placeholderVC2.tabBarItem.isEnabled = false
         
-        let placeholderVC3 = UIViewController()
+        let placeholderVC3 = GoalViewController()
         placeholderVC3.tabBarItem = UITabBarItem(title: "目標", image: UIImage(systemName: "flag.fill"), tag: 3)
 //        placeholderVC3.tabBarItem.isEnabled = false
         
@@ -60,14 +60,6 @@ class TabBarController: UITabBarController {
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 
 }

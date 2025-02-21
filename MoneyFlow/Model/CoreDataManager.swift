@@ -234,3 +234,44 @@ extension CoreDataManager {
         }
     }
 }
+
+// MARK: - Goal
+extension CoreDataManager {
+    func addGoal(_ name: String, amount: Double, startDate: Date, endDate: Date?) {
+        let context = persistentContainer.viewContext
+        let newGoal = GoalConfiguration(context: context)
+        newGoal.id = UUID()
+        newGoal.goalName = name
+        newGoal.goalAmount = amount
+        newGoal.goalStartDate = startDate
+        newGoal.goalEndDate = endDate
+        
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func fetchAllGoals() -> [GoalItem]? {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<GoalConfiguration> = GoalConfiguration.fetchRequest()
+        do {
+            let goals = try context.fetch(fetchRequest)
+            return goals.map {
+                let predicate = NSPredicate(format: "goalRelation == %@", $0)
+                if let transactions = fetchTransaction(withPredicate: predicate) {
+                    let currentAmount = transactions.reduce(0) { $0 + $1.amount }
+                    return GoalItem(id: $0.objectID, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: currentAmount)
+                } else {
+                    return GoalItem(id: $0.objectID, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: 0)
+                }
+                
+                
+            }
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
+    }
+}

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24C101" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="GoalConfiguration" representedClassName="GoalConfiguration" syncable="YES" codeGenerationType="class">
+        <attribute name="goalAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="goalEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="goalName" attributeType="String"/>
+        <attribute name="goalStartDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="savings" toMany="YES" deletionRule="Nullify" destinationEntity="TransactionEntity" inverseName="goalRelation" inverseEntity="TransactionEntity"/>
+    </entity>
     <entity name="TransactionCategory" representedClassName="TransactionCategory" syncable="YES" codeGenerationType="class">
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -11,6 +19,7 @@
         <attribute name="itemName" attributeType="String"/>
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="type" attributeType="String" valueTransformerName="TransactionTypeTransformer" customClassName="TransactionType"/>
+        <relationship name="goalRelation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GoalConfiguration" inverseName="savings" inverseEntity="GoalConfiguration"/>
         <relationship name="transactionCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TransactionCategory" inverseName="transactionEntity" inverseEntity="TransactionCategory"/>
         <relationship name="transactionPaymentMethod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TransactionPaymentMethod" inverseName="transactionEntity" inverseEntity="TransactionPaymentMethod"/>
         <relationship name="transactionTag" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TransactionTag" inverseName="transactionEntity" inverseEntity="TransactionTag"/>

@@ -28,11 +28,12 @@ class FilterPanelViewController: UIViewController {
     }
     
     @objc func fetchTransactionByDate() {
-        let predicate: NSPredicate?
         filterDataDelegate?.filterTransactions(with: AppConfig.TransactionTimePredicate(rawValue: ((view as? FilterPanelView)?.dateRangeSelector.selected.first)!)!.bothPredicate!)
     }
     
-
+    @objc func fetchTransactionByType() {
+        
+    }
 }
 
 protocol TransactionFilterDataDelegate: AnyObject {

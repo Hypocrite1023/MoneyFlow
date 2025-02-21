@@ -30,6 +30,12 @@ class HomeViewController: UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        handleSegmentControlValueChanged(sender: (view as? HomeView)!.segementControl)
+        print("appear")
+    }
+    
     // 0: day, 1: week, 2: month, 3: year
     @objc func handleSegmentControlValueChanged(sender: UISegmentedControl) {
         print(sender.selectedSegmentIndex)

@@ -11,7 +11,7 @@ class AppDateGenerater {
     static let shared = AppDateGenerater()
     private init() {}
     
-    enum DateUnit: Int {
+    enum DateUnit: Int, CaseIterable {
         case day = 0, week = 1, month = 2, year = 3
         
         var component: Calendar.Component {
@@ -25,6 +25,19 @@ class AppDateGenerater {
                 return .month
             case .year:
                 return .year
+            }
+        }
+        
+        var displayName: String {
+            switch self {
+            case .day:
+                return "日"
+            case .week:
+                return "週"
+            case .month:
+                return "月"
+            case .year:
+                return "年"
             }
         }
     }
