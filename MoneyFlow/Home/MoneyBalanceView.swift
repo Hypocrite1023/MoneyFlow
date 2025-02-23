@@ -11,18 +11,18 @@ class MoneyBalanceView: UIView {
     
     private var labelVerticalStack: UIStackView = UIStackView()
     private var itemLabel: UILabel = UILabel()
-    private var balanceLabel: UILabel = UILabel()
+    var balanceLabel: UILabel = UILabel()
     
-    init(itemLabelText: String, balance: Double) {
+    init(itemLabelText: String) {
         super.init(frame: .zero)
-        setupView(itemLabelText: itemLabelText, balance: balance)
+        setupView(itemLabelText: itemLabelText)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupView(itemLabelText: String, balance: Double) {
+    private func setupView(itemLabelText: String) {
         // label vertical stack
         self.addSubview(labelVerticalStack)
         labelVerticalStack.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +41,6 @@ class MoneyBalanceView: UIView {
         // balance label
         balanceLabel.textAlignment = .left
         balanceLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        balanceLabel.text = AppNumberFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: balance)) ?? ""
         
         labelVerticalStack.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
         labelVerticalStack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8).isActive = true
@@ -52,11 +51,5 @@ class MoneyBalanceView: UIView {
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 5
         self.clipsToBounds = true
-    }
-    
-    func updateValue(value: Double) {
-        
-        balanceLabel.text = AppNumberFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: value)) ?? ""
-        
     }
 }
