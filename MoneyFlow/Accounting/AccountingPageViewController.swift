@@ -6,20 +6,20 @@
 //
 
 import UIKit
+import Combine
 
 class AccountingPageViewController: UIViewController {
     
+    private let viewModel: AccountingPageViewModel
+    private var bindings: Set<AnyCancellable> = Set<AnyCancellable>()
+    private var contentView: AccountingPage = AccountingPage(categoryList: CoreDataManager.shared.fetchAllTransactionCategories(), paymentMethodList: CoreDataManager.shared.fetchAllTransactionPaymentMethods(), tagList: CoreDataManager.shared.fetchAllTransactionTags())
+    
     private var activeTextField: UITextField?
     private var accountingTagManager: AccountingTagManager = AccountingTagManager.shared
-    private var transactionCategory: [String]?
-    private var transactionPaymentMethod: [String]?
-    private var transactionTag: [String]?
     
-    init() {
+    init(viewModel: AccountingPageViewModel = AccountingPageViewModel()) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        self.transactionCategory = CoreDataManager.shared.fetchAllTransactionCategories()
-        self.transactionPaymentMethod = CoreDataManager.shared.fetchAllTransactionPaymentMethods()
-        self.transactionTag = CoreDataManager.shared.fetchAllTransactionTags()
     }
     
     required init?(coder: NSCoder) {
@@ -27,7 +27,8 @@ class AccountingPageViewController: UIViewController {
     }
     
     override func loadView() {
-        view = AccountingPage(categoryList: transactionCategory, paymentMethodList: transactionPaymentMethod, tagList: transactionTag)
+        view = contentView
+        view.backgroundColor = .systemBackground
     }
 
     override func viewDidLoad() {
@@ -38,20 +39,88 @@ class AccountingPageViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShowNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHideNotification), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleMultiSelectionButtonStatus), name: AccountingTagManager.addTagNotificationName, object: nil)
-        if let accountingPage = view as? AccountingPage {
-            accountingPage.setTextFieldDelegate(self)
-            accountingPage.setScrollViewDelegate(self)
-            accountingPage.delegate = self
-            
-            accountingPage.addTagButton.addTarget(self, action: #selector(addTag), for: .touchUpInside)
-        }
-//        CoreDataManager.shared.fetchAllTransactionCategories()
+        
+        contentView.setTextFieldDelegate(self)
+        contentView.setScrollViewDelegate(self)
+        
+        contentView.incomedistributeTableView.delegate = self
+        contentView.incomedistributeTableView.dataSource = self
+        contentView.incomedistributeTableView.register(GoalPreviewView.self, forCellReuseIdentifier: "IncomeDistributeTableViewCell")
+//        contentView.incomedistributeTableView.register(UITableViewCell.self, forCellReuseIdentifier: "IncomeDistributeTableViewCell")
+        contentView.incomedistributeTableView.rowHeight = 60
+        
+        contentView.addTagButton.addTarget(self, action: #selector(addTag), for: .touchUpInside)
+        contentView.accountingButton.addTarget(self, action: #selector(makeAccounting), for: .touchUpInside)
+        contentView.cancelAccountingButton.addTarget(self, action: #selector(cancelAccounting), for: .touchUpInside)
+        
+        setBinding()
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: AccountingTagManager.addTagNotificationName, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+    }
+    
+    private func setBinding() {
+        func bindViewToViewModel() {
+            contentView.itemNameTextField.publisher(for: \.text)
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionName, on: viewModel)
+                .store(in: &bindings)
+            contentView.amountTextField.publisher(for: \.text)
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionAmount, on: viewModel)
+                .store(in: &bindings)
+            contentView.noteTextField.publisher(for: \.text)
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionNote, on: viewModel)
+                .store(in: &bindings)
+            contentView.accountingDatePicker.publisher(for: \.date)
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionDate, on: viewModel)
+                .store(in: &bindings)
+            contentView.categoryControl?.$selected
+                .map { $0.first }
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionCategory, on: viewModel)
+                .store(in: &bindings)
+            contentView.paymentMethodControl?.$selected
+                .map { $0.first }
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionPaymentMethod, on: viewModel)
+                .store(in: &bindings)
+            contentView.typeSegmentControl.publisher(for: \.selectedSegmentIndex)
+                .map {
+                    if $0 == UISegmentedControl.noSegment {
+                        self.contentView.incomeDistributeLabel.isHidden = true
+                        self.contentView.incomedistributeTableView.isHidden = true
+                        return -1
+                    } else {
+                        if $0 == 1 {
+                            self.contentView.incomeDistributeLabel.isHidden = false
+                            self.contentView.incomedistributeTableView.isHidden = false
+                        } else {
+                            self.contentView.incomeDistributeLabel.isHidden = true
+                            self.contentView.incomedistributeTableView.isHidden = true
+                        }
+                        return $0
+                    }
+                }
+                .receive(on: RunLoop.main)
+                .assign(to: \.transactionType, on: viewModel)
+                .store(in: &bindings)
+            contentView.tagControl?.$selected
+                .receive(on: RunLoop.main)
+                .map { Array($0) }
+                .assign(to: \.transactionTag, on: viewModel)
+                .store(in: &bindings)
+        }
+        func bindViewModelToView() {
+            
+        }
+        bindViewToViewModel()
+        bindViewModelToView()
     }
     
     @objc func addTag() {
@@ -100,6 +169,30 @@ class AccountingPageViewController: UIViewController {
             self.view.transform = .identity
         }
     }
+    
+    @objc func makeAccounting() {
+        let result = viewModel.makeAccounting()
+        switch result {
+            case .success(let message):
+                print(message)
+                self.dismiss(animated: true)
+            case .failure(let error):
+                print(error)
+                if let message = (error as? AccountingPageViewModel.AccountingError)?.errorMessage {
+                    let alertController = UIAlertController(title: "錯誤", message: message, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default) { action in
+                        print("")
+                    }
+                    alertController.addAction(okAction)
+                    self.present(alertController, animated: true)
+                }
+            
+        }
+    }
+    
+    @objc func cancelAccounting() {
+        self.dismiss(animated: true)
+    }
 }
 
 extension AccountingPageViewController: UITextFieldDelegate {
@@ -112,22 +205,41 @@ extension AccountingPageViewController: UIScrollViewDelegate {
     
 }
 
-extension AccountingPageViewController: CloseAccountingPage {
-    func makeAccounting() {
-        print("transaction")
-        if let accountingPage = view as? AccountingPage {
-            guard let type = accountingPage.getAccountingType(), let itemName = accountingPage.getAccountingItemName(), let amount = accountingPage.getAccountingAmount(), let category = accountingPage.getAccountingCategory(), let payMethod = accountingPage.getAccountingPaymentMethod(), let tags = accountingPage.getAccountingTags(), let notes = accountingPage.getAccountingNotes() else {
-                print("Accounting Error")
-                return
-            }
-            let transaction = Transaction(date: accountingPage.getAccountingDate(), type: type, itemName: itemName, amount: amount, category: category, payMethod: payMethod, tags: tags, note: notes)
-            CoreDataManager.shared.addTransaction(transaction)
-        }
-        self.dismiss(animated: true)
+extension AccountingPageViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        print(viewModel.goalList?.count ?? 0)
+        return viewModel.goalList?.count ?? 0
     }
     
-    func cancelAccounting() {
-        self.dismiss(animated: true)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "IncomeDistributeTableViewCell", for: indexPath) as? GoalPreviewView else {
+            return UITableViewCell()
+        }
+        guard let goalList = viewModel.goalList else {
+            return UITableViewCell()
+        }
+        cell.goalUUID = goalList[indexPath.row].id
+        cell.setGoalName(goalName: goalList[indexPath.row].name!)
+        cell.setGoalAmount(goalAmount: goalList[indexPath.row].targetAmount)
+        cell.setNowAmount(nowAmount: goalList[indexPath.row].currentAmount)
+        cell.setGoalProgressView(progress: goalList[indexPath.row].currentAmount / goalList[indexPath.row].targetAmount)
+        return cell
+        
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        print(indexPath.row)
+        let cell = tableView.cellForRow(at: indexPath) as! GoalPreviewView
+        print(cell.goalUUID!)
+        viewModel.relationGoalID = cell.goalUUID!
+//        tableView.deselectRow(at: indexPath, animated: true)
+        cell.setHighlighted(true, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath) as! GoalPreviewView
+        cell.setHighlighted(false, animated: true)
     }
     
 }

@@ -62,27 +62,29 @@ class AccountingPage: UIView {
     private let pageScrollView: UIScrollView = UIScrollView()
     private let pageStack: UIStackView = UIStackView()
     private let dateLabel: UILabel = createLabel(title: "日期")
-    private let accountingDatePicker: UIDatePicker = UIDatePicker()
+    let accountingDatePicker: UIDatePicker = UIDatePicker()
     private let typeLabel: UILabel = createLabel(title: "類型")
-    private let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: ["支出", "收入"])
+    let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: ["支出", "收入"])
     private let itemNameLabel: UILabel = createLabel(title: "項目名稱")
-    private let itemNameTextField: UITextField = UITextField()
+    let itemNameTextField: UITextField = UITextField()
     private let amountLabel: UILabel = createLabel(title: "金額")
-    private let amountTextField: UITextField = UITextField()
+    let amountTextField: UITextField = UITextField()
     private let categoryLabel: UILabel = createLabel(title: "類別")
-    private let categoryControl: SingleSelectionButtonView?
+    let categoryControl: SingleSelectionButtonView?
     private let paymentMethodLabel: UILabel = createLabel(title: "支付方式")
-    private let paymentMethodControl: SingleSelectionButtonView?
+    let paymentMethodControl: SingleSelectionButtonView?
     private let tagLabel: UILabel = createLabel(title: "標籤")
     let addTagButton: UIButton = UIButton(configuration: .plain())
     let tagControl: MultiSelectionButtonView?
     
     private let noteLabel: UILabel = createLabel(title: "備註")
-    private let noteTextField: UITextField = UITextField()
+    let noteTextField: UITextField = UITextField()
     
-    private let accountingButton: UIButton = UIButton(configuration: .tinted())
-    private let cancelAccountingButton: UIButton = UIButton(configuration: .tinted())
-    weak var delegate: CloseAccountingPage?
+    let incomeDistributeLabel: UILabel = createLabel(title: "將收入分配給")
+    let incomedistributeTableView: UITableView = UITableView()
+    
+    let accountingButton: UIButton = UIButton(configuration: .tinted())
+    let cancelAccountingButton: UIButton = UIButton(configuration: .tinted())
     
     init(categoryList: [String]?, paymentMethodList: [String]?, tagList: [String]?) {
         categoryControl = SingleSelectionButtonView(selectionList: categoryList)
@@ -98,11 +100,13 @@ class AccountingPage: UIView {
     
     private func setupView() {
         self.addSubview(pageScrollView)
+        pageScrollView.showsVerticalScrollIndicator = false
         pageScrollView.translatesAutoresizingMaskIntoConstraints = false
-        pageScrollView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        pageScrollView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         pageScrollView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor).isActive = true
-        pageScrollView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        pageScrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -10).isActive = true
         pageScrollView.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor).isActive = true
+//        pageScrollView.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor).isActive = true
         pageScrollView.addSubview(pageStack)
         pageStack.translatesAutoresizingMaskIntoConstraints = false
         pageStack.axis = .vertical
@@ -110,8 +114,8 @@ class AccountingPage: UIView {
         pageStack.alignment = .leading
         pageStack.distribution = .fillProportionally
         pageStack.topAnchor.constraint(equalTo: pageScrollView.topAnchor, constant: 10).isActive = true
-        pageStack.leadingAnchor.constraint(equalTo: pageScrollView.leadingAnchor, constant: 0).isActive = true
-        pageStack.trailingAnchor.constraint(equalTo: pageScrollView.trailingAnchor, constant: -0).isActive = true
+//        pageStack.leadingAnchor.constraint(equalTo: pageScrollView.leadingAnchor, constant: 0).isActive = true
+//        pageStack.trailingAnchor.constraint(equalTo: pageScrollView.trailingAnchor, constant: -0).isActive = true
         pageStack.bottomAnchor.constraint(equalTo: pageScrollView.bottomAnchor, constant: 0).isActive = true
         pageStack.widthAnchor.constraint(equalTo: pageScrollView.widthAnchor).isActive = true
         setupDateBlock()
@@ -122,21 +126,15 @@ class AccountingPage: UIView {
         setupPaymentMethodBlock()
         setupTagsBlock()
         setupNotesBlock()
+        setupIncomeDistributeBlock()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
+        tapGesture.cancelsTouchesInView = false
         self.addGestureRecognizer(tapGesture)
         setFlowAccountingButton()
     }
     
     @objc private func closeKeyboard() {
         self.endEditing(true)
-    }
-    
-    @objc private func accounting() {
-        delegate?.makeAccounting()
-    }
-    
-    @objc private func cancelAccounting() {
-        delegate?.cancelAccounting()
     }
     
     private func setFlowAccountingButton() {
@@ -147,15 +145,11 @@ class AccountingPage: UIView {
         horizonStack.alignment = .center
         horizonStack.distribution = .fillEqually
         pageScrollView.addSubview(horizonStack)
-//        accountingButton.translatesAutoresizingMaskIntoConstraints = false
         accountingButton.setTitle("紀錄！", for: .normal)
-//        pageScrollView.addSubview(accountingButton)
-        accountingButton.addTarget(self, action: #selector(accounting), for: .touchUpInside)
         
         
 //        cancelAccountingButton.translatesAutoresizingMaskIntoConstraints = false
         cancelAccountingButton.setTitle("取消", for: .normal)
-        cancelAccountingButton.addTarget(self, action: #selector(cancelAccounting), for: .touchUpInside)
         cancelAccountingButton.tintColor = .darkGray
         
         horizonStack.bottomAnchor.constraint(equalTo: pageScrollView.frameLayoutGuide.bottomAnchor, constant: -15).isActive = true
@@ -171,12 +165,12 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(accountingDatePicker)
         accountingDatePicker.contentHorizontalAlignment = .leading
         
-        constraintToWidth(innerView: dateLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: accountingDatePicker, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: dateLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: accountingDatePicker, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+//        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
     }
     
     private func setupTypeBlock() {
@@ -184,12 +178,13 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(typeLabel)
         vstack.addArrangedSubview(typeSegmentControl)
         
-        constraintToWidth(innerView: typeLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: typeSegmentControl, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: typeLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: typeSegmentControl, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupItemNameBlock() {
@@ -199,12 +194,12 @@ class AccountingPage: UIView {
         itemNameTextField.keyboardType = .default
         itemNameTextField.borderStyle = .roundedRect
         
-        constraintToWidth(innerView: itemNameLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: itemNameTextField, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: itemNameLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: itemNameTextField, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupAmountBlock() {
@@ -214,12 +209,12 @@ class AccountingPage: UIView {
         amountTextField.borderStyle = .roundedRect
         amountTextField.keyboardType = .decimalPad
         
-        constraintToWidth(innerView: amountLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: amountTextField, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: amountLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: amountTextField, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupCategoryBlock() {
@@ -228,12 +223,12 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(categoryControl!)
         
         
-        constraintToWidth(innerView: categoryLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: categoryControl!, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: categoryLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: categoryControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupPaymentMethodBlock() {
@@ -241,12 +236,12 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(paymentMethodLabel)
         vstack.addArrangedSubview(paymentMethodControl!)
         
-        constraintToWidth(innerView: paymentMethodLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: paymentMethodControl!, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: paymentMethodLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: paymentMethodControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupTagsBlock() {
@@ -283,12 +278,12 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(view)
         vstack.addArrangedSubview(tagControl!)
         
-        constraintToWidth(innerView: view, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: tagControl!, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: view, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: tagControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupNotesBlock() {
@@ -300,11 +295,23 @@ class AccountingPage: UIView {
         noteTextField.returnKeyType = .done
         vstack.addArrangedSubview(noteTextField)
         
-        constraintToWidth(innerView: noteLabel, outerView: vstack, constant: 0)
-        constraintToWidth(innerView: noteTextField, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: noteLabel, outerView: vstack, constant: 0)
+//        constraintToWidth(innerView: noteTextField, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
-        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
+        constraintToWidth(innerView: vstack, outerView: pageStack)
+    }
+    
+    private func setupIncomeDistributeBlock() {
+        let vstack = createVStack()
+        vstack.addArrangedSubview(incomeDistributeLabel)
+        vstack.addArrangedSubview(incomedistributeTableView)
+        incomedistributeTableView.allowsMultipleSelection = false
+        vstack.translatesAutoresizingMaskIntoConstraints = false
+        vstack.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        pageStack.addArrangedSubview(vstack)
+        
+        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupPictureBlock() {
@@ -351,11 +358,10 @@ class AccountingPage: UIView {
         return vstack
     }
     
-    private func constraintToWidth(innerView: UIView, outerView: UIView, constant: CGFloat) {
+    private func constraintToWidth(innerView: UIView, outerView: UIView) {
         innerView.translatesAutoresizingMaskIntoConstraints = false
-        outerView.translatesAutoresizingMaskIntoConstraints = false
-        innerView.leadingAnchor.constraint(equalTo: outerView.leadingAnchor, constant: constant).isActive = true
-        innerView.trailingAnchor.constraint(equalTo: outerView.trailingAnchor, constant: -constant).isActive = true
+
+        innerView.widthAnchor.constraint(equalTo: outerView.widthAnchor).isActive = true
     }
     
     // MARK: - Accounting getter
@@ -410,9 +416,4 @@ class AccountingPage: UIView {
         noteTextField.text
     }
 
-}
-
-protocol CloseAccountingPage: AnyObject {
-    func makeAccounting()
-    func cancelAccounting()
 }

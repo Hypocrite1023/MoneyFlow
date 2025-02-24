@@ -54,8 +54,8 @@ class RandomGenerateTransaction {
     }
     
     func createRandomTransactionRecord() {
-        for i in 0..<300 {
-            let transaction = Transaction(date: randomDate(), type: randomType(), itemName: randomCombinedItemName(), amount: randomAmount(), category: randomCategory(), payMethod: randomPaymentMethod(), tags: randomTag(), note: "")
+        for _ in 0..<300 {
+            let transaction = Transaction(date: randomDate(), type: randomType(), itemName: randomCombinedItemName(), amount: randomAmount(), category: randomCategory(), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
             CoreDataManager.shared.addTransaction(transaction)
         }
     }

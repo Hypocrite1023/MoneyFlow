@@ -16,6 +16,7 @@ class GoalPreviewView: UITableViewCell {
     private let goalAmountLabel: UILabel = UILabel()
     private var amountHStack: UIStackView?
     private var vstack: UIStackView?
+    var goalUUID: UUID?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

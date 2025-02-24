@@ -67,7 +67,7 @@ class AppDateGenerater {
             sevenUnit.append((dateFormatter.string(from: startDate), startDate, Calendar.current.date(byAdding: unit.component, value: -i, to: interval.end)!))
             
         }
-        print(sevenUnit)
+//        print(sevenUnit)
         return sevenUnit.reversed()
     }
     

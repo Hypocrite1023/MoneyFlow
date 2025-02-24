@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 struct GoalItem: Hashable {
-    let id: NSManagedObjectID  // 用於唯一標識目標
+    let id: UUID  // 用於唯一標識目標
     let name: String?
     let targetAmount: Double
     let currentAmount: Double

@@ -63,6 +63,14 @@ extension CoreDataManager {
             newTransaction.transactionPaymentMethod = paymentMethod
         }
         
+        if let relationGoal = transaction.relationGoal {
+            let goalFetchRequest: NSFetchRequest<GoalConfiguration> = GoalConfiguration.fetchRequest()
+            goalFetchRequest.predicate = NSPredicate(format: "id == %@", relationGoal as CVarArg)
+            if let goal = try? context.fetch(goalFetchRequest).first {
+                newTransaction.goalRelation = goal
+            }
+        }
+        
         var transactionTagSet: Set<TransactionTag> = []
         if let transactionTags = transaction.tags {
             for transactionTag in transactionTags {
@@ -101,7 +109,7 @@ extension CoreDataManager {
                                               category: ($0.transactionCategory?.category)!,
                                               payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
                                               tags: tags,
-                                              note: $0.note)
+                                              note: $0.note, relationGoal: nil)
                 return transaction
             })
             
@@ -129,7 +137,7 @@ extension CoreDataManager {
                                               category: ($0.transactionCategory?.category)!,
                                               payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
                                               tags: tags,
-                                              note: $0.note)
+                                              note: $0.note, relationGoal: nil)
                 return transaction
             })
         } catch {
@@ -145,7 +153,7 @@ extension CoreDataManager {
         let datePredicate = NSPredicate(format: "(date >= %@) AND (date < %@)", withSpecifyDateRange.start as NSDate, withSpecifyDateRange.end as NSDate)
         let typePredicate = type.predicate
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [datePredicate, typePredicate])
-        print(predicate)
+//        print(predicate)
         fetchRequest.predicate = predicate
         do {
             let transactionEntities = try context.fetch(fetchRequest)
@@ -161,7 +169,7 @@ extension CoreDataManager {
                                               category: ($0.transactionCategory?.category)!,
                                               payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
                                               tags: tags,
-                                              note: $0.note)
+                                              note: $0.note, relationGoal: nil)
                 return transaction
             })
         } catch {
@@ -253,7 +261,7 @@ extension CoreDataManager {
         }
     }
     
-    func fetchAllGoals() -> [GoalItem]? {
+    func fetchAllGoalsStatus() -> [GoalItem]? {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<GoalConfiguration> = GoalConfiguration.fetchRequest()
         do {
@@ -262,9 +270,9 @@ extension CoreDataManager {
                 let predicate = NSPredicate(format: "goalRelation == %@", $0)
                 if let transactions = fetchTransaction(withPredicate: predicate) {
                     let currentAmount = transactions.reduce(0) { $0 + $1.amount }
-                    return GoalItem(id: $0.objectID, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: currentAmount)
+                    return GoalItem(id: $0.id!, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: currentAmount)
                 } else {
-                    return GoalItem(id: $0.objectID, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: 0)
+                    return GoalItem(id: $0.id!, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: 0)
                 }
                 
                 

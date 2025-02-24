@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import Combine
 
-class SingleSelectionButtonView: UIView {
+class SingleSelectionButtonView: UIView, ObservableObject {
 
     var selectionList: [String]?
     var mayNil: Bool?
+    internal var buttonList: [UIButton] = []
+    @Published var selected: Set<String> = []
     static let singleSelectionButtonStateChangeNotification: NSNotification.Name = NSNotification.Name("SingleSelectionButtonStateChangeNotification")
     
     private let horizonScrollView: UIScrollView = {
@@ -28,8 +31,7 @@ class SingleSelectionButtonView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    internal var buttonList: [UIButton] = []
-    internal var selected: Set<String> = []
+    
     
     init(selectionList: [String]?, mayNil: Bool = false) {
         self.selectionList = selectionList

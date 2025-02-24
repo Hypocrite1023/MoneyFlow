@@ -23,7 +23,7 @@ class GoalViewController: UIViewController {
         // Do any additional setup after loading the view.
         goalView = (view as? GoalView)
         goalView?.addGoalButton.addTarget(self, action: #selector(addGoal), for: .touchUpInside)
-        print(CoreDataManager.shared.fetchAllGoals())
+        print(CoreDataManager.shared.fetchAllGoalsStatus())
         
         
         goalView?.goalPreviewTableView.register(GoalPreviewView.self, forCellReuseIdentifier: "GoalPreviewView")
@@ -57,7 +57,7 @@ class GoalViewController: UIViewController {
     }
     
     func loadGoalData() {
-        if let goals = CoreDataManager.shared.fetchAllGoals() {
+        if let goals = CoreDataManager.shared.fetchAllGoalsStatus() {
             var snapShot = NSDiffableDataSourceSnapshot<Int, GoalItem>()
             snapShot.appendSections([0])
             snapShot.appendItems(goals)

@@ -16,8 +16,9 @@ class Transaction {
     var payMethod: String
     var tags: [String]?
     var note: String?
+    var relationGoal: UUID?
     
-    init(date: Date, type: String, itemName: String, amount: Double, category: String, payMethod: String, tags: [String]?, note: String?) {
+    init(date: Date, type: String, itemName: String, amount: Double, category: String, payMethod: String, tags: [String]?, note: String?, relationGoal: UUID?) {
         self.date = date
         self.type = type
         self.itemName = itemName
@@ -26,6 +27,7 @@ class Transaction {
         self.payMethod = payMethod
         self.tags = tags
         self.note = note
+        self.relationGoal = relationGoal
     }
     
     
