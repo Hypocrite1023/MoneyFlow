@@ -7,13 +7,19 @@
 
 import Foundation
 
-public class AppNumberFormatter {
-    static let shared = AppNumberFormatter()
+public class AppFormatter {
+    static let shared = AppFormatter()
     private init() {}
     
     lazy var currencyNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
+        return formatter
+    }()
+    
+    lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
         return formatter
     }()
 }

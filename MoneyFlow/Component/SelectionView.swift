@@ -1,20 +1,16 @@
 //
-//  SingleSelectionButtonView.swift
+//  SelectionView.swift
 //  MoneyFlow
 //
-//  Created by YI-CHUN CHIU on 2025/1/25.
+//  Created by YI-CHUN CHIU on 2025/2/25.
 //
 
 import UIKit
-import Combine
 
-class SingleSelectionButtonView: UIView, ObservableObject {
-
-    var selectionList: [String]?
-    var mayNil: Bool?
+class SelectionView: UIView {
+    
     internal var buttonList: [UIButton] = []
-    @Published var selected: Set<String> = []
-    static let singleSelectionButtonStateChangeNotification: NSNotification.Name = NSNotification.Name("SingleSelectionButtonStateChangeNotification")
+    var selectionList: [String]
     
     private let horizonScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -23,7 +19,7 @@ class SingleSelectionButtonView: UIView, ObservableObject {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-    private let horizonStackView: UIStackView = {
+    let horizonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
@@ -33,9 +29,8 @@ class SingleSelectionButtonView: UIView, ObservableObject {
     }()
     
     
-    init(selectionList: [String]?, mayNil: Bool = false) {
+    init(selectionList: [String]) {
         self.selectionList = selectionList
-        self.mayNil = mayNil
         super.init(frame: .zero)
         setView()
     }
@@ -47,8 +42,9 @@ class SingleSelectionButtonView: UIView, ObservableObject {
     func setView() {
         
         subviews.forEach { $0.removeFromSuperview() }
-        for (_, selection) in selectionList!.enumerated() {
+        for (index, selection) in selectionList.enumerated() {
             let button = UIButton(configuration: .plain())
+            button.tag = index
             var conf = button.configuration
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
             button.layer.cornerRadius = 5
@@ -57,12 +53,12 @@ class SingleSelectionButtonView: UIView, ObservableObject {
             button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
             button.titleLabel?.font = .systemFont(ofSize: 24, weight: .medium)
-            button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
             buttonList.append(button)
             horizonStackView.addArrangedSubview(button)
         }
         
         horizonScrollView.addSubview(horizonStackView)
+        
         horizonStackView.leadingAnchor.constraint(equalTo: horizonScrollView.leadingAnchor).isActive = true
         horizonStackView.trailingAnchor.constraint(equalTo: horizonScrollView.trailingAnchor).isActive = true
         horizonStackView.topAnchor.constraint(equalTo: horizonScrollView.topAnchor).isActive = true
@@ -75,31 +71,4 @@ class SingleSelectionButtonView: UIView, ObservableObject {
         horizonScrollView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         horizonScrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
     }
-    
-    internal func updateTagsButtons(tags: [String]) {
-        self.selectionList = tags
-        horizonStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        setView()
-    }
-    
-    open func updateButtonStatus() {
-        for button in buttonList {
-            if selected.contains(button.title(for: .normal)!) {
-                button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
-                button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
-            } else {
-                button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
-                button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
-            }
-        }
-    }
-    
-    @objc func buttonAction(_ sender: UIButton) {
-        if !selected.contains(sender.title(for: .normal)!) {
-            selected = [sender.title(for: .normal)!]
-            updateButtonStatus()
-            NotificationCenter.default.post(name: SingleSelectionButtonView.singleSelectionButtonStateChangeNotification, object: self)
-        }
-    }
-    
 }

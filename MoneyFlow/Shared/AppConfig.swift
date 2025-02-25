@@ -106,7 +106,7 @@ class AppConfig {
                 
             }
             guard let interval else { return nil}
-            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), TransactionTypePredicate.expense.predicate])
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), CoreDataPredicate.TransactionType.expense.predicate])
         }
         var incomePredicate: NSPredicate? {
             var interval: DateInterval?
@@ -126,16 +126,7 @@ class AppConfig {
                 
             }
             guard let interval else { return nil}
-            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), TransactionTypePredicate.income.predicate])
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), CoreDataPredicate.TransactionType.income.predicate])
         }
     }
-    
-    enum TransactionTypePredicate: String {
-        case income = "收入", expense = "支出"
-        
-        var predicate: NSPredicate {
-            return NSPredicate(format: "type == %@", self.rawValue)
-        }
-    }
-
 }

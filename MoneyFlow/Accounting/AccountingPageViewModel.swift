@@ -128,14 +128,14 @@ class AccountingPageViewModel {
     }
     
     func transactionCategoryChecking() -> Result<String?, AccountingError> {
-        guard let transactionCategory = transactionCategory else {
+        guard transactionCategory != nil  else {
             return .failure(.transactionCategoryNotSelect)
         }
         return .success(nil)
     }
     
     func transactionPaymentMethodChecking() -> Result<String?, AccountingError> {
-        guard let transactionPaymentMethod else {
+        guard transactionPaymentMethod != nil else {
             return .failure(.transactionPaymentMethodNotSelect)
         }
         return .success(nil)

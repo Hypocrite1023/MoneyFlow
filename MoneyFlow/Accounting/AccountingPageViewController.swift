@@ -80,13 +80,25 @@ class AccountingPageViewController: UIViewController {
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionDate, on: viewModel)
                 .store(in: &bindings)
-            contentView.categoryControl?.$selected
-                .map { $0.first }
+            contentView.categoryControl.$selectedIndex
+                .map {
+                    if let index = $0 {
+                        return self.contentView.categoryControl.buttonList[index].title(for: .normal)
+                    } else {
+                        return nil
+                    }
+                }
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionCategory, on: viewModel)
                 .store(in: &bindings)
-            contentView.paymentMethodControl?.$selected
-                .map { $0.first }
+            contentView.paymentMethodControl.$selectedIndex
+                .map {
+                    if let index = $0 {
+                        return self.contentView.paymentMethodControl.buttonList[index].title(for: .normal)
+                    } else {
+                        return nil
+                    }
+                }
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionPaymentMethod, on: viewModel)
                 .store(in: &bindings)
@@ -110,9 +122,15 @@ class AccountingPageViewController: UIViewController {
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionType, on: viewModel)
                 .store(in: &bindings)
-            contentView.tagControl?.$selected
+            contentView.tagControl.$selectedIndex
+                .map {
+                    let selectedArr = Array($0)
+                    let result = selectedArr.map { i in
+                        return self.contentView.tagControl.buttonList[i].title(for: .normal)!
+                    }
+                    return result
+                }
                 .receive(on: RunLoop.main)
-                .map { Array($0) }
                 .assign(to: \.transactionTag, on: viewModel)
                 .store(in: &bindings)
         }
@@ -146,7 +164,7 @@ class AccountingPageViewController: UIViewController {
         if let accountingPage = view as? AccountingPage {
             print("handle")
             DispatchQueue.main.async {
-                accountingPage.tagControl?.updateTagsButtons(tags: CoreDataManager.shared.fetchAllTransactionTags()!)
+                accountingPage.tagControl.updateSelectionList(list: CoreDataManager.shared.fetchAllTransactionTags())
             }
         }
     }
@@ -181,7 +199,7 @@ class AccountingPageViewController: UIViewController {
                 if let message = (error as? AccountingPageViewModel.AccountingError)?.errorMessage {
                     let alertController = UIAlertController(title: "錯誤", message: message, preferredStyle: .alert)
                     let okAction = UIAlertAction(title: "OK", style: .default) { action in
-                        print("")
+//                        print("")
                     }
                     alertController.addAction(okAction)
                     self.present(alertController, animated: true)
@@ -231,7 +249,7 @@ extension AccountingPageViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        print(indexPath.row)
         let cell = tableView.cellForRow(at: indexPath) as! GoalPreviewView
-        print(cell.goalUUID!)
+//        print(cell.goalUUID!)
         viewModel.relationGoalID = cell.goalUUID!
 //        tableView.deselectRow(at: indexPath, animated: true)
         cell.setHighlighted(true, animated: true)

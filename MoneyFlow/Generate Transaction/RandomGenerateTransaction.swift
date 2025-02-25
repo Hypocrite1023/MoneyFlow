@@ -27,12 +27,12 @@ class RandomGenerateTransaction {
     
     func randomCategory() -> String {
         let categories = CoreDataManager.shared.fetchAllTransactionCategories()
-        return (categories?.randomElement())!
+        return (categories.randomElement())!
     }
 
     func randomPaymentMethod() -> String {
         let paymentMethods = CoreDataManager.shared.fetchAllTransactionPaymentMethods()
-        return (paymentMethods?.randomElement())!
+        return (paymentMethods.randomElement())!
     }
     
     func randomTag() -> [String]? {
@@ -40,7 +40,7 @@ class RandomGenerateTransaction {
         let numberOfTags = Int.random(in: 0...3) // 最多 3 個標籤
             
             // 將陣列隨機排序後，選取前 N 個
-        return Array(tags!.shuffled().prefix(numberOfTags))
+        return Array(tags.shuffled().prefix(numberOfTags))
     }
     
     func randomCombinedItemName() -> String {

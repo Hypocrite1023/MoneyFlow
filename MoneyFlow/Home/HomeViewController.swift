@@ -37,7 +37,7 @@ class HomeViewController: UIViewController {
 //        randomGenerateTransaction.createRandomTransactionRecord()
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
-        for dateRange in HomeViewModel.DateRange.allCases {
+        for dateRange in CoreDataPredicate.TransactionDateRange.allCases {
             homeView.segementControl.insertSegment(withTitle: dateRange.title, at: 0, animated: false)
         }
         homeView.segementControl.selectedSegmentIndex = 0
@@ -58,13 +58,13 @@ class HomeViewController: UIViewController {
         func bindViewModelToView() {
             viewModel.$expense
                 .map {
-                    AppNumberFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
+                    AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
                 }
                 .assign(to: \.balanceLabel.text, on: homeView.totalSpent)
                 .store(in: &bindings)
             viewModel.$income
                 .map {
-                    AppNumberFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
+                    AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
                 }
                 .assign(to: \.balanceLabel.text, on: homeView.totalIncome)
                 .store(in: &bindings)

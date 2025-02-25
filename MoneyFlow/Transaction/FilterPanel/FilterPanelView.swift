@@ -10,16 +10,16 @@ import UIKit
 class FilterPanelView: UIView {
 
     private let filterByTimeLabel: UILabel = createLabel(title: "日期")
-    let dateRangeSelector: SingleSelectionButtonView = SingleSelectionButtonView(selectionList: AppConfig.TransactionTimePredicate.allCases.map({$0.rawValue}))
+    let dateRangeSelector: SingleSelectionView = SingleSelectionView(selectionList: CoreDataPredicate.TransactionDateRange.allCases.map { $0.title }, preselectIndex: 0)
     private let filterByTypeLabel: UILabel = createLabel(title: "類型")
-    private let typeSelector: MultiSelectionButtonView = MultiSelectionButtonView(selectionList: ["收入", "支出"])
+    let typeSelector: MultiSelectionView = MultiSelectionView(selectionList: ["收入", "支出"], preselectIndex: [0, 1])
     private let filterByCategoryLabel: UILabel = createLabel(title: "類別")
-    private let categorySelector: MultiSelectionButtonView = MultiSelectionButtonView(selectionList: CoreDataManager.shared.fetchAllTransactionCategories())
+    let categorySelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionCategories())
     private let filterByPaymentMethodLabel: UILabel = createLabel(title: "交易方式")
-    private let paymentMethodSelector: MultiSelectionButtonView = MultiSelectionButtonView(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods())
+    let paymentMethodSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods())
     private let filterByTagLabel: UILabel = createLabel(title: "標籤")
-    private let tagSelector: MultiSelectionButtonView = MultiSelectionButtonView(selectionList: CoreDataManager.shared.fetchAllTransactionTags())
-    private let filterByAmountLabel: UILabel = createLabel(title: "金額")
+    let tagSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionTags(), mayNil: true, selectionListNilPrompt: "尚未建立任何標籤")
+//    private let filterByAmountLabel: UILabel = createLabel(title: "金額")
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,10 +37,11 @@ class FilterPanelView: UIView {
             createStack(arrangedSubviews: [filterByCategoryLabel, categorySelector], spacing: 8),
             createStack(arrangedSubviews: [filterByPaymentMethodLabel, paymentMethodSelector], spacing: 8),
             createStack(arrangedSubviews: [filterByTagLabel, tagSelector], spacing: 8),
-            createStack(arrangedSubviews: [filterByAmountLabel, UIView()], spacing: 8)])
+//            createStack(arrangedSubviews: [filterByAmountLabel, UIView()], spacing: 8)
+        ])
         vStack.axis = .vertical
         vStack.distribution = .fillEqually
-        vStack.spacing = 15
+        vStack.spacing = 10
         
         addSubview(vStack)
         vStack.translatesAutoresizingMaskIntoConstraints = false
@@ -48,11 +49,6 @@ class FilterPanelView: UIView {
         vStack.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
         vStack.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
     }
-    
-    func getDateRangeSelected() -> String? {
-        dateRangeSelector.selected.first
-    }
-    
     
     private static func createLabel(title: String) -> UILabel {
         let label = UILabel()

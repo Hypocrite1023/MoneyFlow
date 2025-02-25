@@ -7,7 +7,12 @@
 
 import Foundation
 
-class Transaction {
+struct Transaction: Hashable {
+    static func == (lhs: Transaction, rhs: Transaction) -> Bool {
+        return lhs.date == rhs.date && lhs.type == rhs.type && lhs.itemName == rhs.itemName
+        && lhs.amount == rhs.amount && lhs.category == rhs.category && lhs.payMethod == rhs.payMethod && lhs.tags == rhs.tags && lhs.note == rhs.note && lhs.relationGoal == rhs.relationGoal
+    }
+    
     var date: Date
     var type: String
     var itemName: String

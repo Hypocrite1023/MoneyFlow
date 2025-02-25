@@ -70,12 +70,12 @@ class AccountingPage: UIView {
     private let amountLabel: UILabel = createLabel(title: "金額")
     let amountTextField: UITextField = UITextField()
     private let categoryLabel: UILabel = createLabel(title: "類別")
-    let categoryControl: SingleSelectionButtonView?
+    let categoryControl: SingleSelectionView
     private let paymentMethodLabel: UILabel = createLabel(title: "支付方式")
-    let paymentMethodControl: SingleSelectionButtonView?
+    let paymentMethodControl: SingleSelectionView
     private let tagLabel: UILabel = createLabel(title: "標籤")
     let addTagButton: UIButton = UIButton(configuration: .plain())
-    let tagControl: MultiSelectionButtonView?
+    let tagControl: MultiSelectionView
     
     private let noteLabel: UILabel = createLabel(title: "備註")
     let noteTextField: UITextField = UITextField()
@@ -86,10 +86,10 @@ class AccountingPage: UIView {
     let accountingButton: UIButton = UIButton(configuration: .tinted())
     let cancelAccountingButton: UIButton = UIButton(configuration: .tinted())
     
-    init(categoryList: [String]?, paymentMethodList: [String]?, tagList: [String]?) {
-        categoryControl = SingleSelectionButtonView(selectionList: categoryList)
-        paymentMethodControl = SingleSelectionButtonView(selectionList: paymentMethodList)
-        tagControl = MultiSelectionButtonView(selectionList: tagList, mayNil: true)
+    init(categoryList: [String], paymentMethodList: [String], tagList: [String]) {
+        categoryControl = SingleSelectionView(selectionList: categoryList, preselectIndex: nil)
+        paymentMethodControl = SingleSelectionView(selectionList: paymentMethodList, preselectIndex: nil)
+        tagControl = MultiSelectionView(selectionList: tagList, mayNil: true)
         super.init(frame: .zero)
         setupView()
     }
@@ -220,7 +220,7 @@ class AccountingPage: UIView {
     private func setupCategoryBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(categoryLabel)
-        vstack.addArrangedSubview(categoryControl!)
+        vstack.addArrangedSubview(categoryControl)
         
         
 //        constraintToWidth(innerView: categoryLabel, outerView: vstack, constant: 0)
@@ -234,7 +234,7 @@ class AccountingPage: UIView {
     private func setupPaymentMethodBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(paymentMethodLabel)
-        vstack.addArrangedSubview(paymentMethodControl!)
+        vstack.addArrangedSubview(paymentMethodControl)
         
 //        constraintToWidth(innerView: paymentMethodLabel, outerView: vstack, constant: 0)
 //        constraintToWidth(innerView: paymentMethodControl!, outerView: vstack, constant: 0)
@@ -276,7 +276,7 @@ class AccountingPage: UIView {
 //        addTagButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         vstack.addArrangedSubview(view)
-        vstack.addArrangedSubview(tagControl!)
+        vstack.addArrangedSubview(tagControl)
         
 //        constraintToWidth(innerView: view, outerView: vstack, constant: 0)
 //        constraintToWidth(innerView: tagControl!, outerView: vstack, constant: 0)
@@ -363,57 +363,4 @@ class AccountingPage: UIView {
 
         innerView.widthAnchor.constraint(equalTo: outerView.widthAnchor).isActive = true
     }
-    
-    // MARK: - Accounting getter
-    // accounting getter
-    func getAccountingDate() -> Date {
-        accountingDatePicker.date
-    }
-    
-    func getAccountingType() -> String? {
-        switch typeSegmentControl.selectedSegmentIndex {
-            case 0:
-                return "支出"
-            case 1:
-                return "收入"
-            default:
-                return nil
-        }
-    }
-    
-    func getAccountingItemName() -> String? {
-        itemNameTextField.text
-    }
-    
-    func getAccountingAmount() -> Double? {
-        if let amountString = amountTextField.text {
-            if amountString.isEmpty {
-                return nil
-            } else {
-                return Double(amountString)
-            }
-        }
-        return nil
-    }
-    
-    func getAccountingCategory() -> String? {
-        categoryControl?.selected.first
-    }
-    
-    func getAccountingPaymentMethod() -> String? {
-        paymentMethodControl?.selected.first
-    }
-    
-    func getAccountingTags() -> [String]? {
-        if let selected = tagControl?.selected {
-            return Array(selected)
-        } else {
-            return nil
-        }
-    }
-    
-    func getAccountingNotes() -> String? {
-        noteTextField.text
-    }
-
 }

@@ -119,13 +119,80 @@ extension CoreDataManager {
         return nil
     }
     
+    func fetchTransaction(withPredicate: (transactionPredicate: NSPredicate?, categoryPredicate: NSPredicate?, paymentMethodPredicate: NSPredicate?, tagPredicate: NSPredicate?)) -> [Transaction] {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+        fetchRequest.predicate = withPredicate.transactionPredicate
+        
+        let categoryFetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
+        categoryFetchRequest.predicate = withPredicate.categoryPredicate
+        guard let categories = try? context.fetch(categoryFetchRequest) else {
+            return []
+        }
+        
+        let paymentMethodFetchRequest: NSFetchRequest<TransactionPaymentMethod> = TransactionPaymentMethod.fetchRequest()
+        paymentMethodFetchRequest.predicate = withPredicate.paymentMethodPredicate
+        guard let paymentMethods = try? context.fetch(paymentMethodFetchRequest) else {
+            return []
+        }
+        
+        let tagsFetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
+        tagsFetchRequest.predicate = withPredicate.tagPredicate
+        guard let tags = try? context.fetch(tagsFetchRequest) else {
+            return []
+        }
+        
+        do {
+            let transactionEntities = try context.fetch(fetchRequest)
+            return transactionEntities.compactMap({
+                let set = Set(tags.compactMap{ $0.name })
+                let set2 = $0.transactionTag?.compactMap { ($0 as? TransactionTag)?.name }
+                guard let set2 else {
+                    return nil
+                }
+                
+                if !categories.contains($0.transactionCategory!) || !paymentMethods.contains($0.transactionPaymentMethod!) {
+                    return nil
+                }
+                
+                // 當 transactionTag's predicate is nil -> 代表沒選任何tag -> transaction 有tag 沒tag都要列出
+                // 當 transactionTag's predicate is not nil -> 有篩選tag -> 列出的transaction 的 tag 要是 選擇的tag的子集合 -> 但是又不能列出 transaction 的 tag 是 nil 的
+                print(Set(set), set2, !Set(set2).isSubset(of: set) || Set(set2).isEmpty, withPredicate.tagPredicate != nil)
+                
+                if (!Set(set2).isSubset(of: set) || Set(set2).isEmpty && withPredicate.tagPredicate != nil) {
+                    return nil
+                }
+                
+                
+                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                    guard let tag = tag as? TransactionTag else { return nil }
+                    return tag.name
+                }
+                let transaction = Transaction(date: $0.date!,
+                                              type: $0.type!,
+                                              itemName: $0.itemName!,
+                                              amount: $0.amount,
+                                              category: ($0.transactionCategory?.category)!,
+                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              tags: tags,
+                                              note: $0.note, relationGoal: nil)
+                return transaction
+            })
+        } catch {
+            print(error.localizedDescription)
+        }
+        return []
+    }
+    
     func fetchTransaction(withPredicate: NSPredicate) -> [Transaction]? {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
         fetchRequest.predicate = withPredicate
+        
+        
         do {
             let transactionEntities = try context.fetch(fetchRequest)
-            return transactionEntities.map({
+            return transactionEntities.compactMap({
                 let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
                     guard let tag = tag as? TransactionTag else { return nil }
                     return tag.name
@@ -146,7 +213,7 @@ extension CoreDataManager {
         return nil
     }
     
-    func fetchTransactionWith(withSpecifyDateRange: (start: Date, end: Date), type: AppConfig.TransactionTypePredicate) -> [Transaction]? {
+    func fetchTransactionWith(withSpecifyDateRange: (start: Date, end: Date), type: CoreDataPredicate.TransactionType) -> [Transaction]? {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
         
@@ -180,7 +247,7 @@ extension CoreDataManager {
 }
 // MARK: - Transaction Category
 extension CoreDataManager {
-    func fetchAllTransactionCategories() -> [String]? {
+    func fetchAllTransactionCategories() -> [String] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
         
@@ -191,12 +258,12 @@ extension CoreDataManager {
             print(error.localizedDescription)
         }
         
-        return nil
+        return []
     }
 }
 // MARK: - Transaction Payment Method
 extension CoreDataManager {
-    func fetchAllTransactionPaymentMethods() -> [String]? {
+    func fetchAllTransactionPaymentMethods() -> [String] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionPaymentMethod> = TransactionPaymentMethod.fetchRequest()
         
@@ -207,12 +274,12 @@ extension CoreDataManager {
             print(error.localizedDescription)
         }
         
-        return nil
+        return []
     }
 }
 // MARK: - Transaction Tags
 extension CoreDataManager {
-    func fetchAllTransactionTags() -> [String]? {
+    func fetchAllTransactionTags() -> [String] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
         
@@ -220,12 +287,12 @@ extension CoreDataManager {
             let tags = try context.fetch(fetchRequest)
 //            print(tags.compactMap({$0.name}), "tags")
             let result = tags.compactMap({$0.name})
-            return result.count == 0 ? nil : result
+            return result.count == 0 ? [] : result
         } catch {
             print(error.localizedDescription)
         }
         
-        return nil
+        return []
     }
     
     func addTransactionTag(_ tag: String) {
