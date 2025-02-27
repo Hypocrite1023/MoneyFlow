@@ -8,6 +8,12 @@
 import Foundation
 
 class TransactionViewViewModel {
+    @Published var filterPanelViewModel: FilterPanelViewModel
+    
+    init(filterPanelViewModel: FilterPanelViewModel = FilterPanelViewModel()) {
+        self.filterPanelViewModel = filterPanelViewModel
+    }
+    
     enum TransactionSection: Hashable {
         case date(String)
     }

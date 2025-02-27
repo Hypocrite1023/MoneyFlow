@@ -6,13 +6,28 @@
 //
 
 import Foundation
+import CoreData
 
 struct Transaction: Hashable {
     static func == (lhs: Transaction, rhs: Transaction) -> Bool {
-        return lhs.date == rhs.date && lhs.type == rhs.type && lhs.itemName == rhs.itemName
-        && lhs.amount == rhs.amount && lhs.category == rhs.category && lhs.payMethod == rhs.payMethod && lhs.tags == rhs.tags && lhs.note == rhs.note && lhs.relationGoal == rhs.relationGoal
+//        return lhs.date == rhs.date && lhs.type == rhs.type && lhs.itemName == rhs.itemName
+//        && lhs.amount == rhs.amount && lhs.category == rhs.category && lhs.payMethod == rhs.payMethod && lhs.tags == rhs.tags && lhs.note == rhs.note && lhs.relationGoal == rhs.relationGoal
+        return lhs.id == rhs.id
     }
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(date)
+        hasher.combine(type)
+        hasher.combine(itemName)
+        hasher.combine(amount)
+        hasher.combine(category)
+        hasher.combine(payMethod)
+        hasher.combine(tags?.sorted() ?? [])
+        hasher.combine(note)
+        hasher.combine(relationGoal)
+    }
+    var id: NSManagedObjectID?
     var date: Date
     var type: String
     var itemName: String

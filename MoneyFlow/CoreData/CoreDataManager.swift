@@ -42,7 +42,15 @@ extension CoreDataManager {
 
 // MARK: - Transaction
 extension CoreDataManager {
-    func addTransaction(_ transaction: Transaction) {
+    func addTransaction(_ transaction: Transaction) -> Result<String?, AccountingError> {
+        let dataIntegrityCheck = checkDataIntegrity(transactionDate: transaction.date, transactionType: transaction.type, transactionName: transaction.itemName, transactionAmount: transaction.amount.description, transactionCategory: transaction.category, transactionPaymentMethod: transaction.payMethod, transactionTag: transaction.tags, transactionNote: transaction.note, transactionRelationGoal: transaction.relationGoal)
+        switch dataIntegrityCheck {
+            
+        case .success(_):
+            break
+        case .failure(let error):
+            return .failure(error)
+        }
         let context = persistentContainer.viewContext
         let newTransaction = TransactionEntity(context: context)
         newTransaction.date = transaction.date
@@ -88,7 +96,71 @@ extension CoreDataManager {
             try context.save()
         } catch {
             print(error.localizedDescription)
+            return .failure(.someCheckingError)
         }
+        return .success("accounting success")
+    }
+    
+    func modifyTransaction(_ transaction: Transaction) -> Result<String?, AccountingError> {
+        let dataIntegrityCheck = checkDataIntegrity(transactionDate: transaction.date, transactionType: transaction.type, transactionName: transaction.itemName, transactionAmount: transaction.amount.description, transactionCategory: transaction.category, transactionPaymentMethod: transaction.payMethod, transactionTag: transaction.tags, transactionNote: transaction.note, transactionRelationGoal: transaction.relationGoal)
+        switch dataIntegrityCheck {
+            
+        case .success(_):
+            break
+        case .failure(let error):
+            return .failure(error)
+        }
+        
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+        guard let transactionID = transaction.id else { return .failure(.transactionIdNotExist)}
+        fetchRequest.predicate = NSPredicate(format: "objectID == %@", transactionID)
+        do {
+            var transactionRecord = try context.existingObject(with: transactionID) as? TransactionEntity
+            guard let transactionRecord else { return .failure(.transactionIdNotExist)}
+            transactionRecord.date = transaction.date
+            transactionRecord.type = transaction.type
+            transactionRecord.itemName = transaction.itemName
+            transactionRecord.amount = transaction.amount
+            transactionRecord.note = transaction.note
+            
+            let categoryFetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
+            categoryFetchRequest.predicate = NSPredicate(format: "category == %@", transaction.category)
+            if let category = try? context.fetch(categoryFetchRequest).first {
+                transactionRecord.transactionCategory = category
+            }
+            
+            let paymentMethodFetchRequest: NSFetchRequest<TransactionPaymentMethod> = TransactionPaymentMethod.fetchRequest()
+            paymentMethodFetchRequest.predicate = NSPredicate(format: "paymentMethod == %@", transaction.payMethod)
+            if let paymentMethod = try? context.fetch(paymentMethodFetchRequest).first {
+                transactionRecord.transactionPaymentMethod = paymentMethod
+            }
+            
+            if let relationGoal = transaction.relationGoal {
+                let goalFetchRequest: NSFetchRequest<GoalConfiguration> = GoalConfiguration.fetchRequest()
+                goalFetchRequest.predicate = NSPredicate(format: "id == %@", relationGoal as CVarArg)
+                if let goal = try? context.fetch(goalFetchRequest).first {
+                    transactionRecord.goalRelation = goal
+                }
+            }
+            
+            var transactionTagSet: Set<TransactionTag> = []
+            if let transactionTags = transaction.tags {
+                for transactionTag in transactionTags {
+                    let tagsFetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
+                    tagsFetchRequest.predicate = NSPredicate(format: "name == %@", transactionTag)
+                    if let tag = try? context.fetch(tagsFetchRequest).first {
+                        transactionTagSet.insert(tag)
+                    }
+                }
+            }
+            transactionRecord.transactionTag = transactionTagSet as NSSet
+            
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+        return .success("Modify transaction successfully")
     }
     
     func fetchAllTransactions() -> [Transaction]? {
@@ -157,7 +229,7 @@ extension CoreDataManager {
                 
                 // 當 transactionTag's predicate is nil -> 代表沒選任何tag -> transaction 有tag 沒tag都要列出
                 // 當 transactionTag's predicate is not nil -> 有篩選tag -> 列出的transaction 的 tag 要是 選擇的tag的子集合 -> 但是又不能列出 transaction 的 tag 是 nil 的
-                print(Set(set), set2, !Set(set2).isSubset(of: set) || Set(set2).isEmpty, withPredicate.tagPredicate != nil)
+//                print(Set(set), set2, !Set(set2).isSubset(of: set) || Set(set2).isEmpty, withPredicate.tagPredicate != nil)
                 
                 if (!Set(set2).isSubset(of: set) || Set(set2).isEmpty && withPredicate.tagPredicate != nil) {
                     return nil
@@ -168,7 +240,7 @@ extension CoreDataManager {
                     guard let tag = tag as? TransactionTag else { return nil }
                     return tag.name
                 }
-                let transaction = Transaction(date: $0.date!,
+                var transaction = Transaction(date: $0.date!,
                                               type: $0.type!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
@@ -176,6 +248,7 @@ extension CoreDataManager {
                                               payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
+                transaction.id = $0.objectID
                 return transaction
             })
         } catch {
@@ -197,7 +270,7 @@ extension CoreDataManager {
                     guard let tag = tag as? TransactionTag else { return nil }
                     return tag.name
                 }
-                let transaction = Transaction(date: $0.date!,
+                var transaction = Transaction(date: $0.date!,
                                               type: $0.type!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
@@ -205,6 +278,7 @@ extension CoreDataManager {
                                               payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
+                transaction.id = $0.objectID
                 return transaction
             })
         } catch {
@@ -229,7 +303,7 @@ extension CoreDataManager {
                     guard let tag = tag as? TransactionTag else { return nil }
                     return tag.name
                 }
-                let transaction = Transaction(date: $0.date!,
+                var transaction = Transaction(date: $0.date!,
                                               type: $0.type!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
@@ -237,6 +311,7 @@ extension CoreDataManager {
                                               payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
+                transaction.id = $0.objectID
                 return transaction
             })
         } catch {
@@ -347,6 +422,138 @@ extension CoreDataManager {
         } catch {
             print(error.localizedDescription)
             return nil
+        }
+    }
+}
+
+// MARK: - 資料檢查
+extension CoreDataManager {
+    enum AccountingError: Error {
+        case transactionNameEmpty
+        case transactionAmountEmpty
+        case transactionAmountInvalid
+        case transactionAmountIsZero
+        case transactionError
+        case transactionTypeNotSelect
+        case transactionCategoryNotSelect
+        case transactionPaymentMethodNotSelect
+        case someCheckingError
+        case transactionIdNotExist
+        
+        var errorMessage: String {
+            switch self {
+                
+            case .transactionNameEmpty:
+                return "項目名稱不可為空"
+            case .transactionAmountEmpty:
+                return "金額不可為空"
+            case .transactionAmountInvalid:
+                return "輸入的金額格式不正確"
+            case .transactionAmountIsZero:
+                return "輸入的金額不可為零"
+            case .transactionError:
+                return "紀錄錯誤"
+            case .transactionTypeNotSelect:
+                return "請選擇交易類型"
+            case .transactionCategoryNotSelect:
+                return "請選擇交易類別"
+            case .transactionPaymentMethodNotSelect:
+                return "請選擇交易支付方式"
+            case .someCheckingError:
+                return "請檢查輸入內容"
+            case .transactionIdNotExist:
+                return "該筆資料不存在"
+            }
+        }
+    }
+    
+    func checkDataIntegrity(transactionDate: Date?, transactionType: String?, transactionName: String?, transactionAmount: String?, transactionCategory: String?, transactionPaymentMethod: String?, transactionTag: [String]?, transactionNote: String?, transactionRelationGoal: UUID?) -> Result<String?, AccountingError> {
+        
+        func transactionTypeChecking() -> Result<String?, AccountingError> {
+            guard let transactionType, transactionType == "收入" || transactionType == "支出" else {
+                return .failure(.transactionTypeNotSelect)
+            }
+            return .success(nil)
+        }
+        
+        func transactionNameChecking() -> Result<String?, AccountingError> {
+            guard let transactionName else {
+                return .failure(AccountingError.transactionNameEmpty)
+            }
+            guard transactionName != "" else {
+                return .failure(AccountingError.transactionNameEmpty)
+            }
+            return .success(nil)
+        }
+        
+        func transactionAmountChecking() -> Result<String?, AccountingError> {
+            guard let transactionAmount = transactionAmount else {
+                return .failure(AccountingError.transactionAmountEmpty)
+            }
+            guard transactionAmount != "" else {
+                return .failure(AccountingError.transactionAmountEmpty)
+            }
+            guard let amount = Double(transactionAmount) else {
+                return .failure(AccountingError.transactionAmountInvalid)
+            }
+            guard amount != 0.0 else {
+                return .failure(AccountingError.transactionAmountIsZero)
+            }
+            return .success(nil)
+        }
+        
+        func transactionCategoryChecking() -> Result<String?, AccountingError> {
+            guard transactionCategory != nil && transactionCategory != ""  else {
+                return .failure(.transactionCategoryNotSelect)
+            }
+            return .success(nil)
+        }
+        
+        func transactionPaymentMethodChecking() -> Result<String?, AccountingError> {
+            guard transactionPaymentMethod != nil && transactionPaymentMethod != "" else {
+                return .failure(.transactionPaymentMethodNotSelect)
+            }
+            return .success(nil)
+        }
+        
+        switch transactionTypeChecking() {
+            
+        case .success(_):
+            break
+        case .failure(let error):
+            return .failure(error)
+        }
+        
+        switch transactionNameChecking() {
+            
+        case .success(_):
+            break
+        case .failure(let error):
+            return .failure(error)
+        }
+        
+        switch transactionAmountChecking() {
+            
+        case .success(_):
+            break
+        case .failure(let error):
+            return .failure(error)
+        }
+        
+        switch transactionCategoryChecking() {
+            
+        case .success(_):
+            break
+        case .failure(let error):
+            return .failure(error)
+        }
+        
+        switch transactionPaymentMethodChecking() {
+            
+        case .success(let message):
+            return .success(message)
+        case .failure(let error):
+            return .failure(error)
         }
     }
 }

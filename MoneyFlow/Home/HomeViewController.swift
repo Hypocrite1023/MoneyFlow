@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
         for dateRange in CoreDataPredicate.TransactionDateRange.allCases {
-            homeView.segementControl.insertSegment(withTitle: dateRange.title, at: 0, animated: false)
+            homeView.segementControl.insertSegment(withTitle: dateRange.title, at: homeView.segementControl.numberOfSegments, animated: false)
         }
         homeView.segementControl.selectedSegmentIndex = 0
         setBindings()

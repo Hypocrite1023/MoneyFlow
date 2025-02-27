@@ -51,6 +51,32 @@ class TransactionView: UIView {
         transactionTableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
         transactionTableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
         transactionTableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        let tableViewDataSourceNilView: UIView = {
+            let view: UIView = UIView()
+            let imageView: UIImageView = UIImageView(image: UIImage(systemName: "exclamationmark.magnifyingglass"))
+            view.addSubview(imageView)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            imageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+            imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+            let noDatafoundLabel: UILabel = {
+                let label: UILabel = UILabel()
+                label.text = "沒有符合的資料"
+                label.font = AppConfig.Font.title.value
+                label.textColor = .secondaryLabel
+                return label
+            }()
+            noDatafoundLabel.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(noDatafoundLabel)
+            noDatafoundLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10).isActive = true
+            noDatafoundLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            return view
+        }()
+        
+        transactionTableView.backgroundView = tableViewDataSourceNilView
+        transactionTableView.backgroundView?.isHidden = true
     }
     
     private static func createLabel(title: String) -> UILabel {

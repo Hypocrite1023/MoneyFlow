@@ -11,7 +11,13 @@ class MultiSelectionView: SelectionView, ObservableObject {
     
     let mayNil: Bool
     let selectionListNilPrompt: String
-    @Published var selectedIndex: Set<Int> = []
+    @Published var selectedIndex: Set<Int> = [] {
+        didSet {
+            if selectedIndex != [] {
+                updateButtonStatus()
+            }
+        }
+    }
     
     init(selectionList: [String], mayNil: Bool = false, selectionListNilPrompt: String = "尚未有任何選項", preselectIndex: Set<Int> = []) {
         self.mayNil = mayNil

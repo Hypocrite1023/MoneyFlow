@@ -148,7 +148,6 @@ class AccountingPage: UIView {
         accountingButton.setTitle("紀錄！", for: .normal)
         
         
-//        cancelAccountingButton.translatesAutoresizingMaskIntoConstraints = false
         cancelAccountingButton.setTitle("取消", for: .normal)
         cancelAccountingButton.tintColor = .darkGray
         
@@ -165,12 +164,9 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(accountingDatePicker)
         accountingDatePicker.contentHorizontalAlignment = .leading
         
-//        constraintToWidth(innerView: dateLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: accountingDatePicker, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
-//        constraintToWidth(innerView: vstack, outerView: pageStack, constant: 10)
     }
     
     private func setupTypeBlock() {
@@ -178,8 +174,6 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(typeLabel)
         vstack.addArrangedSubview(typeSegmentControl)
         
-//        constraintToWidth(innerView: typeLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: typeSegmentControl, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -194,8 +188,6 @@ class AccountingPage: UIView {
         itemNameTextField.keyboardType = .default
         itemNameTextField.borderStyle = .roundedRect
         
-//        constraintToWidth(innerView: itemNameLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: itemNameTextField, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -208,10 +200,7 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(amountTextField)
         amountTextField.borderStyle = .roundedRect
         amountTextField.keyboardType = .decimalPad
-        
-//        constraintToWidth(innerView: amountLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: amountTextField, outerView: vstack, constant: 0)
-        
+                
         pageStack.addArrangedSubview(vstack)
         
         constraintToWidth(innerView: vstack, outerView: pageStack)
@@ -223,8 +212,6 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(categoryControl)
         
         
-//        constraintToWidth(innerView: categoryLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: categoryControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -236,8 +223,6 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(paymentMethodLabel)
         vstack.addArrangedSubview(paymentMethodControl)
         
-//        constraintToWidth(innerView: paymentMethodLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: paymentMethodControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -278,8 +263,6 @@ class AccountingPage: UIView {
         vstack.addArrangedSubview(view)
         vstack.addArrangedSubview(tagControl)
         
-//        constraintToWidth(innerView: view, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: tagControl!, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         
@@ -295,8 +278,6 @@ class AccountingPage: UIView {
         noteTextField.returnKeyType = .done
         vstack.addArrangedSubview(noteTextField)
         
-//        constraintToWidth(innerView: noteLabel, outerView: vstack, constant: 0)
-//        constraintToWidth(innerView: noteTextField, outerView: vstack, constant: 0)
         
         pageStack.addArrangedSubview(vstack)
         constraintToWidth(innerView: vstack, outerView: pageStack)

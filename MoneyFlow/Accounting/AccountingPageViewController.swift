@@ -196,14 +196,14 @@ class AccountingPageViewController: UIViewController {
                 self.dismiss(animated: true)
             case .failure(let error):
                 print(error)
-                if let message = (error as? AccountingPageViewModel.AccountingError)?.errorMessage {
-                    let alertController = UIAlertController(title: "錯誤", message: message, preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default) { action in
+            
+                let alertController = UIAlertController(title: "錯誤", message: error.errorMessage, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default) { _ in
 //                        print("")
-                    }
-                    alertController.addAction(okAction)
-                    self.present(alertController, animated: true)
                 }
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true)
+            
             
         }
     }

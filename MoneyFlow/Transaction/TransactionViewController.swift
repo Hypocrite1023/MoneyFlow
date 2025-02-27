@@ -22,12 +22,20 @@ class TransactionViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("TransactionViewController deinit")
+    }
+    
     override func loadView() {
         view = contentView
+        navigationController?.navigationBar.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = false
+        let transaction = CoreDataManager.shared.fetchTransaction(withPredicate: viewModel.filterPanelViewModel.generateFilterPredicate())
+        applySnapShot(transactions: transaction)
         
     }
 
@@ -46,14 +54,15 @@ class TransactionViewController: UIViewController {
             cell.setUpCell(with: itemIdentifier)
             return cell
         })
-        
-        if let transaction = CoreDataManager.shared.fetchTransaction(withPredicate: AppConfig.TransactionTimePredicate.week.bothPredicate!) {
-            applySnapShot(transactions: transaction)
-        }
-        
     }
     
     func applySnapShot(transactions: [Transaction]) {
+        if transactions.isEmpty {
+            contentView.transactionTableView.backgroundView?.isHidden = false
+        } else {
+            contentView.transactionTableView.backgroundView?.isHidden = true
+        }
+        
         var snapShot = NSDiffableDataSourceSnapshot<TransactionViewViewModel.TransactionSection, Transaction>()
         
         let groupedTransaction = Dictionary(grouping: transactions) { transaction in
@@ -74,7 +83,7 @@ class TransactionViewController: UIViewController {
     }
     
     @objc func showFilterPanel() {
-        let filterPanelVC = FilterPanelViewController()
+        let filterPanelVC = FilterPanelViewController(viewModel: viewModel.filterPanelViewModel)
         filterPanelVC.filterDataDelegate = self
         filterPanelVC.view.backgroundColor = .systemBackground
         filterPanelVC.modalPresentationStyle = .pageSheet
@@ -109,7 +118,15 @@ extension TransactionViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(tableViewDataSource.itemIdentifier(for: indexPath))
+//        print(tableViewDataSource.itemIdentifier(for: indexPath))
+        if let transaction = tableViewDataSource.itemIdentifier(for: indexPath) {
+            let transactionDetailViewController = TransactionDetailViewViewController(transaction: transaction, viewModel: TransactionDetailViewViewModel(transaction: transaction))
+            transactionDetailViewController.modalPresentationStyle = .fullScreen
+//            self.present(UINavigationController(rootViewController: transactionDetailViewController), animated: true)
+            navigationController?.pushViewController(transactionDetailViewController, animated: true)
+            
+        }
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -117,7 +134,7 @@ extension TransactionViewController: UITableViewDelegate {
 
 extension TransactionViewController: TransactionFilterDataDelegate {
     func reloadTransaction(with transaction: [Transaction]) {
-        print(transaction)
+//        print(transaction)
         applySnapShot(transactions: transaction)
     }
     

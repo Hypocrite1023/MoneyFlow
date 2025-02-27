@@ -11,7 +11,13 @@ import Combine
 class SingleSelectionView: SelectionView, ObservableObject {
 
     var mayNil: Bool
-    @Published var selectedIndex: Int?
+    @Published var selectedIndex: Int? {
+        didSet {
+            if selectedIndex != nil {
+                updateButtonStatus()
+            }
+        }
+    }
     
 //    static let singleSelectionButtonStateChangeNotification: NSNotification.Name = NSNotification.Name("SingleSelectionButtonStateChangeNotification")
     
