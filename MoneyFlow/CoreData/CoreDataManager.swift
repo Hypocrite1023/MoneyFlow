@@ -403,7 +403,26 @@ extension CoreDataManager {
         }
     }
     
-    func fetchAllGoalsStatus() -> [GoalItem]? {
+    func modifyGoal(objectID: NSManagedObjectID, goal: GoalItem) {
+        let context = persistentContainer.viewContext
+        do {
+            guard var targetGoal = try context.existingObject(with: objectID) as? GoalConfiguration else {
+                return
+            }
+            targetGoal.goalName = goal.name
+            targetGoal.goalAmount = goal.targetAmount
+            targetGoal.goalStartDate = goal.startDate
+            targetGoal.goalEndDate = goal.endDate
+            
+            try context.save()
+            
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+    }
+    
+    func fetchAllGoalsStatus() -> [GoalItem] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<GoalConfiguration> = GoalConfiguration.fetchRequest()
         do {
@@ -412,17 +431,49 @@ extension CoreDataManager {
                 let predicate = NSPredicate(format: "goalRelation == %@", $0)
                 if let transactions = fetchTransaction(withPredicate: predicate) {
                     let currentAmount = transactions.reduce(0) { $0 + $1.amount }
-                    return GoalItem(id: $0.id!, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: currentAmount)
+                    return GoalItem(objectID: $0.objectID, id: $0.id!, name: $0.goalName, startDate: $0.goalStartDate!, endDate: $0.goalEndDate, targetAmount: $0.goalAmount, currentAmount: currentAmount)
                 } else {
-                    return GoalItem(id: $0.id!, name: $0.goalName, targetAmount: $0.goalAmount, currentAmount: 0)
+                    return GoalItem(objectID: $0.objectID, id: $0.id!, name: $0.goalName, startDate: $0.goalStartDate!, endDate: $0.goalEndDate, targetAmount: $0.goalAmount, currentAmount: 0)
                 }
                 
                 
             }
         } catch {
             print(error.localizedDescription)
-            return nil
+            return []
         }
+    }
+    
+    func fetchGoalAllRelationTransaction(objectID: NSManagedObjectID) -> [Transaction] {
+        let context = persistentContainer.viewContext
+        do {
+            guard let goal = try context.existingObject(with: objectID) as? GoalConfiguration else {
+                return []
+            }
+            guard let transactions = goal.savings as? Set<TransactionEntity> else {
+                return []
+            }
+            
+            return transactions.map {
+                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                    guard let tag = tag as? TransactionTag else { return nil }
+                    return tag.name
+                }
+                var transaction = Transaction(date: $0.date!,
+                                              type: $0.type!,
+                                              itemName: $0.itemName!,
+                                              amount: $0.amount,
+                                              category: ($0.transactionCategory?.category)!,
+                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              tags: tags,
+                                              note: $0.note, relationGoal: nil)
+                transaction.id = $0.objectID
+                return transaction
+            }
+        } catch {
+            
+        }
+        return []
     }
 }
 

@@ -33,7 +33,7 @@ class TabBarController: UITabBarController {
         placeholderVC2.tabBarItem = UITabBarItem(title: nil, image: nil, tag: 2)
         placeholderVC2.tabBarItem.isEnabled = false
         
-        let placeholderVC3 = GoalViewController()
+        let placeholderVC3 = UINavigationController(rootViewController: GoalViewController())
         placeholderVC3.tabBarItem = UITabBarItem(title: "目標", image: UIImage(systemName: "flag.fill"), tag: 3)
 //        placeholderVC3.tabBarItem.isEnabled = false
         

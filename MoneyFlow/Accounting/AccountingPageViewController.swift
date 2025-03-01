@@ -147,9 +147,7 @@ class AccountingPageViewController: UIViewController {
         
         alertController.addAction(UIAlertAction(title: "取消", style: .cancel))
         alertController.addAction(UIAlertAction(title: "確認", style: .default, handler: { action in
-//            print(alertController.textFields?.first?.text)
             guard let inputTag = alertController.textFields?.first?.text else {
-                print("nil nil")
                 return
             }
             print(inputTag)
@@ -160,9 +158,7 @@ class AccountingPageViewController: UIViewController {
     }
     
     @objc func handleMultiSelectionButtonStatus() {
-        print("handle")
         if let accountingPage = view as? AccountingPage {
-            print("handle")
             DispatchQueue.main.async {
                 accountingPage.tagControl.updateSelectionList(list: CoreDataManager.shared.fetchAllTransactionTags())
             }
@@ -192,19 +188,14 @@ class AccountingPageViewController: UIViewController {
         let result = viewModel.makeAccounting()
         switch result {
             case .success(let message):
-                print(message)
                 self.dismiss(animated: true)
             case .failure(let error):
                 print(error)
             
                 let alertController = UIAlertController(title: "錯誤", message: error.errorMessage, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-//                        print("")
-                }
+                let okAction = UIAlertAction(title: "OK", style: .default)
                 alertController.addAction(okAction)
                 self.present(alertController, animated: true)
-            
-            
         }
     }
     
@@ -225,7 +216,6 @@ extension AccountingPageViewController: UIScrollViewDelegate {
 
 extension AccountingPageViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        print(viewModel.goalList?.count ?? 0)
         return viewModel.goalList?.count ?? 0
     }
     
@@ -257,6 +247,7 @@ extension AccountingPageViewController: UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! GoalPreviewView
+        viewModel.relationGoalID = nil
         cell.setHighlighted(false, animated: true)
     }
     

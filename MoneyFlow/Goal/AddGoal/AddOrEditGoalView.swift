@@ -7,7 +7,9 @@
 
 import UIKit
 
-class AddGoalView: UIView {
+class AddOrEditGoalView: UIView {
+    
+    let mode: AddOrEditGoalViewMode
 
     let closeButton: UIButton = UIButton(configuration: .plain())
     let setButton: UIButton = UIButton(configuration: .plain())
@@ -19,6 +21,8 @@ class AddGoalView: UIView {
     
     private let goalAmountLabel: UILabel = UILabel()
     let goalAmountTextField: UITextField = UITextField()
+    private let goalAmountTextFieldKeyboardDoneButton: UIToolbar = UIToolbar()
+    let goalAmountTextFieldKeyboardDoneButtonItem: UIBarButtonItem = UIBarButtonItem()
     private var goalAmountStackView: UIStackView?
     
     private let goalTimePeriodLabel: UILabel = UILabel()
@@ -26,13 +30,13 @@ class AddGoalView: UIView {
     let goalTimePeriodSwitch: UISwitch = UISwitch()
     private var goalTimePeriodSwitchStackView: UIStackView?
     private var goalTimePeriodLabelAndSwitchStackView: UIStackView?
-//    let goalTimePeriodTextField: UITextField = UITextField()
-//    let goalTimePeriodButton: UIButton = UIButton(type: .system)
+
     let goalTimePeriodStartDatePicker: UIDatePicker = UIDatePicker()
     private let goalTimePeriodToDateLabel: UILabel = UILabel()
     let goalTimePeriodEndDatePicker: UIDatePicker = UIDatePicker()
     let goalTimePeriodInfiniteReplaceDatePickerLabel: UILabel = UILabel()
     private var goalTimePeriodDatePickerStackView: UIStackView?
+    
     private var goalTimePeriodStackView: UIStackView?
     
 //    private let isPeriodGoalLabel: UILabel = UILabel()
@@ -41,8 +45,9 @@ class AddGoalView: UIView {
     
     private var wholePageStackView: UIStackView?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(mode: AddOrEditGoalViewMode) {
+        self.mode = mode
+        super.init(frame: .zero)
         setView()
     }
     
@@ -56,10 +61,15 @@ class AddGoalView: UIView {
         closeButton.setTitle("取消", for: .normal)
         closeButton.tintColor = .systemRed
         
-        
-        setButton.setTitle("設定", for: .normal)
-        setButton.tintColor = .systemBlue        
-        
+        switch mode {
+            
+        case .add:
+            setButton.setTitle("設定", for: .normal)
+            setButton.tintColor = .systemBlue
+        case .edit:
+            setButton.setTitle("修改", for: .normal)
+            setButton.tintColor = .systemOrange
+        }
         buttonPanelStackView = UIStackView(arrangedSubviews: [closeButton, setButton])
         buttonPanelStackView!.translatesAutoresizingMaskIntoConstraints = false
         addSubview(buttonPanelStackView!)
@@ -82,6 +92,13 @@ class AddGoalView: UIView {
         goalAmountLabel.font = AppConfig.Font.title.value
         
         goalAmountTextField.borderStyle = .roundedRect
+        goalAmountTextField.keyboardType = .numberPad
+        
+        goalAmountTextFieldKeyboardDoneButton.sizeToFit()
+        goalAmountTextFieldKeyboardDoneButtonItem.title = "完成"
+        goalAmountTextFieldKeyboardDoneButtonItem.style = .done
+        goalAmountTextFieldKeyboardDoneButton.setItems([UIBarButtonItem(systemItem: .flexibleSpace), goalAmountTextFieldKeyboardDoneButtonItem], animated: true)
+        goalAmountTextField.inputAccessoryView = goalAmountTextFieldKeyboardDoneButton
         
         goalAmountStackView = UIStackView(arrangedSubviews: [goalAmountLabel, goalAmountTextField])
         goalAmountStackView?.axis = .vertical

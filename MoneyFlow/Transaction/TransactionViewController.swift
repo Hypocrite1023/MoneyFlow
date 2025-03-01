@@ -34,9 +34,9 @@ class TransactionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = false
-        let transaction = CoreDataManager.shared.fetchTransaction(withPredicate: viewModel.filterPanelViewModel.generateFilterPredicate())
-        applySnapShot(transactions: transaction)
-        
+        navigationController?.navigationBar.isHidden = true
+//        let transaction = CoreDataManager.shared.fetchTransaction(withPredicate: viewModel.filterPanelViewModel.generateFilterPredicate())
+        applySnapShot()
     }
 
     override func viewDidLoad() {
@@ -47,17 +47,12 @@ class TransactionViewController: UIViewController {
         
         contentView.transactionTableView.register(TransactionItemView.self, forCellReuseIdentifier: "TransactionItemView")
         contentView.transactionTableView.delegate = self
-        tableViewDataSource = UITableViewDiffableDataSource(tableView: contentView.transactionTableView, cellProvider: { tableView, indexPath, itemIdentifier in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionItemView", for: indexPath) as? TransactionItemView else {
-                return UITableViewCell()
-            }
-            cell.setUpCell(with: itemIdentifier)
-            return cell
-        })
+        
+        configDataSource()
     }
     
-    func applySnapShot(transactions: [Transaction]) {
-        if transactions.isEmpty {
+    func applySnapShot() {
+        if viewModel.transactions.isEmpty {
             contentView.transactionTableView.backgroundView?.isHidden = false
         } else {
             contentView.transactionTableView.backgroundView?.isHidden = true
@@ -65,7 +60,7 @@ class TransactionViewController: UIViewController {
         
         var snapShot = NSDiffableDataSourceSnapshot<TransactionViewViewModel.TransactionSection, Transaction>()
         
-        let groupedTransaction = Dictionary(grouping: transactions) { transaction in
+        let groupedTransaction = Dictionary(grouping: viewModel.transactions) { transaction in
             AppFormatter.shared.dateFormatter.string(from: transaction.date)
         }
         
@@ -74,8 +69,8 @@ class TransactionViewController: UIViewController {
         for date in sortedDates {
             let section = TransactionViewViewModel.TransactionSection.date(date)
             snapShot.appendSections([section])
-            if let transaction = groupedTransaction[date] {
-                snapShot.appendItems(transaction, toSection: section)
+            if let transactions = groupedTransaction[date] {
+                snapShot.appendItems(transactions, toSection: section)
             }
         }
         
@@ -94,6 +89,18 @@ class TransactionViewController: UIViewController {
         }
 
         present(filterPanelVC, animated: true)
+    }
+}
+
+extension TransactionViewController {
+    func configDataSource() {
+        tableViewDataSource = UITableViewDiffableDataSource(tableView: contentView.transactionTableView, cellProvider: { tableView, indexPath, itemIdentifier in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionItemView", for: indexPath) as? TransactionItemView else {
+                return UITableViewCell()
+            }
+            cell.setUpCell(with: itemIdentifier)
+            return cell
+        })
     }
 }
 
@@ -118,11 +125,10 @@ extension TransactionViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(tableViewDataSource.itemIdentifier(for: indexPath))
         if let transaction = tableViewDataSource.itemIdentifier(for: indexPath) {
             let transactionDetailViewController = TransactionDetailViewViewController(transaction: transaction, viewModel: TransactionDetailViewViewModel(transaction: transaction))
             transactionDetailViewController.modalPresentationStyle = .fullScreen
-//            self.present(UINavigationController(rootViewController: transactionDetailViewController), animated: true)
+
             navigationController?.pushViewController(transactionDetailViewController, animated: true)
             
         }
@@ -133,9 +139,10 @@ extension TransactionViewController: UITableViewDelegate {
 }
 
 extension TransactionViewController: TransactionFilterDataDelegate {
-    func reloadTransaction(with transaction: [Transaction]) {
+    func reloadTransaction() {
 //        print(transaction)
-        applySnapShot(transactions: transaction)
+        viewModel.fetchTransactions()
+        applySnapShot()
     }
     
     

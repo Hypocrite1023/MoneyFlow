@@ -8,14 +8,17 @@
 import UIKit
 
 class GoalView: UIView {
+    
+    private let upperView: UIView = UIView()
+    private let lowerView: UIView = UIView()
 
-    private let goalTitleLabel: UILabel = createLabel(title: "目標")
+    private let savingGoalTitleLabel: UILabel = createLabel(title: "儲蓄目標")
     let addGoalButton: UIButton = UIButton(configuration: .tinted())
     
-    let goalPreviewTableView: UITableView = UITableView()
-    let noDataLabel: UILabel = {
+    let savingGoalPreviewTableView: UITableView = UITableView()
+    let noSavingGoalLabel: UILabel = {
         let label = UILabel()
-        label.text = "尚未建立目標"
+        label.text = "尚未建立儲蓄目標"
         label.textColor = .gray
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18)
@@ -23,9 +26,16 @@ class GoalView: UIView {
         return label
     }()
     
+    private let expenseGoalTitleLabel: UILabel = createLabel(title: "花費限制目標")
+    let dailyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
+    let weeklyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
+    let monthlyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setView()
+        setupUpperView()
+        setupLowerView()
     }
     
     required init?(coder: NSCoder) {
@@ -33,31 +43,68 @@ class GoalView: UIView {
     }
     
     private func setView() {
-        self.addSubview(goalTitleLabel)
-        goalTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        goalTitleLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
-        goalTitleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
+        self.addSubview(upperView)
+        self.addSubview(lowerView)
+        
+        upperView.translatesAutoresizingMaskIntoConstraints = false
+        lowerView.translatesAutoresizingMaskIntoConstraints = false
+        upperView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+        upperView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+        upperView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+        
+        lowerView.topAnchor.constraint(equalTo: upperView.bottomAnchor).isActive = true
+        lowerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+        lowerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+        lowerView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        
+    }
+    
+    private func setupUpperView() {
+        upperView.addSubview(savingGoalTitleLabel)
+        savingGoalTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        savingGoalTitleLabel.leadingAnchor.constraint(equalTo: upperView.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
+        savingGoalTitleLabel.topAnchor.constraint(equalTo: upperView.topAnchor, constant: 10).isActive = true
 //        goalTitleLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
         
         addGoalButton.translatesAutoresizingMaskIntoConstraints = false
         addGoalButton.setTitle("新增目標", for: .normal)
         addGoalButton.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         addGoalButton.tintColor = .black
-        addSubview(addGoalButton)
-        addGoalButton.leadingAnchor.constraint(greaterThanOrEqualTo: goalTitleLabel.trailingAnchor).isActive = true
-        addGoalButton.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
-        addGoalButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
-        addGoalButton.heightAnchor.constraint(equalTo: goalTitleLabel.heightAnchor).isActive = true
+        upperView.addSubview(addGoalButton)
+        addGoalButton.leadingAnchor.constraint(greaterThanOrEqualTo: savingGoalTitleLabel.trailingAnchor).isActive = true
+        addGoalButton.trailingAnchor.constraint(equalTo: upperView.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
+        addGoalButton.topAnchor.constraint(equalTo: upperView.topAnchor, constant: 10).isActive = true
+        addGoalButton.heightAnchor.constraint(equalTo: savingGoalTitleLabel.heightAnchor).isActive = true
         
-        goalPreviewTableView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(goalPreviewTableView)
-        goalPreviewTableView.topAnchor.constraint(equalTo: addGoalButton.bottomAnchor, constant: 15).isActive = true
-        goalPreviewTableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
-        goalPreviewTableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
-        goalPreviewTableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
-        goalPreviewTableView.backgroundView = noDataLabel
-        noDataLabel.centerXAnchor.constraint(equalTo: goalPreviewTableView.centerXAnchor).isActive = true
-        noDataLabel.centerYAnchor.constraint(equalTo: goalPreviewTableView.centerYAnchor).isActive = true
+        savingGoalPreviewTableView.translatesAutoresizingMaskIntoConstraints = false
+        upperView.addSubview(savingGoalPreviewTableView)
+        savingGoalPreviewTableView.topAnchor.constraint(equalTo: addGoalButton.bottomAnchor, constant: 10).isActive = true
+        savingGoalPreviewTableView.leadingAnchor.constraint(equalTo: upperView.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
+        savingGoalPreviewTableView.trailingAnchor.constraint(equalTo: upperView.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
+        savingGoalPreviewTableView.bottomAnchor.constraint(equalTo: upperView.bottomAnchor).isActive = true
+        savingGoalPreviewTableView.backgroundView = noSavingGoalLabel
+        noSavingGoalLabel.centerXAnchor.constraint(equalTo: savingGoalPreviewTableView.centerXAnchor).isActive = true
+        noSavingGoalLabel.centerYAnchor.constraint(equalTo: savingGoalPreviewTableView.centerYAnchor).isActive = true
+    }
+    
+    private func setupLowerView() {
+        lowerView.addSubview(expenseGoalTitleLabel)
+        expenseGoalTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        expenseGoalTitleLabel.topAnchor.constraint(equalTo: lowerView.topAnchor, constant: 10).isActive = true
+        expenseGoalTitleLabel.leadingAnchor.constraint(equalTo: lowerView.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
+        
+        let vstack = UIStackView(arrangedSubviews: [dailyExpenseGoal, weeklyExpenseGoal, monthlyExpenseGoal])
+        vstack.axis = .vertical
+        vstack.spacing = 10
+        vstack.translatesAutoresizingMaskIntoConstraints = false
+        lowerView.addSubview(vstack)
+        vstack.topAnchor.constraint(equalTo: expenseGoalTitleLabel.bottomAnchor, constant: 10).isActive = true
+        vstack.leadingAnchor.constraint(equalTo: lowerView.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
+        vstack.trailingAnchor.constraint(equalTo: lowerView.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
+        vstack.bottomAnchor.constraint(equalTo: lowerView.bottomAnchor, constant: -15).isActive = true
+        
     }
     
     private static func createLabel(title: String) -> UILabel {

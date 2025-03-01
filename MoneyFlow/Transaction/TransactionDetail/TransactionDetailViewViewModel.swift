@@ -39,6 +39,18 @@ class TransactionDetailViewViewModel {
         return !(date == transaction.date && type == transaction.type && itemName == transaction.itemName && amount == transaction.amount.description && category == transaction.category && payMethod == transaction.payMethod && tags == transaction.tags && note == transaction.note && relationGoal == transaction.relationGoal)
     }
     
+    func resetTransaction() {
+        date = transaction.date
+        type = transaction.type
+        itemName = transaction.itemName
+        amount = transaction.amount.description
+        category = transaction.category
+        payMethod = transaction.payMethod
+        tags = transaction.tags
+        note = transaction.note
+        relationGoal = transaction.relationGoal
+    }
+    
     func toggleEditing() {
         isEditing.toggle()
     }

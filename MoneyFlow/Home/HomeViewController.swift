@@ -46,6 +46,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.reloadExpenseAndIncomeData()
     }
     
     private func setBindings() {
@@ -70,7 +71,8 @@ class HomeViewController: UIViewController {
                 .store(in: &bindings)
             viewModel.$selectedDateRange
                 .sink { [weak self] index in
-                    self?.reloadTransactionLineChart(unit: .init(rawValue: index)!)
+                    self?.viewModel.reloadTransactionData()
+                    self?.resetChartDataSet()
                 }
                 .store(in: &bindings)
         }
@@ -110,20 +112,6 @@ class HomeViewController: UIViewController {
         homeView.transactionLineChartView.lineChartView.data = LineChartData(dataSets: [expenseDataSet, incomeDataSet])
         
         homeView.transactionLineChartView.lineChartView.animate(xAxisDuration: 0.5, yAxisDuration: 1)
-    }
-    
-    func reloadTransactionLineChart(unit: AppDateGenerater.DateUnit) {
-        viewModel.sevenUnitExpense = AppDateGenerater.shared.generatePastSevenUnitDateInfo(from: .now, unit: unit).map{ (_, startDate, endDate) in
-            return CoreDataManager.shared.fetchTransactionWith(withSpecifyDateRange: (startDate, endDate), type: .expense)?.reduce(0) { $0 + $1.amount } ?? 0
-        }
-        viewModel.sevenUnitIncome = AppDateGenerater.shared.generatePastSevenUnitDateInfo(from: .now, unit: unit).map{ (_, startDate, endDate) in
-            return CoreDataManager.shared.fetchTransactionWith(withSpecifyDateRange: (startDate, endDate), type: .income)?.reduce(0) { $0 + $1.amount } ?? 0
-        }
-        viewModel.sevenUnitDates = AppDateGenerater.shared.generatePastSevenUnitDateInfo(from: .now, unit: unit).map{ (dateString, _, _) in
-            return dateString
-        }
-        
-        resetChartDataSet()
     }
     
     @objc func jumpToDetailView() {

@@ -63,6 +63,7 @@ class TransactionDetailViewViewController: UIViewController {
         
         contentView.setTextFieldDelegate(self)
         setupViewValues()
+        navigationController?.navigationBar.isHidden = false
     }
     
     private func setupViewValues() {
@@ -228,15 +229,20 @@ class TransactionDetailViewViewController: UIViewController {
                 
                 
             }
+        } else {
+            navigationItem.rightBarButtonItems = [editAccountingToolBarItem!]
+            viewModel.toggleEditing()
         }
     }
     
     @objc func cancelButtonTapped() {
+        viewModel.resetTransaction()
         viewModel.toggleEditing()
         navigationItem.rightBarButtonItems = [editAccountingToolBarItem!]
     }
     
     @objc private func closeKeyboard() {
+        
         contentView.endEditing(true)
     }
     

@@ -11,6 +11,7 @@ class CircularProgressView: UIView {
 
     var backLayer: CAShapeLayer = CAShapeLayer()
     var progressLayer: CAShapeLayer = CAShapeLayer()
+    var valueLabel: UILabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,6 +37,9 @@ class CircularProgressView: UIView {
         
         backLayer.path = circularPath.cgPath
         progressLayer.path = circularPath.cgPath
+        
+        valueLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        valueLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
     func setProgress() {
@@ -52,6 +56,9 @@ class CircularProgressView: UIView {
         progressLayer.strokeEnd = 0
         layer.addSublayer(progressLayer)
         
+        addSubview(valueLabel)
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        valueLabel.font = .systemFont(ofSize: 24, weight: .bold)
     }
     
     func animateProgress(duration: TimeInterval, toValue: CGFloat) {

@@ -34,7 +34,6 @@ class FilterPanelViewController: UIViewController {
 
         // Do any additional setup after loading the view.
 //        NotificationCenter.default.addObserver(self, selector: #selector(fetchTransactionByDate), name: SingleSelectionView.singleSelectionButtonStateChangeNotification, object: (view as? FilterPanelView)?.dateRangeSelector)
-        
         setupBindings()
     }
     
@@ -57,7 +56,7 @@ class FilterPanelViewController: UIViewController {
                     }
                     print(value, "bindViewToViewModel")
                     self.viewModel.dateRangeSelected = value
-                    self.filterDataDelegate?.reloadTransaction(with: CoreDataManager.shared.fetchTransaction(withPredicate: self.viewModel.generateFilterPredicate()))
+                    self.filterDataDelegate?.reloadTransaction()
                     
                 }
                 .store(in: &bindings)
@@ -71,7 +70,7 @@ class FilterPanelViewController: UIViewController {
                         return
                     }
                     self.viewModel.transactionTypeSelected = value
-                    self.filterDataDelegate?.reloadTransaction(with: CoreDataManager.shared.fetchTransaction(withPredicate: self.viewModel.generateFilterPredicate()))
+                    self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
             contentView.categorySelector.$selectedIndex
@@ -87,7 +86,7 @@ class FilterPanelViewController: UIViewController {
                     value.compactMap({ index in
                         self.contentView.categorySelector.buttonList[index].title(for: .normal)
                     })
-                    self.filterDataDelegate?.reloadTransaction(with: CoreDataManager.shared.fetchTransaction(withPredicate: self.viewModel.generateFilterPredicate()))
+                    self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
             contentView.paymentMethodSelector.$selectedIndex
@@ -103,7 +102,7 @@ class FilterPanelViewController: UIViewController {
                     value.compactMap({ index in
                         return self.contentView.paymentMethodSelector.buttonList[index].title(for: .normal)
                     })
-                    self.filterDataDelegate?.reloadTransaction(with: CoreDataManager.shared.fetchTransaction(withPredicate: self.viewModel.generateFilterPredicate()))
+                    self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
             contentView.tagSelector.$selectedIndex
@@ -119,7 +118,7 @@ class FilterPanelViewController: UIViewController {
                     value.compactMap({ index in
                         return self.contentView.tagSelector.buttonList[index].title(for: .normal)
                     })
-                    self.filterDataDelegate?.reloadTransaction(with: CoreDataManager.shared.fetchTransaction(withPredicate: self.viewModel.generateFilterPredicate()))
+                    self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
         }
@@ -173,5 +172,5 @@ class FilterPanelViewController: UIViewController {
 }
 
 protocol TransactionFilterDataDelegate: AnyObject {
-    func reloadTransaction(with transaction: [Transaction])
+    func reloadTransaction()
 }

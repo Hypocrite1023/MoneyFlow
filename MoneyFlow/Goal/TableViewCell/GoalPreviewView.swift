@@ -75,6 +75,8 @@ class GoalPreviewView: UITableViewCell {
         
         self.layer.cornerRadius = 8
         backgroundColor = .systemGray6
+        
+        self.heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
     
     func setGoalName(goalName: String) {
