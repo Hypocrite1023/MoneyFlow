@@ -17,20 +17,20 @@ final class HomeViewModel: ObservableObject {
     @Published var sevenUnitDates: [String]?
     
     @Published var selectedDateRange: Int = 0
-    private var cancellable = Set<AnyCancellable>()
+//    private var cancellable = Set<AnyCancellable>()
     
-    init() {
-        $selectedDateRange
-            .dropFirst()
-            .sink { [weak self] index in
-            if let timeRangePredicate = CoreDataPredicate.TransactionDateRange(rawValue: index)?.predicate {
-                self?.expense = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.TransactionType.expense.predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
-                self?.income = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.TransactionType.income.predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
-            }
-        }
-        .store(in: &cancellable)
-        
-    }
+//    init() {
+//        $selectedDateRange
+//            .dropFirst()
+//            .sink { [weak self] index in
+//            if let timeRangePredicate = CoreDataPredicate.TransactionDateRange(rawValue: index)?.predicate {
+//                self?.expense = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.TransactionType.expense.predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
+//                self?.income = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.TransactionType.income.predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
+//            }
+//        }
+//        .store(in: &cancellable)
+//        
+//    }
     
     func reloadExpenseAndIncomeData() {
         if let timeRangePredicate = CoreDataPredicate.TransactionDateRange(rawValue: selectedDateRange)?.predicate {

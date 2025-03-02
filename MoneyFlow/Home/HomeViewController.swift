@@ -40,6 +40,7 @@ class HomeViewController: UIViewController {
         homeView.setBudgetButton.addTarget(self, action: #selector(setBudget), for: .touchUpInside)
         
         for dateRange in CoreDataPredicate.TransactionDateRange.allCases {
+            print(dateRange.title, homeView.segementControl.numberOfSegments)
             homeView.segementControl.insertSegment(withTitle: dateRange.title, at: homeView.segementControl.numberOfSegments, animated: false)
         }
         homeView.segementControl.selectedSegmentIndex = 0
@@ -49,12 +50,15 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadExpenseAndIncomeData()
+        viewModel.reloadTransactionData()
+        resetChartDataSet()
     }
     
     private func setBindings() {
         func bindViewToViewModel() {
             homeView.segementControl.publisher(for: \.selectedSegmentIndex)
                 .receive(on: DispatchQueue.main)
+                .map { print($0); return $0 }
                 .assign(to: \.selectedDateRange, on: viewModel)
                 .store(in: &bindings)
         }
@@ -72,8 +76,11 @@ class HomeViewController: UIViewController {
                 .assign(to: \.balanceLabel.text, on: homeView.totalIncome)
                 .store(in: &bindings)
             viewModel.$selectedDateRange
+                .dropFirst()
+                .receive(on: DispatchQueue.main)
                 .sink { [weak self] index in
                     self?.viewModel.reloadTransactionData()
+                    self?.viewModel.reloadExpenseAndIncomeData()
                     self?.resetChartDataSet()
                 }
                 .store(in: &bindings)
