@@ -47,6 +47,17 @@ class GoalViewController: UIViewController {
         contentView.dailyExpenseGoal.setGoalName(goalName: "每日花費")
         contentView.weeklyExpenseGoal.setGoalName(goalName: "每週花費")
         contentView.monthlyExpenseGoal.setGoalName(goalName: "每月花費")
+        
+        let dailyExpenseGoalTap = UITapGestureRecognizer(target: self, action: #selector(navigateToDailyExpense))
+        contentView.dailyExpenseGoal.addGestureRecognizer(dailyExpenseGoalTap)
+        
+        let weeklyExpenseGoalTap = UITapGestureRecognizer(target: self, action: #selector(navigateToWeeklyExpense))
+        contentView.weeklyExpenseGoal.addGestureRecognizer(weeklyExpenseGoalTap)
+        
+        let monthlyExpenseGoalTap = UITapGestureRecognizer(target: self, action: #selector(navigateToMonthlyExpense))
+        contentView.monthlyExpenseGoal.addGestureRecognizer(monthlyExpenseGoalTap)
+        
+        
         contentView.expenseGoalSettingButton.addTarget(self, action: #selector(settingExpenseGoalLimit), for: .touchUpInside)
     }
     
@@ -156,6 +167,28 @@ class GoalViewController: UIViewController {
     @objc func settingExpenseGoalLimit() {
         let vc = SettingExpenseGoalViewController()
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func navigateToDailyExpense() {
+        tabBarController?.selectedIndex = 1
+        let navigationViewController = tabBarController?.selectedViewController as? UINavigationController
+        let transactionViewController = navigationViewController?.topViewController as? TransactionViewController
+        transactionViewController?.viewModel.filterPanelViewModel.dateRangeSelected = 0
+        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = [1]
+    }
+    @objc func navigateToWeeklyExpense() {
+        tabBarController?.selectedIndex = 1
+        let navigationViewController = tabBarController?.selectedViewController as? UINavigationController
+        let transactionViewController = navigationViewController?.topViewController as? TransactionViewController
+        transactionViewController?.viewModel.filterPanelViewModel.dateRangeSelected = 1
+        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = [1]
+    }
+    @objc func navigateToMonthlyExpense() {
+        tabBarController?.selectedIndex = 1
+        let navigationViewController = tabBarController?.selectedViewController as? UINavigationController
+        let transactionViewController = navigationViewController?.topViewController as? TransactionViewController
+        transactionViewController?.viewModel.filterPanelViewModel.dateRangeSelected = 2
+        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = [1]
     }
 }
 

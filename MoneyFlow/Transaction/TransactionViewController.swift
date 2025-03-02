@@ -9,7 +9,7 @@ import UIKit
 
 class TransactionViewController: UIViewController {
     private var contentView: TransactionView
-    private let viewModel: TransactionViewViewModel
+    var viewModel: TransactionViewViewModel
     private var tableViewDataSource: UITableViewDiffableDataSource<TransactionViewViewModel.TransactionSection, Transaction>!
     
     init(viewModel: TransactionViewViewModel = TransactionViewViewModel()) {
@@ -36,6 +36,7 @@ class TransactionViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.isHidden = true
 //        let transaction = CoreDataManager.shared.fetchTransaction(withPredicate: viewModel.filterPanelViewModel.generateFilterPredicate())
+        viewModel.fetchTransactions()
         applySnapShot()
     }
 

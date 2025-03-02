@@ -32,7 +32,7 @@ class TransactionView: UIView {
         transactionDetailLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(transactionDetailLabel)
         transactionDetailLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
-        transactionDetailLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
+        transactionDetailLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
     }
     
     private func setTransactionFilterButton() {
@@ -40,7 +40,7 @@ class TransactionView: UIView {
         transactionFilterButton.setImage(UIImage(systemName: "line.3.horizontal.decrease.circle"), for: .normal)
         transactionFilterButton.setTitle("篩選", for: .normal)
         addSubview(transactionFilterButton)
-        transactionFilterButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
+        transactionFilterButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         transactionFilterButton.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
     }
     

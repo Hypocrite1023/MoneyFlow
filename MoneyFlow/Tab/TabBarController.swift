@@ -51,7 +51,7 @@ class TabBarController: UITabBarController {
         accountingButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         accountingButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
-        
+        animeAccountingButton()
     }
     
     @objc func handleAddButtonTapped() {
@@ -61,5 +61,26 @@ class TabBarController: UITabBarController {
         self.present(vc, animated: true)
     }
     
-
+    func animeAccountingButton() {
+        
+        
+        UIView.animate(withDuration: 0.1) {
+            self.accountingButton.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.1) {
+                self.accountingButton.transform = .identity
+            } completion: { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.accountingButton.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+                } completion: { _ in
+                    UIView.animate(withDuration: 0.1) {
+                        self.accountingButton.transform = .identity
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.animeAccountingButton()
+                    }
+                }
+            }
+        }
+    }
 }

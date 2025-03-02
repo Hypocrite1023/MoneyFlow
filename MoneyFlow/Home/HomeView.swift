@@ -33,7 +33,7 @@ class HomeView: UIView {
     private var fastNavigateLabel: UILabel = UILabel()
     private let fastNavigateButtonStackView: UIStackView = UIStackView()
     private var detailButton: UIButton = UIButton(configuration: .tinted())
-    private var setBudgetButton: UIButton = UIButton(configuration: .tinted())
+    let setBudgetButton: UIButton = UIButton(configuration: .tinted())
     private var setNotificationButton: UIButton = UIButton(configuration: .tinted())
     
     init() {
@@ -67,11 +67,11 @@ class HomeView: UIView {
     
     private func setUpConstraints() {
         NSLayoutConstraint.activate([
-            summaryLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 25),
+            summaryLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
             summaryLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
             
             segementControl.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value),
-            segementControl.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 25),
+            segementControl.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
             
             horizonStack.topAnchor.constraint(equalTo: summaryLabel.bottomAnchor, constant: 15),
             horizonStack.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
@@ -101,7 +101,7 @@ class HomeView: UIView {
             fastNavigateLabel.topAnchor.constraint(equalTo: chartPageControl.bottomAnchor, constant: 25),
             fastNavigateLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
             
-            fastNavigateButtonStackView.topAnchor.constraint(equalTo: fastNavigateLabel.bottomAnchor, constant: 20),
+            fastNavigateButtonStackView.topAnchor.constraint(equalTo: fastNavigateLabel.bottomAnchor, constant: 15),
             fastNavigateButtonStackView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
             fastNavigateButtonStackView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value),
         ])

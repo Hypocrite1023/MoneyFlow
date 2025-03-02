@@ -37,6 +37,8 @@ class HomeViewController: UIViewController {
 //        randomGenerateTransaction.createRandomTransactionRecord()
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
+        homeView.setBudgetButton.addTarget(self, action: #selector(setBudget), for: .touchUpInside)
+        
         for dateRange in CoreDataPredicate.TransactionDateRange.allCases {
             homeView.segementControl.insertSegment(withTitle: dateRange.title, at: homeView.segementControl.numberOfSegments, animated: false)
         }
@@ -117,6 +119,10 @@ class HomeViewController: UIViewController {
     @objc func jumpToDetailView() {
         tabBarController?.selectedIndex = 1
     }
-
+    
+    @objc func setBudget() {
+        let vc = SettingExpenseGoalViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
