@@ -444,6 +444,29 @@ extension CoreDataManager {
         }
     }
     
+    func fetchInProcessGoal() -> [GoalItem] {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<GoalConfiguration> = GoalConfiguration.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "goalEndDate > %@ || goalEndDate == nil", Date.now as NSDate)
+        do {
+            let goals = try context.fetch(fetchRequest)
+            return goals.map {
+                let predicate = NSPredicate(format: "goalRelation == %@", $0)
+                if let transactions = fetchTransaction(withPredicate: predicate) {
+                    let currentAmount = transactions.reduce(0) { $0 + $1.amount }
+                    return GoalItem(objectID: $0.objectID, id: $0.id!, name: $0.goalName, startDate: $0.goalStartDate!, endDate: $0.goalEndDate, targetAmount: $0.goalAmount, currentAmount: currentAmount)
+                } else {
+                    return GoalItem(objectID: $0.objectID, id: $0.id!, name: $0.goalName, startDate: $0.goalStartDate!, endDate: $0.goalEndDate, targetAmount: $0.goalAmount, currentAmount: 0)
+                }
+                
+                
+            }
+        } catch {
+            print(error.localizedDescription)
+            return []
+        }
+    }
+    
     func fetchGoalAllRelationTransaction(objectID: NSManagedObjectID) -> [Transaction] {
         let context = persistentContainer.viewContext
         do {

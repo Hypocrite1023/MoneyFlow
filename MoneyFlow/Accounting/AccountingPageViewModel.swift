@@ -18,7 +18,7 @@ class AccountingPageViewModel {
     var transactionTag: [String]?
     var transactionNote: String?
     var relationGoalID: UUID?
-    lazy var goalList: [GoalItem]? = CoreDataManager.shared.fetchAllGoalsStatus()
+    lazy var goalList: [GoalItem] = CoreDataManager.shared.fetchInProcessGoal()
     
     
     func makeAccounting() -> Result<String?, CoreDataManager.AccountingError> {

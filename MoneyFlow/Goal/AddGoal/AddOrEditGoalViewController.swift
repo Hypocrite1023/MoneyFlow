@@ -70,7 +70,11 @@ class AddOrEditGoalViewController: UIViewController {
                 .removeDuplicates()
                 .compactMap { $0 }
                 .receive(on: DispatchQueue.main)
-                .assign(to: \.date, on: contentView.goalTimePeriodEndDatePicker)
+                .sink(receiveValue: { [weak self] date in
+                    self?.contentView.goalTimePeriodEndDatePicker.date = date
+                    self?.contentView.goalTimePeriodEndDatePicker.minimumDate = date
+                })
+//                .assign(to: \.date, on: contentView.goalTimePeriodEndDatePicker)
                 .store(in: &bindings)
             viewModel.$noEndDate
                 .removeDuplicates()

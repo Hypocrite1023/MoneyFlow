@@ -27,6 +27,7 @@ class GoalView: UIView {
     }()
     
     private let expenseGoalTitleLabel: UILabel = createLabel(title: "花費限制目標")
+    let expenseGoalSettingButton: UIButton = UIButton(configuration: .tinted())
     let dailyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
     let weeklyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
     let monthlyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
@@ -94,6 +95,16 @@ class GoalView: UIView {
         
         expenseGoalTitleLabel.topAnchor.constraint(equalTo: lowerView.topAnchor, constant: 10).isActive = true
         expenseGoalTitleLabel.leadingAnchor.constraint(equalTo: lowerView.leadingAnchor, constant: AppConfig.SideSpace.standard.value).isActive = true
+        
+        expenseGoalSettingButton.setImage(UIImage(systemName: "gear"), for: .normal)
+        expenseGoalSettingButton.setTitle("", for: .normal)
+        expenseGoalSettingButton.tintColor = .black
+        lowerView.addSubview(expenseGoalSettingButton)
+        expenseGoalSettingButton.translatesAutoresizingMaskIntoConstraints = false
+        expenseGoalSettingButton.topAnchor.constraint(equalTo: lowerView.topAnchor, constant: 10).isActive = true
+        expenseGoalSettingButton.leadingAnchor.constraint(greaterThanOrEqualTo: expenseGoalTitleLabel.trailingAnchor).isActive = true
+        expenseGoalSettingButton.heightAnchor.constraint(equalTo: expenseGoalTitleLabel.heightAnchor).isActive = true
+        expenseGoalSettingButton.trailingAnchor.constraint(equalTo: lowerView.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
         
         let vstack = UIStackView(arrangedSubviews: [dailyExpenseGoal, weeklyExpenseGoal, monthlyExpenseGoal])
         vstack.axis = .vertical

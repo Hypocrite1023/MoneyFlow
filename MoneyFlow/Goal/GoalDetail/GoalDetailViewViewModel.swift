@@ -14,7 +14,7 @@ class GoalDetailViewViewModel {
     @Published var endDate: Date?
     @Published var targetAmount: Double
     @Published var currentAmount: Double
-    @Published var relationTransaction: [Transaction]
+    @Published var relationTransaction: [Transaction] = []
     
     init(goal: GoalItem) {
         self.goal = goal
@@ -23,10 +23,14 @@ class GoalDetailViewViewModel {
         self.endDate = goal.endDate
         self.targetAmount = goal.targetAmount
         self.currentAmount = goal.currentAmount
-        self.relationTransaction = CoreDataManager.shared.fetchGoalAllRelationTransaction(objectID: goal.objectID!)
     }
     
     enum DateSection: Hashable {
         case date(String)
+    }
+    
+    func reloadRelationTransaction() {
+        relationTransaction = CoreDataManager.shared.fetchGoalAllRelationTransaction(objectID: goal.objectID!)
+        currentAmount = relationTransaction.reduce(0) { $0 + $1.amount }
     }
 }

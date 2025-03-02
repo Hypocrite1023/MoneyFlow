@@ -13,7 +13,7 @@ class AppData {
     
     var dailyCosts: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.today.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.today.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.expense.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -27,7 +27,7 @@ class AppData {
     }
     var weeklyCosts: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.week.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.week.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.expense.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -41,7 +41,7 @@ class AppData {
     }
     var monthlyCosts: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.month.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.month.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.expense.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -55,7 +55,7 @@ class AppData {
     }
     var yearlyCosts: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.year.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.year.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.expense.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -70,7 +70,7 @@ class AppData {
     
     var dailyIncome: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.today.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.today.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.income.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -84,7 +84,7 @@ class AppData {
     }
     var weeklyIncome: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.week.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.week.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.income.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -98,7 +98,7 @@ class AppData {
     }
     var monthlyIncome: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.month.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.month.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.income.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)
@@ -112,7 +112,7 @@ class AppData {
     }
     var yearlyIncome: Double? {
         get {
-            if let timePredicate = AppConfig.TransactionTimePredicate.year.bothPredicate {
+            if let timePredicate = CoreDataPredicate.TransactionTimePredicate.year.bothPredicate {
                 let typePredicate = CoreDataPredicate.TransactionType.income.predicate
                 let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [timePredicate, typePredicate])
                 let transactions = CoreDataManager.shared.fetchTransaction(withPredicate: predicate)

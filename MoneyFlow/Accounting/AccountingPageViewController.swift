@@ -216,21 +216,19 @@ extension AccountingPageViewController: UIScrollViewDelegate {
 
 extension AccountingPageViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.goalList?.count ?? 0
+        return viewModel.goalList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "IncomeDistributeTableViewCell", for: indexPath) as? GoalPreviewView else {
             return UITableViewCell()
         }
-        guard let goalList = viewModel.goalList else {
-            return UITableViewCell()
-        }
-        cell.goalUUID = goalList[indexPath.row].id
-        cell.setGoalName(goalName: goalList[indexPath.row].name!)
-        cell.setGoalAmount(goalAmount: goalList[indexPath.row].targetAmount)
-        cell.setNowAmount(nowAmount: goalList[indexPath.row].currentAmount)
-        cell.setGoalProgressView(progress: goalList[indexPath.row].currentAmount / goalList[indexPath.row].targetAmount)
+        
+        cell.goalUUID = viewModel.goalList[indexPath.row].id
+        cell.setGoalName(goalName: viewModel.goalList[indexPath.row].name!)
+        cell.setGoalAmount(goalAmount: viewModel.goalList[indexPath.row].targetAmount)
+        cell.setNowAmount(nowAmount: viewModel.goalList[indexPath.row].currentAmount)
+        cell.setGoalProgressView(progress: viewModel.goalList[indexPath.row].currentAmount / viewModel.goalList[indexPath.row].targetAmount)
         return cell
         
         

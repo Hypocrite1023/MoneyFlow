@@ -133,7 +133,7 @@ class AddOrEditGoalView: UIView {
         goalTimePeriodToDateLabel.font = AppConfig.Font.title.value
         goalTimePeriodToDateLabel.textAlignment = .center
         goalTimePeriodEndDatePicker.datePickerMode = .date
-        goalTimePeriodEndDatePicker.minimumDate = .now
+//        goalTimePeriodEndDatePicker.minimumDate = .now
         
         goalTimePeriodInfiniteReplaceDatePickerLabel.text = "很久以後"
         goalTimePeriodInfiniteReplaceDatePickerLabel.font = AppConfig.Font.secondaryTitle.value

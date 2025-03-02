@@ -34,15 +34,17 @@ class GoalDetailViewViewController: UIViewController {
         contentView.relationTransacitonTableView.register(TransactionItemView.self, forCellReuseIdentifier: "GoalDetailViewTransactionItemView")
         contentView.relationTransacitonTableView.delegate = self
         configDataSource()
-        applySnapshot()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
-        let value = viewModel.goal.currentAmount / viewModel.goal.targetAmount
+        viewModel.reloadRelationTransaction()
+        let value = viewModel.currentAmount / viewModel.targetAmount
         contentView.progressView.animateProgress(duration: TimeInterval(0.3), toValue: value)
         contentView.progressView.valueLabel.text = value.formatted(.percent)
         contentView.setGoalDuration(startDate: viewModel.startDate, endDate: viewModel.endDate)
+        applySnapshot()
 //        navigationController?.navigationBar.prefersLargeTitles = true
     }
 

@@ -47,14 +47,16 @@ class GoalViewController: UIViewController {
         contentView.dailyExpenseGoal.setGoalName(goalName: "每日花費")
         contentView.weeklyExpenseGoal.setGoalName(goalName: "每週花費")
         contentView.monthlyExpenseGoal.setGoalName(goalName: "每月花費")
+        contentView.expenseGoalSettingButton.addTarget(self, action: #selector(settingExpenseGoalLimit), for: .touchUpInside)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadGoal()
+        viewModel.loadDailyWeeklyMonthlyGoal()
+        viewModel.loadCurrentExpense()
         applySnapshot()
         navigationController?.navigationBar.isHidden = true
-//        (view as? GoalView)?.progressView.animateProgress(duration: 0.5, toValue: 0.8)
     }
     
     @objc func addGoal() {
@@ -79,13 +81,12 @@ class GoalViewController: UIViewController {
         
         let groupedTransaction = Dictionary(grouping: viewModel.goalList) { goal in
             if let endDate = goal.endDate {
-                return endDate < .now ? "進行中" : "已結束"
+                return endDate > .now ? "進行中" : "已結束"
             } else {
                 return "進行中"
             }
         }
-        
-        snapShot.appendSections(groupedTransaction.keys.sorted())
+        snapShot.appendSections(groupedTransaction.keys.sorted().reversed())
         
         for group in groupedTransaction.keys.sorted() {
             if let items = groupedTransaction[group] {
@@ -106,8 +107,55 @@ class GoalViewController: UIViewController {
 //                    self?.applySnapshot()
                 })
                 .store(in: &bindings)
+            viewModel.$dailyGoal
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] value in
+                    self?.contentView.dailyExpenseGoal.setGoalAmount(goalAmount: value)
+                })
+                .store(in: &bindings)
+            viewModel.$weeklyGoal
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] value in
+                    self?.contentView.weeklyExpenseGoal.setGoalAmount(goalAmount: value)
+                })
+                .store(in: &bindings)
+            viewModel.$monthlyGoal
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] value in
+                    self?.contentView.monthlyExpenseGoal.setGoalAmount(goalAmount: value)
+                })
+                .store(in: &bindings)
+            viewModel.$currentDailyExpense
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] currentDailyExpense in
+                    self?.contentView.dailyExpenseGoal.nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: currentDailyExpense as NSNumber)
+                    guard let dailyGoal = self?.viewModel.dailyGoal else { return }
+                    self?.contentView.dailyExpenseGoal.setGoalProgressView(progress: currentDailyExpense / dailyGoal)
+                })
+                .store(in: &bindings)
+            viewModel.$currentWeeklyExpense
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] currentWeeklyExpense in
+                    self?.contentView.weeklyExpenseGoal.nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: currentWeeklyExpense as NSNumber)
+                    guard let weeklyGoal = self?.viewModel.dailyGoal else { return }
+                    self?.contentView.weeklyExpenseGoal.setGoalProgressView(progress: currentWeeklyExpense / weeklyGoal)
+                })
+                .store(in: &bindings)
+            viewModel.$currentMonthlyExpense
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] currentMonthlyExpense in
+                    self?.contentView.monthlyExpenseGoal.nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: currentMonthlyExpense as NSNumber)
+                    guard let monthlyGoal = self?.viewModel.dailyGoal else { return }
+                    self?.contentView.monthlyExpenseGoal.setGoalProgressView(progress: currentMonthlyExpense / monthlyGoal)
+                })
+                .store(in: &bindings)
         }
         bindViewModelToView()
+    }
+    
+    @objc func settingExpenseGoalLimit() {
+        let vc = SettingExpenseGoalViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

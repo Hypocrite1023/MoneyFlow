@@ -11,11 +11,13 @@ class UnitGoalPreview: UIView {
 
     private let goalNameLabel: UILabel = UILabel()
     private let goalProgressView: UIProgressView = UIProgressView()
-    private let nowAmountLabel: UILabel = UILabel()
+    let nowAmountLabel: UILabel = UILabel()
     private let divideLabel: UILabel = UILabel()
-    private let goalAmountLabel: UILabel = UILabel()
+    let goalAmountLabel: UILabel = UILabel()
     private var amountHStack: UIStackView?
     private var vstack: UIStackView?
+    
+    private let goalNotSettingLabel: UILabel = UILabel()
     
     init() {
         super.init(frame: .zero)
@@ -37,12 +39,16 @@ class UnitGoalPreview: UIView {
         divideLabel.text = "/"
         divideLabel.textColor = .secondaryLabel
         divideLabel.font = .systemFont(ofSize: 12, weight: .light)
+        divideLabel.textAlignment = .right
         
         goalAmountLabel.textColor = .secondaryLabel
         goalAmountLabel.font = .systemFont(ofSize: 12, weight: .light)
         goalAmountLabel.textAlignment = .right
         
-        amountHStack = UIStackView(arrangedSubviews: [nowAmountLabel, divideLabel, goalAmountLabel])
+        let flexView: UIView = UIView()
+        flexView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
+        amountHStack = UIStackView(arrangedSubviews: [flexView, nowAmountLabel, divideLabel, goalAmountLabel])
         amountHStack?.axis = .horizontal
         amountHStack?.spacing = 3
         amountHStack?.distribution = .fill
@@ -64,6 +70,16 @@ class UnitGoalPreview: UIView {
         vstack?.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
         vstack?.leadingAnchor.constraint(lessThanOrEqualTo: centerXAnchor).isActive = true
         
+        goalNotSettingLabel.text = "尚未設定目標"
+        goalNotSettingLabel.font = AppConfig.Font.secondaryTitle.value
+        goalNotSettingLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(goalNotSettingLabel)
+        
+        goalNotSettingLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
+        goalNotSettingLabel.topAnchor.constraint(equalTo: topAnchor , constant: 8).isActive = true
+        goalNotSettingLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        goalNotSettingLabel.leadingAnchor.constraint(greaterThanOrEqualTo: centerXAnchor).isActive = true
+        
         self.layer.cornerRadius = 8
         backgroundColor = .systemGray6
         
@@ -75,15 +91,40 @@ class UnitGoalPreview: UIView {
     }
     
     func setNowAmount(nowAmount: Double) {
-        nowAmountLabel.text = "\(nowAmount)"
+        nowAmountLabel.text = String(format: "%.1f", nowAmount)
     }
     
-    func setGoalAmount(goalAmount: Double) {
-        goalAmountLabel.text = String(format: "%.1f", goalAmount)
+    func setGoalAmount(goalAmount: Double?) {
+        guard let goalAmount else {
+            vstack?.arrangedSubviews.forEach({$0.isHidden = true})
+            goalNotSettingLabel.isHidden = false
+            return
+        }
+        guard !(goalAmount == 0.0) else {
+            vstack?.arrangedSubviews.forEach({$0.isHidden = true})
+            goalNotSettingLabel.isHidden = false
+            return
+        }
+        vstack?.arrangedSubviews.forEach({$0.isHidden = false})
+        goalNotSettingLabel.isHidden = true
+        goalAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: goalAmount as NSNumber)
     }
     
     func setGoalProgressView(progress: Double) {
-        goalProgressView.setProgress(Float(progress), animated: true)
+        if progress >= 1 {
+            goalProgressView.setProgress(1.0, animated: true)
+            goalProgressView.progressTintColor = .systemRed
+        }
+        else if progress >= 0.8 {
+            goalProgressView.setProgress(Float(progress), animated: true)
+            goalProgressView.progressTintColor = .systemOrange
+        } else if progress >= 0.5 {
+            goalProgressView.setProgress(Float(progress), animated: true)
+            goalProgressView.progressTintColor = .systemYellow
+        } else {
+            goalProgressView.setProgress(Float(progress), animated: true)
+            goalProgressView.progressTintColor = .systemGreen
+        }
     }
     
 }
