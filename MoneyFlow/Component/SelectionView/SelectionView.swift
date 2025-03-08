@@ -12,7 +12,7 @@ class SelectionView: UIView {
     internal var buttonList: [UIButton] = []
     var selectionList: [String]
     
-    private let horizonScrollView: UIScrollView = {
+    let horizonScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -40,7 +40,7 @@ class SelectionView: UIView {
     }
     
     func setView() {
-        
+        buttonList = []
         subviews.forEach { $0.removeFromSuperview() }
         for (index, selection) in selectionList.enumerated() {
             let button = UIButton(configuration: .plain())

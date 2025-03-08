@@ -29,7 +29,7 @@ class UnitGoalPreview: UIView {
     }
     
     private func setView() {
-        goalNameLabel.font = AppConfig.Font.secondaryTitle.value
+        goalNameLabel.font = AppConfig.Font.tertiaryTitle.value
         goalNameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         nowAmountLabel.textColor = .secondaryLabel
@@ -71,7 +71,7 @@ class UnitGoalPreview: UIView {
         vstack?.leadingAnchor.constraint(lessThanOrEqualTo: centerXAnchor).isActive = true
         
         goalNotSettingLabel.text = "尚未設定目標"
-        goalNotSettingLabel.font = AppConfig.Font.secondaryTitle.value
+        goalNotSettingLabel.font = AppConfig.Font.tertiaryTitle.value
         goalNotSettingLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(goalNotSettingLabel)
         

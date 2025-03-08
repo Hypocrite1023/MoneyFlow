@@ -10,7 +10,7 @@ import Combine
 
 class FilterPanelViewModel {
     @Published var dateRangeSelected: Int = 0
-    @Published var transactionTypeSelected: [Int] = [0, 1]
+    @Published var transactionTypeSelected: [String] = ["收入", "支出"]
     @Published var categorySelected: [String] = []
     @Published var paymentMethodSelected: [String] = []
     @Published var tagSelected: [String] = []

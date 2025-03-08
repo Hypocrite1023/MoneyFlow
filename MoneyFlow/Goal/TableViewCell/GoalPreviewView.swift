@@ -29,7 +29,7 @@ class GoalPreviewView: UITableViewCell {
     
     private func setView() {
 //        goalNameLabel.text = goalName
-        goalNameLabel.font = AppConfig.Font.secondaryTitle.value
+        goalNameLabel.font = AppConfig.Font.tertiaryTitle.value
         goalNameLabel.translatesAutoresizingMaskIntoConstraints = false
         
 //        goalProgressView.layer.borderWidth = 1
@@ -84,11 +84,11 @@ class GoalPreviewView: UITableViewCell {
     }
     
     func setNowAmount(nowAmount: Double) {
-        nowAmountLabel.text = "\(nowAmount)"
+        nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: nowAmount))
     }
     
     func setGoalAmount(goalAmount: Double) {
-        goalAmountLabel.text = String(format: "%.1f", goalAmount)
+        goalAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: goalAmount))
     }
     
     func setGoalProgressView(progress: Double) {

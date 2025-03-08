@@ -135,7 +135,7 @@ class HomeView: UIView {
         
         // view detail button
         viewDetailButton.setTitle("瀏覽花費收入詳細資料", for: .normal)
-        viewDetailButton.titleLabel?.font = AppConfig.Font.secondaryTitle.value
+        viewDetailButton.titleLabel?.font = AppConfig.Font.tertiaryTitle.value
         viewDetailButton.tintColor = .white
         viewDetailButton.backgroundColor = .black
         viewDetailButton.layer.cornerRadius = 5

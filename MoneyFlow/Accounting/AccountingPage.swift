@@ -64,13 +64,16 @@ class AccountingPage: UIView {
     private let dateLabel: UILabel = createLabel(title: "日期")
     let accountingDatePicker: UIDatePicker = UIDatePicker()
     private let typeLabel: UILabel = createLabel(title: "類型")
-    let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: ["支出", "收入"])
+    let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: CoreDataPredicate.TransactionType.allCases.map(\.title))
     private let itemNameLabel: UILabel = createLabel(title: "項目名稱")
     let itemNameTextField: UITextField = UITextField()
     private let amountLabel: UILabel = createLabel(title: "金額")
     let amountTextField: UITextField = UITextField()
+    
+    private let categoryBlockStack: UIStackView = UIStackView()
     private let categoryLabel: UILabel = createLabel(title: "類別")
-    let categoryControl: SingleSelectionView
+    let selectTransactionTypeFirstPromptLabel: UILabel = UILabel()
+    var categoryControl: SingleSelectionView
     private let paymentMethodLabel: UILabel = createLabel(title: "支付方式")
     let paymentMethodControl: SingleSelectionView
     private let tagLabel: UILabel = createLabel(title: "標籤")
@@ -207,15 +210,23 @@ class AccountingPage: UIView {
     }
     
     private func setupCategoryBlock() {
-        let vstack = createVStack()
-        vstack.addArrangedSubview(categoryLabel)
-        vstack.addArrangedSubview(categoryControl)
+        selectTransactionTypeFirstPromptLabel.text = "請選擇交易類型"
+        selectTransactionTypeFirstPromptLabel.font = AppConfig.Font.content.value
+        selectTransactionTypeFirstPromptLabel.textColor = .secondaryLabel
+//        selectTransactionTypeFirstPromptLabel.translatesAutoresizingMaskIntoConstraints = false
+//        selectTransactionTypeFirstPromptLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        categoryBlockStack.translatesAutoresizingMaskIntoConstraints = false
+        categoryBlockStack.axis = .vertical
+        categoryBlockStack.spacing = 8
+        categoryBlockStack.distribution = .fillProportionally
+        categoryBlockStack.addArrangedSubview(categoryLabel)
+        categoryBlockStack.addArrangedSubview(selectTransactionTypeFirstPromptLabel)
+        pageStack.addArrangedSubview(categoryBlockStack)
+        
+        constraintToWidth(innerView: categoryBlockStack, outerView: pageStack)
         
         
         
-        pageStack.addArrangedSubview(vstack)
-        
-        constraintToWidth(innerView: vstack, outerView: pageStack)
     }
     
     private func setupPaymentMethodBlock() {
@@ -335,7 +346,7 @@ class AccountingPage: UIView {
         vstack.axis = .vertical
         vstack.spacing = 8
 //        vstack.alignment = .leading
-//        vstack.distribution = .fill
+        vstack.distribution = .fillProportionally
         return vstack
     }
     
@@ -343,5 +354,35 @@ class AccountingPage: UIView {
         innerView.translatesAutoresizingMaskIntoConstraints = false
 
         innerView.widthAnchor.constraint(equalTo: outerView.widthAnchor).isActive = true
+    }
+    
+    func configureCategoryControl(type: CoreDataPredicate.TransactionType) {
+        
+        switch type {
+        case .expense:            
+            if let index = categoryBlockStack.arrangedSubviews.firstIndex(of: categoryControl) {
+                categoryControl.removeFromSuperview()
+                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)))
+                categoryBlockStack.insertArrangedSubview(categoryControl, at: index)
+            } else {
+                selectTransactionTypeFirstPromptLabel.removeFromSuperview()
+                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)))
+                categoryBlockStack.insertArrangedSubview(categoryControl, at: 1)
+                categoryBlockStack.setNeedsLayout()
+                
+            }
+        case .income:
+            if let index = categoryBlockStack.arrangedSubviews.firstIndex(of: categoryControl) {
+                categoryControl.removeFromSuperview()
+                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))
+                categoryBlockStack.insertArrangedSubview(categoryControl, at: index)
+            } else {
+                selectTransactionTypeFirstPromptLabel.removeFromSuperview()
+                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))
+                categoryBlockStack.insertArrangedSubview(categoryControl, at: 1)
+                
+            }
+            
+        }
     }
 }

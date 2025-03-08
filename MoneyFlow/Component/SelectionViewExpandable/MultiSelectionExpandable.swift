@@ -27,7 +27,7 @@ class MultiSelectionExpandable: SelectionViewExpandable {
     private func setView() {
         if selected.isEmpty {
             placeHolder.text = "沒有選擇\(prompt)"
-            placeHolder.font = AppConfig.Font.secondaryTitle.value
+            placeHolder.font = AppConfig.Font.tertiaryTitle.value
             buttonScrollView.addSubview(placeHolder)
             placeHolder.translatesAutoresizingMaskIntoConstraints = false
             placeHolder.leadingAnchor.constraint(equalTo: buttonScrollView.leadingAnchor).isActive = true

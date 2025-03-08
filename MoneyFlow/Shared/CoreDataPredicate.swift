@@ -126,8 +126,8 @@ enum CoreDataPredicate {
         }
     }
     
-    enum TransactionType: Int, CaseIterable {
-        case income = 0, expense = 1
+    enum TransactionType: String, CaseIterable {
+        case expense = "支出", income = "收入"
         
         var title: String {
             switch self {
@@ -144,12 +144,25 @@ enum CoreDataPredicate {
     }
     
     enum TransactionCategory {
-        case category(categoryName: String)
+        enum CategoryType {
+            case all, expense, income
+        }
+        case category(categoryName: String), type(categoryType: CategoryType)
         
         var predicate: NSPredicate {
             switch self {
             case .category(categoryName: let name):
                 return NSPredicate(format: "category == %@", name)
+            case .type(categoryType: let type):
+                switch type {
+                    
+                case .all:
+                    return NSPredicate(format: "type == %@ || type == %@", "支出", "收入")
+                case .expense:
+                    return NSPredicate(format: "type == %@", "支出")
+                case .income:
+                    return NSPredicate(format: "type == %@", "收入")
+                }
             }
         }
     }

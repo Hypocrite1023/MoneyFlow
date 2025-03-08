@@ -71,7 +71,7 @@ class TransactionDetailViewViewController: UIViewController {
         contentView.typeSelectionView.setSelectionList(selectionList: ["支出", "收入"], selected: viewModel.type)
         contentView.itemNameTextField.text = viewModel.itemName
         contentView.amountTextField.text = viewModel.amount.description
-        contentView.categorySelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionCategories(), selected: viewModel.category)
+        contentView.categorySelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .all)), selected: viewModel.category)
         contentView.paymentMethodSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods(), selected: viewModel.payMethod)
         contentView.tagSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionTags(), selected: Set(viewModel.tags ?? []))
         contentView.noteTextField.text = viewModel.note

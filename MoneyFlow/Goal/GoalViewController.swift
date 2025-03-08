@@ -174,21 +174,21 @@ class GoalViewController: UIViewController {
         let navigationViewController = tabBarController?.selectedViewController as? UINavigationController
         let transactionViewController = navigationViewController?.topViewController as? TransactionViewController
         transactionViewController?.viewModel.filterPanelViewModel.dateRangeSelected = 0
-        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = [1]
+        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = ["支出"]
     }
     @objc func navigateToWeeklyExpense() {
         tabBarController?.selectedIndex = 1
         let navigationViewController = tabBarController?.selectedViewController as? UINavigationController
         let transactionViewController = navigationViewController?.topViewController as? TransactionViewController
         transactionViewController?.viewModel.filterPanelViewModel.dateRangeSelected = 1
-        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = [1]
+        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = ["支出"]
     }
     @objc func navigateToMonthlyExpense() {
         tabBarController?.selectedIndex = 1
         let navigationViewController = tabBarController?.selectedViewController as? UINavigationController
         let transactionViewController = navigationViewController?.topViewController as? TransactionViewController
         transactionViewController?.viewModel.filterPanelViewModel.dateRangeSelected = 2
-        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = [1]
+        transactionViewController?.viewModel.filterPanelViewModel.transactionTypeSelected = ["支出"]
     }
 }
 

@@ -16,14 +16,23 @@ class AppConfig {
         case monthlyExpenseLimit = "MonthlyExpenseLimit"
     }
     enum Font {
-        case title, secondaryTitle
+        case title, secondaryTitle, tertiaryTitle, quaternaryTitle
+        case content, subContent
         
         var value: UIFont {
             switch self {
             case .title:
                 return .systemFont(ofSize: 24, weight: .bold)
             case .secondaryTitle:
+                return .systemFont(ofSize: 22, weight: .bold)
+            case .tertiaryTitle:
+                return .systemFont(ofSize: 20, weight: .bold)
+            case .quaternaryTitle:
                 return .systemFont(ofSize: 18, weight: .bold)
+            case .content:
+                return .systemFont(ofSize: 16, weight: .regular)
+            case .subContent:
+                return .systemFont(ofSize: 14, weight: .regular)
             }
         }
     }

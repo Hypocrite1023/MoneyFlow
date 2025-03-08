@@ -109,7 +109,7 @@ class AddOrEditGoalView: UIView {
         goalTimePeriodLabel.font = AppConfig.Font.title.value
         
         goalTimePeriodInfiniteLabel.text = "目標無結束時間"
-        goalTimePeriodInfiniteLabel.font = AppConfig.Font.secondaryTitle.value
+        goalTimePeriodInfiniteLabel.font = AppConfig.Font.tertiaryTitle.value
         
         goalTimePeriodSwitchStackView = UIStackView(arrangedSubviews: [goalTimePeriodInfiniteLabel, goalTimePeriodSwitch])
         goalTimePeriodSwitchStackView?.axis = .horizontal
@@ -136,7 +136,7 @@ class AddOrEditGoalView: UIView {
 //        goalTimePeriodEndDatePicker.minimumDate = .now
         
         goalTimePeriodInfiniteReplaceDatePickerLabel.text = "很久以後"
-        goalTimePeriodInfiniteReplaceDatePickerLabel.font = AppConfig.Font.secondaryTitle.value
+        goalTimePeriodInfiniteReplaceDatePickerLabel.font = AppConfig.Font.tertiaryTitle.value
         goalTimePeriodInfiniteReplaceDatePickerLabel.isHidden = true
         goalTimePeriodInfiniteReplaceDatePickerLabel.textAlignment = .right
         

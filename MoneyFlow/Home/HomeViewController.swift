@@ -45,6 +45,7 @@ class HomeViewController: UIViewController {
         }
         homeView.segementControl.selectedSegmentIndex = 0
         setBindings()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

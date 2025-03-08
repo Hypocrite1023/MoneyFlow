@@ -37,7 +37,7 @@ class GoalDetailView: UIView {
     private func setupGoalDurationLabel() {
         addSubview(goalDurationLabel)
         goalDurationLabel.translatesAutoresizingMaskIntoConstraints = false
-        goalDurationLabel.font = AppConfig.Font.secondaryTitle.value
+        goalDurationLabel.font = AppConfig.Font.tertiaryTitle.value
         goalDurationLabel.textAlignment = .center
         
         goalDurationLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true

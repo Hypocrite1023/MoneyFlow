@@ -33,17 +33,19 @@ struct Transaction: Hashable {
     var itemName: String
     var amount: Double
     var category: String
+    var categorySystemImageName: String?
     var payMethod: String
     var tags: [String]?
     var note: String?
     var relationGoal: UUID?
     
-    init(date: Date, type: String, itemName: String, amount: Double, category: String, payMethod: String, tags: [String]?, note: String?, relationGoal: UUID?) {
+    init(date: Date, type: String, itemName: String, amount: Double, category: String, categorySystemImageName: String? = nil, payMethod: String, tags: [String]?, note: String?, relationGoal: UUID?) {
         self.date = date
         self.type = type
         self.itemName = itemName
         self.amount = amount
         self.category = category
+        self.categorySystemImageName = categorySystemImageName
         self.payMethod = payMethod
         self.tags = tags
         self.note = note

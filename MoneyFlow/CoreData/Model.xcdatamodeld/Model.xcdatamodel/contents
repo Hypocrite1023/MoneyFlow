@@ -9,8 +9,11 @@
         <relationship name="savings" toMany="YES" deletionRule="Nullify" destinationEntity="TransactionEntity" inverseName="goalRelation" inverseEntity="TransactionEntity"/>
     </entity>
     <entity name="TransactionCategory" representedClassName="TransactionCategory" syncable="YES" codeGenerationType="class">
-        <attribute name="category" optional="YES" attributeType="String"/>
-        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="category" attributeType="String" defaultValueString="photo"/>
+        <attribute name="deletable" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="systemImage" attributeType="String" defaultValueString=""/>
+        <attribute name="type" attributeType="String"/>
+        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="transactionEntity" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TransactionEntity" inverseName="transactionCategory" inverseEntity="TransactionEntity"/>
     </entity>
     <entity name="TransactionEntity" representedClassName="TransactionEntity" syncable="YES" codeGenerationType="class">
@@ -20,8 +23,8 @@
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="type" attributeType="String" valueTransformerName="TransactionTypeTransformer" customClassName="TransactionType"/>
         <relationship name="goalRelation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GoalConfiguration" inverseName="savings" inverseEntity="GoalConfiguration"/>
-        <relationship name="transactionCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TransactionCategory" inverseName="transactionEntity" inverseEntity="TransactionCategory"/>
-        <relationship name="transactionPaymentMethod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TransactionPaymentMethod" inverseName="transactionEntity" inverseEntity="TransactionPaymentMethod"/>
+        <relationship name="transactionCategory" maxCount="1" deletionRule="Nullify" destinationEntity="TransactionCategory" inverseName="transactionEntity" inverseEntity="TransactionCategory"/>
+        <relationship name="transactionPaymentMethod" maxCount="1" deletionRule="Nullify" destinationEntity="TransactionPaymentMethod" inverseName="transactionEntity" inverseEntity="TransactionPaymentMethod"/>
         <relationship name="transactionTag" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TransactionTag" inverseName="transactionEntity" inverseEntity="TransactionTag"/>
     </entity>
     <entity name="TransactionPaymentMethod" representedClassName="TransactionPaymentMethod" syncable="YES" codeGenerationType="class">

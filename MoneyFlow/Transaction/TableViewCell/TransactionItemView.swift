@@ -90,7 +90,7 @@ class TransactionItemView: UITableViewCell {
     func setUpCell(with transaction: Transaction) {
         itemValueLabel.text = "\(transaction.type == "支出" ? "" : "+")\(AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: transaction.type == "支出" ? -transaction.amount : transaction.amount))!)" 
         itemCategoryLabel.text = transaction.category
-        categoryImageView.image = UIImage(systemName: AccountingTransactionCategory(rawValue: transaction.category)?.imageName ?? "photo")
+        categoryImageView.image = UIImage(systemName: transaction.categorySystemImageName ?? "photo")
         itemDescriptionLabel.text = transaction.itemName
     }
 }

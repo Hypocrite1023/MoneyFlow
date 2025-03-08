@@ -28,6 +28,7 @@ class AccountingPageViewModel {
         }
         
         let transaction = Transaction(date: transactionDate, type: type, itemName: transactionName, amount: amount, category: category, payMethod: payMethod, tags: tags, note: notes, relationGoal: relationGoalID)
+        print(transaction)
         return CoreDataManager.shared.addTransaction(transaction)
     }
     
@@ -40,6 +41,10 @@ class AccountingPageViewModel {
             default:
                 return nil
         }
+    }
+    
+    func addTag(tag: String) {
+        CoreDataManager.shared.addTransactionTag(tag)
     }
     
 }

@@ -11,7 +11,8 @@ class MultiSelectionView: SelectionView, ObservableObject {
     
     let mayNil: Bool
     let selectionListNilPrompt: String
-    @Published var selectedIndex: Set<Int> = [] {
+    let promptLabel: UILabel = UILabel()
+    @Published var selectedIndex: Set<String> = [] {
         didSet {
             if selectedIndex != [] {
                 updateButtonStatus()
@@ -19,7 +20,7 @@ class MultiSelectionView: SelectionView, ObservableObject {
         }
     }
     
-    init(selectionList: [String], mayNil: Bool = false, selectionListNilPrompt: String = "尚未有任何選項", preselectIndex: Set<Int> = []) {
+    init(selectionList: [String], mayNil: Bool = false, selectionListNilPrompt: String = "尚未有任何選項", preselectIndex: Set<String> = []) {
         self.mayNil = mayNil
         self.selectedIndex = preselectIndex
         self.selectionListNilPrompt = selectionListNilPrompt
@@ -34,7 +35,7 @@ class MultiSelectionView: SelectionView, ObservableObject {
     }
     
     override func setView() {
-        ifselectionListNilSetPrompt()
+        ifSelectionListNilSetPrompt()
         super.setView()
         for button in buttonList {
             button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
@@ -42,8 +43,8 @@ class MultiSelectionView: SelectionView, ObservableObject {
     }
 
     func updateButtonStatus() {
-        for (index, button) in buttonList.enumerated() {
-            if selectedIndex.contains(index) {
+        for (_, button) in buttonList.enumerated() {
+            if selectedIndex.contains(button.title(for: .normal)!) {
                 button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
                 button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
             } else {
@@ -54,32 +55,43 @@ class MultiSelectionView: SelectionView, ObservableObject {
     }
     
     internal func updateSelectionList(list: [String]) {
+        promptLabel.removeFromSuperview()
         self.selectionList = list
         horizonStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         setView()
+        updateButtonStatus()
+        checkSelected()
+        print(selectionList)
     }
     
     @objc func buttonAction(_ sender: UIButton) {
-        if selectedIndex.contains(sender.tag) {
-            selectedIndex.remove(sender.tag)
+        if selectedIndex.contains(sender.title(for: .normal)!) {
+            selectedIndex.remove(sender.title(for: .normal)!)
         } else {
-            selectedIndex.insert(sender.tag)
+            selectedIndex.insert(sender.title(for: .normal)!)
         }
         updateButtonStatus()
     }
     
-    private func ifselectionListNilSetPrompt() {
+    private func ifSelectionListNilSetPrompt() {
         if mayNil == true && selectionList == [] {
-            let promptLabel = UILabel()
+            print("nil")
             promptLabel.text = selectionListNilPrompt
             promptLabel.textColor = .secondaryLabel
             promptLabel.translatesAutoresizingMaskIntoConstraints = false
-            self.addSubview(promptLabel)
-            promptLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-            promptLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-            promptLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-            promptLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-            return
+            horizonScrollView.addSubview(promptLabel)
+            promptLabel.leadingAnchor.constraint(equalTo: horizonScrollView.leadingAnchor).isActive = true
+            promptLabel.trailingAnchor.constraint(equalTo: horizonScrollView.trailingAnchor).isActive = true
+            promptLabel.topAnchor.constraint(equalTo: horizonScrollView.topAnchor).isActive = true
+            promptLabel.bottomAnchor.constraint(equalTo: horizonScrollView.bottomAnchor).isActive = true
+        }
+    }
+    
+    private func checkSelected() {
+        for select in selectedIndex {
+            if selectionList.contains(select) == false {
+                selectedIndex.remove(select)
+            }
         }
     }
     

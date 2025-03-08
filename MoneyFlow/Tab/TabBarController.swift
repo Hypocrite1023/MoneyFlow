@@ -25,22 +25,19 @@ class TabBarController: UITabBarController {
         let home = UINavigationController(rootViewController: HomeViewController())
         home.tabBarItem = UITabBarItem(title: "總覽", image: UIImage(systemName: "house"), tag: 0)
         
-        let placeholderVC1 = UINavigationController(rootViewController: TransactionViewController())
-        placeholderVC1.tabBarItem = UITabBarItem(title: "收入支出", image: UIImage(systemName: "creditcard"), tag: 1)
-//        placeholderVC1.tabBarItem.isEnabled = false
+        let transactionView = UINavigationController(rootViewController: TransactionViewController())
+        transactionView.tabBarItem = UITabBarItem(title: "收入支出", image: UIImage(systemName: "creditcard"), tag: 1)
         
         let placeholderVC2 = UIViewController()
         placeholderVC2.tabBarItem = UITabBarItem(title: nil, image: nil, tag: 2)
         placeholderVC2.tabBarItem.isEnabled = false
         
-        let placeholderVC3 = UINavigationController(rootViewController: GoalViewController())
-        placeholderVC3.tabBarItem = UITabBarItem(title: "目標", image: UIImage(systemName: "flag.fill"), tag: 3)
-//        placeholderVC3.tabBarItem.isEnabled = false
+        let goalView = UINavigationController(rootViewController: GoalViewController())
+        goalView.tabBarItem = UITabBarItem(title: "目標", image: UIImage(systemName: "flag.fill"), tag: 3)
         
-        let placeholderVC4 = UIViewController()
-        placeholderVC4.tabBarItem = UITabBarItem(title: "分析", image: UIImage(systemName: "chart.bar"), tag: 4)
-//        placeholderVC4.tabBarItem.isEnabled = false
-        viewControllers = [home, placeholderVC1, placeholderVC2, placeholderVC3, placeholderVC4]
+        let analysisView = UINavigationController(rootViewController: AnalysisViewViewController())
+        analysisView.tabBarItem = UITabBarItem(title: "分析", image: UIImage(systemName: "chart.bar"), tag: 4)
+        viewControllers = [home, transactionView, placeholderVC2, goalView, analysisView]
         
         accountingButton.addTarget(self, action: #selector(handleAddButtonTapped), for: .touchUpInside)
         self.view.addSubview(accountingButton)

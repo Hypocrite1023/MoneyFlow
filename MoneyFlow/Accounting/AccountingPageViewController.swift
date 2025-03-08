@@ -12,7 +12,7 @@ class AccountingPageViewController: UIViewController {
     
     private let viewModel: AccountingPageViewModel
     private var bindings: Set<AnyCancellable> = Set<AnyCancellable>()
-    private var contentView: AccountingPage = AccountingPage(categoryList: CoreDataManager.shared.fetchAllTransactionCategories(), paymentMethodList: CoreDataManager.shared.fetchAllTransactionPaymentMethods(), tagList: CoreDataManager.shared.fetchAllTransactionTags())
+    private var contentView: AccountingPage = AccountingPage(categoryList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)), paymentMethodList: CoreDataManager.shared.fetchAllTransactionPaymentMethods(), tagList: CoreDataManager.shared.fetchAllTransactionTags())
     
     private var activeTextField: UITextField?
     private var accountingTagManager: AccountingTagManager = AccountingTagManager.shared
@@ -28,12 +28,11 @@ class AccountingPageViewController: UIViewController {
     
     override func loadView() {
         view = contentView
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
         // Do any additional setup after loading the view.
         // 觀察鍵盤
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShowNotification), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -80,17 +79,17 @@ class AccountingPageViewController: UIViewController {
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionDate, on: viewModel)
                 .store(in: &bindings)
-            contentView.categoryControl.$selectedIndex
-                .map {
-                    if let index = $0 {
-                        return self.contentView.categoryControl.buttonList[index].title(for: .normal)
-                    } else {
-                        return nil
-                    }
-                }
-                .receive(on: RunLoop.main)
-                .assign(to: \.transactionCategory, on: viewModel)
-                .store(in: &bindings)
+//            contentView.categoryControl.$selectedIndex
+//                .map {
+//                    if let index = $0 {
+//                        return self.contentView.categoryControl.buttonList[index].title(for: .normal)
+//                    } else {
+//                        return nil
+//                    }
+//                }
+//                .receive(on: RunLoop.main)
+//                .assign(to: \.transactionCategory, on: viewModel)
+//                .store(in: &bindings)
             contentView.paymentMethodControl.$selectedIndex
                 .map {
                     if let index = $0 {
@@ -112,9 +111,11 @@ class AccountingPageViewController: UIViewController {
                         if $0 == 1 {
                             self.contentView.incomeDistributeLabel.isHidden = false
                             self.contentView.incomedistributeTableView.isHidden = false
+                            self.contentView.configureCategoryControl(type: .income)
                         } else {
                             self.contentView.incomeDistributeLabel.isHidden = true
                             self.contentView.incomedistributeTableView.isHidden = true
+                            self.contentView.configureCategoryControl(type: .expense)
                         }
                         return $0
                     }
@@ -125,10 +126,10 @@ class AccountingPageViewController: UIViewController {
             contentView.tagControl.$selectedIndex
                 .map {
                     let selectedArr = Array($0)
-                    let result = selectedArr.map { i in
-                        return self.contentView.tagControl.buttonList[i].title(for: .normal)!
-                    }
-                    return result
+//                    let result = selectedArr.map { i in
+//                        return self.contentView.tagControl.buttonList[i].title(for: .normal)!
+//                    }
+                    return selectedArr
                 }
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionTag, on: viewModel)
@@ -151,7 +152,7 @@ class AccountingPageViewController: UIViewController {
                 return
             }
             print(inputTag)
-            CoreDataManager.shared.addTransactionTag(inputTag)
+            self.viewModel.addTag(tag: inputTag)
         }))
         self.present(alertController, animated: true)
         alertController.textFields?.first?.becomeFirstResponder()
@@ -185,9 +186,13 @@ class AccountingPageViewController: UIViewController {
     }
     
     @objc func makeAccounting() {
+        if let index = contentView.categoryControl.selectedIndex {
+            viewModel.transactionCategory = contentView.categoryControl.buttonList[index].title(for: .normal) ?? nil
+        }
+        
         let result = viewModel.makeAccounting()
         switch result {
-            case .success(let message):
+            case .success(_):
                 self.dismiss(animated: true)
             case .failure(let error):
                 print(error)

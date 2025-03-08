@@ -63,61 +63,62 @@ class FilterPanelViewController: UIViewController {
             contentView.typeSelector.$selectedIndex
                 .dropFirst()
                 .removeDuplicates()
-                .map{ Array($0) }
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] value in
                     guard let self else {
                         return
                     }
-                    self.viewModel.transactionTypeSelected = value
+                    self.viewModel.transactionTypeSelected = Array(value)
                     self.filterDataDelegate?.reloadTransaction()
+                    if self.viewModel.transactionTypeSelected.count == 2 {
+                        self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .all)))
+                    } else if self.viewModel.transactionTypeSelected.count == 1 {
+                        if self.viewModel.transactionTypeSelected[0] == "收入" {
+                            self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))
+                        } else {
+                            self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)))
+                        }
+                    } else {
+                        self.contentView.categorySelector.updateSelectionList(list: [])
+                    }
                 }
                 .store(in: &bindings)
             contentView.categorySelector.$selectedIndex
                 .dropFirst()
                 .removeDuplicates()
-                .map{ Array($0) }
+                .debounce(for: 1, scheduler: DispatchQueue.main)
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] value in
                     guard let self else {
                         return
                     }
-                    self.viewModel.categorySelected =
-                    value.compactMap({ index in
-                        self.contentView.categorySelector.buttonList[index].title(for: .normal)
-                    })
+//                    print(value)
+                    self.viewModel.categorySelected = Array(value)
+                    print(self.viewModel.categorySelected, "----")
                     self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
             contentView.paymentMethodSelector.$selectedIndex
                 .dropFirst()
                 .removeDuplicates()
-                .map{ Array($0) }
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] value in
                     guard let self else {
                         return
                     }
-                    self.viewModel.paymentMethodSelected =
-                    value.compactMap({ index in
-                        return self.contentView.paymentMethodSelector.buttonList[index].title(for: .normal)
-                    })
+                    self.viewModel.paymentMethodSelected = Array(value)
                     self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
             contentView.tagSelector.$selectedIndex
                 .dropFirst()
                 .removeDuplicates()
-                .map{ Array($0) }
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] value in
                     guard let self else {
                         return
                     }
-                    self.viewModel.tagSelected =
-                    value.compactMap({ index in
-                        return self.contentView.tagSelector.buttonList[index].title(for: .normal)
-                    })
+                    self.viewModel.tagSelected = Array(value)
                     self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
@@ -132,6 +133,7 @@ class FilterPanelViewController: UIViewController {
                 }
                 .store(in: &bindings)
             viewModel.$transactionTypeSelected
+                .dropFirst()
                 .removeDuplicates()
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] index in
@@ -142,27 +144,21 @@ class FilterPanelViewController: UIViewController {
                 .removeDuplicates()
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] index in
-                    self?.contentView.categorySelector.selectedIndex = Set(index.map {
-                        (self?.contentView.categorySelector.selectionList.firstIndex(of: $0))!
-                    })
+                    self?.contentView.categorySelector.selectedIndex = Set(index)
                 }
                 .store(in: &bindings)
             viewModel.$paymentMethodSelected
                 .removeDuplicates()
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] index in
-                    self?.contentView.paymentMethodSelector.selectedIndex = Set(index.map {
-                        (self?.contentView.paymentMethodSelector.selectionList.firstIndex(of: $0))!
-                    })
+                    self?.contentView.paymentMethodSelector.selectedIndex = Set(index)
                 }
                 .store(in: &bindings)
             viewModel.$tagSelected
                 .removeDuplicates()
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] index in
-                    self?.contentView.tagSelector.selectedIndex = Set(index.map {
-                        (self?.contentView.tagSelector.selectionList.firstIndex(of: $0))!
-                    })
+                    self?.contentView.tagSelector.selectedIndex = Set(index)
                 }
                 .store(in: &bindings)
         }

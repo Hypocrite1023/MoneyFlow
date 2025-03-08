@@ -10,10 +10,11 @@ import Foundation
 class RandomGenerateTransaction {
     func randomDate() -> Date {
         let calendar = Calendar.current
-        let today = Date()
-        let interval = calendar.dateInterval(of: .year, for: .now)!
+        let now = Date.now
+        let past = calendar.date(byAdding: .year, value: -3, to: now)!
+//        let interval = calendar.dateInterval(of: .year, for: .now)!
         
-        let randomTimeInterval = TimeInterval.random(in: interval.start.timeIntervalSince1970...interval.end.timeIntervalSince1970)
+        let randomTimeInterval = TimeInterval.random(in: past.timeIntervalSince1970...now.timeIntervalSince1970)
         return Date(timeIntervalSince1970: randomTimeInterval)
     }
     
@@ -25,8 +26,14 @@ class RandomGenerateTransaction {
         return Double(Int.random(in: 10...10000))
     }
     
-    func randomCategory() -> String {
-        let categories = CoreDataManager.shared.fetchAllTransactionCategories()
+    func randomCategory(type: String) -> String {
+        var categories: [String] = []
+        if type == "支出" {
+            categories = CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense))
+        } else {
+            categories = CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income))
+        }
+        
         return (categories.randomElement())!
     }
 
@@ -54,8 +61,9 @@ class RandomGenerateTransaction {
     }
     
     func createRandomTransactionRecord() {
-        for _ in 0..<300 {
-            let transaction = Transaction(date: randomDate(), type: randomType(), itemName: randomCombinedItemName(), amount: randomAmount(), category: randomCategory(), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
+        for _ in 0..<3000 {
+            let type = randomType()
+            let transaction = Transaction(date: randomDate(), type: type, itemName: randomCombinedItemName(), amount: randomAmount(), category: randomCategory(type: type), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
             CoreDataManager.shared.addTransaction(transaction)
         }
     }
