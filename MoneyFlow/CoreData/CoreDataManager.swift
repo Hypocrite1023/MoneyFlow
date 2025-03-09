@@ -323,6 +323,48 @@ extension CoreDataManager {
         }
         return nil
     }
+    
+    func fetchTransactionByYearMonth(year: Int, month: Int) -> [Transaction] {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
+        
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = 1
+        guard let startDate = calendar.date(from: components),
+              let endDate = calendar.date(byAdding: .month, value: 1, to: startDate) else {
+            return []
+        }
+        
+        let datePredicate = NSPredicate(format: "date >= %@ AND date < %@", startDate as NSDate, endDate as NSDate)
+        
+        fetchRequest.predicate = datePredicate
+        do {
+            let transactionEntities = try context.fetch(fetchRequest)
+            return transactionEntities.map({
+                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                    guard let tag = tag as? TransactionTag else { return nil }
+                    return tag.name
+                }
+                var transaction = Transaction(date: $0.date!,
+                                              type: $0.type!,
+                                              itemName: $0.itemName!,
+                                              amount: $0.amount,
+                                              category: ($0.transactionCategory?.category)!,
+                                              categorySystemImageName: $0.transactionCategory?.systemImage,
+                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              tags: tags,
+                                              note: $0.note, relationGoal: nil)
+                transaction.id = $0.objectID
+                return transaction
+            })
+        } catch {
+            print(error.localizedDescription)
+        }
+        return []
+    }
 }
 // MARK: - Transaction Category
 extension CoreDataManager {

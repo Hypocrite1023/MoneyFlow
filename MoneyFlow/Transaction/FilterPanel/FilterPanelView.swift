@@ -14,7 +14,7 @@ class FilterPanelView: UIView {
     private let filterByTypeLabel: UILabel = createLabel(title: "類型")
     let typeSelector: MultiSelectionView = MultiSelectionView(selectionList: ["收入", "支出"], preselectIndex: ["收入", "支出"])
     private let filterByCategoryLabel: UILabel = createLabel(title: "類別")
-    let categorySelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .all)))
+    let categorySelector: MultiSelectionView = MultiSelectionView(selectionList: [])
     private let filterByPaymentMethodLabel: UILabel = createLabel(title: "交易方式")
     let paymentMethodSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods())
     private let filterByTagLabel: UILabel = createLabel(title: "標籤")

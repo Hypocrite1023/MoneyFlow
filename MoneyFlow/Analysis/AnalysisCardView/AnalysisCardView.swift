@@ -20,7 +20,8 @@ class AnalysisCardView: UIView {
     private let amountLabel: UILabel = UILabel()
     private let compareLabel: UILabel = UILabel()
     
-    init() {
+    init(title: String) {
+        self.titleLabel.text = title
         super.init(frame: .zero)
         setView()
         addView()
@@ -33,11 +34,11 @@ class AnalysisCardView: UIView {
     }
     
     private func setView() {
-        titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        titleLabel.font = AppConfig.Font.quaternaryTitle.value
         
-        amountLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        amountLabel.font = AppConfig.Font.tertiaryTitle.value
         
-        compareLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        compareLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         
         self.layer.cornerRadius = 8
         self.clipsToBounds = true
@@ -66,17 +67,19 @@ class AnalysisCardView: UIView {
             compareLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15),
             compareLabel.topAnchor.constraint(equalTo: amountLabel.topAnchor),
             
-            self.widthAnchor.constraint(equalToConstant: 200),
+            self.widthAnchor.constraint(equalToConstant: 220),
             self.heightAnchor.constraint(equalToConstant: 100),
         ]
         
         NSLayoutConstraint.activate(layoutConstraints)
     }
     
-    func setupValues(title: String, amount: Double, compare: String) {
-        titleLabel.text = title
-        amountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: amount))
-        compareLabel.text = compare
+    func setupCompare(value: Double, increase: Bool) {
+        compareLabel.textColor = increase ? .systemGreen : .systemRed
+        compareLabel.text = "\(value > 0 ? "+" : "")\(value.formatted(.percent.precision(.fractionLength(1))))"
     }
     
+    func setupAmount(amount: Double) {
+        amountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: amount))
+    }
 }

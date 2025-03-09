@@ -71,7 +71,7 @@ class FilterPanelViewController: UIViewController {
                     self.viewModel.transactionTypeSelected = Array(value)
                     self.filterDataDelegate?.reloadTransaction()
                     if self.viewModel.transactionTypeSelected.count == 2 {
-                        self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .all)))
+                        self.contentView.categorySelector.updateSelectionList(list: [])
                     } else if self.viewModel.transactionTypeSelected.count == 1 {
                         if self.viewModel.transactionTypeSelected[0] == "收入" {
                             self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))

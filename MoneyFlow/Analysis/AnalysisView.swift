@@ -67,9 +67,9 @@ class AnalysisView: UIView {
     private let analysisSummaryLabel: UILabel = createLabel(title: "摘要", font: AppConfig.Font.secondaryTitle.value)
     private let analysisCardHScrollView: UIScrollView = UIScrollView()
     private let analysisCardHStackView: UIStackView = UIStackView()
-    let monthExpenseAnalysisCardView: AnalysisCardView = AnalysisCardView()
-    let monthIncomeAnalysisCardView: AnalysisCardView = AnalysisCardView()
-    let monthBalanceAnalysisCardView: AnalysisCardView = AnalysisCardView()
+    let monthExpenseAnalysisCardView: AnalysisCardView = AnalysisCardView(title: "總支出")
+    let monthIncomeAnalysisCardView: AnalysisCardView = AnalysisCardView(title: "總收入")
+    let monthBalanceAnalysisCardView: AnalysisCardView = AnalysisCardView(title: "結餘")
     
     private let mostCommonlyUsedPaymentMethodTitleLabel: UILabel = createLabel(title: "經常使用的支付方式:", font: AppConfig.Font.secondaryTitle.value)
     let mostCommonlyUsedPaymentMethod: UILabel = UILabel()
@@ -98,11 +98,13 @@ class AnalysisView: UIView {
     private let expenseAnalysisTitleLabel: UILabel = createLabel(title: "支出分析", font: AppConfig.Font.secondaryTitle.value)
     private let byCategoryExpenseAnalysisTitleLabel: UILabel = createLabel(title: "按類別", font: AppConfig.Font.quaternaryTitle.value)
     let expensePiechartView: PieChartView = PieChartView()
+    private let expensePiechartDataNilLabel: UILabel = UILabel()
+    
+    private let byCategoryListExpenseAnalysisTitleLabel: UILabel = createLabel(title: "各項類別支出列表", font: AppConfig.Font.quaternaryTitle.value)
+    private let categoryExpenseAnalysisHScrollView: UIScrollView = UIScrollView()
+    private let categoryExpenseAnalysisHStackView: UIStackView = UIStackView()
     
     
-    private let byTagExpenseAnalysisTitleLabel: UILabel = createLabel(title: "按標籤", font: AppConfig.Font.quaternaryTitle.value)
-    private let tagExpenseAnalysisHScrollView: UIScrollView = UIScrollView()
-    private let tagExpenseAnalysisHStackView: UIStackView = UIStackView()
     
     private let byPaymentMethodAnalysisTitleLabel: UILabel = createLabel(title: "按支付方式", font: AppConfig.Font.quaternaryTitle.value)
     let paymentMethodExpenseAnalysisBarChartView: BarChartView = BarChartView()
@@ -143,12 +145,15 @@ class AnalysisView: UIView {
         mostCommonlyUsedTag.font = AppConfig.Font.quaternaryTitle.value
         mostCommonlyUsedTag.textColor = .secondaryLabel
         
-        tagExpenseAnalysisHScrollView.showsVerticalScrollIndicator = false
-        tagExpenseAnalysisHScrollView.showsHorizontalScrollIndicator = false
+        categoryExpenseAnalysisHScrollView.showsVerticalScrollIndicator = false
+        categoryExpenseAnalysisHScrollView.showsHorizontalScrollIndicator = false
         
-        tagExpenseAnalysisHStackView.axis = .horizontal
-        tagExpenseAnalysisHStackView.spacing = 8
+        categoryExpenseAnalysisHStackView.axis = .horizontal
+        categoryExpenseAnalysisHStackView.spacing = 8
         
+        expensePiechartDataNilLabel.text = "這個月還沒有任何記帳資料"
+        expensePiechartDataNilLabel.font = AppConfig.Font.quaternaryTitle.value
+        expensePiechartDataNilLabel.textColor = .secondaryLabel
     }
     
     private func addSubviews() {
@@ -183,14 +188,14 @@ class AnalysisView: UIView {
         expensePiechartView.translatesAutoresizingMaskIntoConstraints = false
         wholePageContentView.addSubview(expensePiechartView)
         
-        byTagExpenseAnalysisTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        wholePageContentView.addSubview(byTagExpenseAnalysisTitleLabel)
+        byCategoryListExpenseAnalysisTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        wholePageContentView.addSubview(byCategoryListExpenseAnalysisTitleLabel)
         
-        tagExpenseAnalysisHScrollView.translatesAutoresizingMaskIntoConstraints = false
-        wholePageContentView.addSubview(tagExpenseAnalysisHScrollView)
+        categoryExpenseAnalysisHScrollView.translatesAutoresizingMaskIntoConstraints = false
+        wholePageContentView.addSubview(categoryExpenseAnalysisHScrollView)
         
-        tagExpenseAnalysisHStackView.translatesAutoresizingMaskIntoConstraints = false
-        tagExpenseAnalysisHScrollView.addSubview(tagExpenseAnalysisHStackView)
+        categoryExpenseAnalysisHStackView.translatesAutoresizingMaskIntoConstraints = false
+        categoryExpenseAnalysisHScrollView.addSubview(categoryExpenseAnalysisHStackView)
         
         byPaymentMethodAnalysisTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         wholePageContentView.addSubview(byPaymentMethodAnalysisTitleLabel)
@@ -261,23 +266,23 @@ class AnalysisView: UIView {
             expensePiechartView.heightAnchor.constraint(equalToConstant: 300),
             expensePiechartView.widthAnchor.constraint(equalTo: wholePageContentView.widthAnchor, constant: -20),
             
-            byTagExpenseAnalysisTitleLabel.topAnchor.constraint(equalTo: expensePiechartView.bottomAnchor, constant: 5),
-            byTagExpenseAnalysisTitleLabel.leadingAnchor.constraint(equalTo: wholePageContentView.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
-            byTagExpenseAnalysisTitleLabel.trailingAnchor.constraint(equalTo: expenseAnalysisTitleLabel.trailingAnchor, constant: -AppConfig.SideSpace.standard.value),
+            byCategoryListExpenseAnalysisTitleLabel.topAnchor.constraint(equalTo: expensePiechartView.bottomAnchor, constant: 5),
+            byCategoryListExpenseAnalysisTitleLabel.leadingAnchor.constraint(equalTo: wholePageContentView.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
+            byCategoryListExpenseAnalysisTitleLabel.trailingAnchor.constraint(equalTo: expenseAnalysisTitleLabel.trailingAnchor, constant: -AppConfig.SideSpace.standard.value),
             
-            tagExpenseAnalysisHScrollView.topAnchor.constraint(equalTo: byTagExpenseAnalysisTitleLabel.bottomAnchor, constant: 5),
-            tagExpenseAnalysisHScrollView.leadingAnchor.constraint(equalTo: wholePageContentView.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
-            tagExpenseAnalysisHScrollView.trailingAnchor.constraint(equalTo: wholePageContentView.trailingAnchor, constant: -AppConfig.SideSpace.standard.value),
-            tagExpenseAnalysisHScrollView.heightAnchor.constraint(equalTo: tagExpenseAnalysisHStackView.heightAnchor),
+            categoryExpenseAnalysisHScrollView.topAnchor.constraint(equalTo: byCategoryListExpenseAnalysisTitleLabel.bottomAnchor, constant: 5),
+            categoryExpenseAnalysisHScrollView.leadingAnchor.constraint(equalTo: wholePageContentView.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
+            categoryExpenseAnalysisHScrollView.trailingAnchor.constraint(equalTo: wholePageContentView.trailingAnchor, constant: -AppConfig.SideSpace.standard.value),
+            categoryExpenseAnalysisHScrollView.heightAnchor.constraint(equalTo: categoryExpenseAnalysisHStackView.heightAnchor),
             
-            tagExpenseAnalysisHStackView.heightAnchor.constraint(equalToConstant: 40),
-            tagExpenseAnalysisHStackView.leadingAnchor.constraint(equalTo: tagExpenseAnalysisHScrollView.leadingAnchor),
-            tagExpenseAnalysisHStackView.trailingAnchor.constraint(equalTo: tagExpenseAnalysisHScrollView.trailingAnchor),
+            categoryExpenseAnalysisHStackView.heightAnchor.constraint(equalToConstant: 40),
+            categoryExpenseAnalysisHStackView.leadingAnchor.constraint(equalTo: categoryExpenseAnalysisHScrollView.leadingAnchor),
+            categoryExpenseAnalysisHStackView.trailingAnchor.constraint(equalTo: categoryExpenseAnalysisHScrollView.trailingAnchor),
 //            tagExpenseAnalysisHStackView.widthAnchor.constraint(equalTo: tagExpenseAnalysisHScrollView.widthAnchor),
-            tagExpenseAnalysisHStackView.topAnchor.constraint(equalTo: tagExpenseAnalysisHScrollView.topAnchor),
-            tagExpenseAnalysisHStackView.bottomAnchor.constraint(equalTo: tagExpenseAnalysisHScrollView.bottomAnchor),
+            categoryExpenseAnalysisHStackView.topAnchor.constraint(equalTo: categoryExpenseAnalysisHScrollView.topAnchor),
+            categoryExpenseAnalysisHStackView.bottomAnchor.constraint(equalTo: categoryExpenseAnalysisHScrollView.bottomAnchor),
             
-            byPaymentMethodAnalysisTitleLabel.topAnchor.constraint(equalTo: tagExpenseAnalysisHScrollView.bottomAnchor, constant: 5),
+            byPaymentMethodAnalysisTitleLabel.topAnchor.constraint(equalTo: categoryExpenseAnalysisHScrollView.bottomAnchor, constant: 5),
             byPaymentMethodAnalysisTitleLabel.leadingAnchor.constraint(equalTo: wholePageContentView.leadingAnchor, constant: AppConfig.SideSpace.standard.value),
             
             paymentMethodExpenseAnalysisBarChartView.topAnchor.constraint(equalTo: byPaymentMethodAnalysisTitleLabel.bottomAnchor, constant: 5),
@@ -298,7 +303,9 @@ class AnalysisView: UIView {
             UIColor(hue: CGFloat(i) / CGFloat(data.count), saturation: 0.8, brightness: 0.9, alpha: 1.0)
         }
         dataSet.colors = colors
-        
+        dataSet.yValuePosition = .outsideSlice  // 數值顯示在圓餅外側
+        dataSet.entryLabelColor = .black
+        dataSet.valueTextColor = .black
         // PieChartData
         let data = PieChartData(dataSet: dataSet)
         expensePiechartView.data = data
@@ -307,17 +314,18 @@ class AnalysisView: UIView {
         expensePiechartView.usePercentValuesEnabled = true // 顯示百分比
 //        expensePiechartView.holeColor = UIColor.white // 圓心顏色
 //        expensePiechartView.drawSlicesUnderHoleEnabled = true // 是否顯示圓心下方的扇形
-        expensePiechartView.legend.form = .circle // 圖例樣式
+        expensePiechartView.legend.form = .line // 圖例樣式
+        
     }
     
-    func configTagExpenseList(tagExpenseDictionary: [String: Double]) {
-        for keys in tagExpenseDictionary.keys {
+    func configCategoryExpenseList(categoryExpenseDictionary: [String: Double]) {
+        for category in categoryExpenseDictionary.sorted(by: { $0.value > $1.value }) {
             let tagExpenseLabel: UILabel = UILabel()
-            guard let expense = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: tagExpenseDictionary[keys] ?? 0)) else { continue }
-            tagExpenseLabel.text = "\(keys): \(expense)"
+            guard let expense = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: category.value)) else { continue }
+            tagExpenseLabel.text = "\(category.key): \(expense)"
             tagExpenseLabel.font = AppConfig.Font.content.value
             tagExpenseLabel.textColor = .secondaryLabel
-            tagExpenseAnalysisHStackView.addArrangedSubview(tagExpenseLabel)
+            categoryExpenseAnalysisHStackView.addArrangedSubview(tagExpenseLabel)
         }
         self.layoutIfNeeded()
         
@@ -336,7 +344,7 @@ class AnalysisView: UIView {
         let dataSet = BarChartDataSet(entries: dataEntries, label: "收入")
         dataSet.colors = [UIColor.systemBlue]  // 設定顏色
         dataSet.valueTextColor = .black  // 數值顏色
-        dataSet.valueFont = .systemFont(ofSize: 12)
+        dataSet.valueFont = .systemFont(ofSize: 10)
 
         let data = BarChartData(dataSet: dataSet)
         paymentMethodExpenseAnalysisBarChartView.data = data
@@ -345,6 +353,19 @@ class AnalysisView: UIView {
         paymentMethodExpenseAnalysisBarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: paymentMethodExpenseDictionary.keys.sorted(by: <))
         paymentMethodExpenseAnalysisBarChartView.xAxis.labelPosition = .bottom
         paymentMethodExpenseAnalysisBarChartView.xAxis.granularity = 1
+    }
+    
+    func expensePiechartSetting(empty: Bool) {
+        if empty {
+            expensePiechartDataNilLabel.translatesAutoresizingMaskIntoConstraints = false
+            expensePiechartView.addSubview(expensePiechartDataNilLabel)
+            NSLayoutConstraint.activate([
+                expensePiechartDataNilLabel.centerXAnchor.constraint(equalTo: expensePiechartView.centerXAnchor),
+                expensePiechartDataNilLabel.centerYAnchor.constraint(equalTo: expensePiechartView.centerYAnchor)
+                ])
+        } else {
+            expensePiechartDataNilLabel.removeFromSuperview()
+        }
     }
     
     private static func createLabel(title: String, font: UIFont) -> UILabel {
