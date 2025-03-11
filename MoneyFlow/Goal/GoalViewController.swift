@@ -44,9 +44,9 @@ class GoalViewController: UIViewController {
         
 //        contentView.goalPreviewTableView.register(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: "GoalViewHeaderView")
         
-        contentView.dailyExpenseGoal.setGoalName(goalName: "每日花費")
-        contentView.weeklyExpenseGoal.setGoalName(goalName: "每週花費")
-        contentView.monthlyExpenseGoal.setGoalName(goalName: "每月花費")
+        contentView.dailyExpenseGoal.setGoalName(goalName: NSLocalizedString("GoalView_DailyExpenseGoal_Title", comment: ""))
+        contentView.weeklyExpenseGoal.setGoalName(goalName: NSLocalizedString("GoalView_WeeklyExpenseGoal_Title", comment: ""))
+        contentView.monthlyExpenseGoal.setGoalName(goalName: NSLocalizedString("GoalView_MonthlyExpenseGoal_Title", comment: ""))
         
         let dailyExpenseGoalTap = UITapGestureRecognizer(target: self, action: #selector(navigateToDailyExpense))
         contentView.dailyExpenseGoal.addGestureRecognizer(dailyExpenseGoalTap)
@@ -92,9 +92,9 @@ class GoalViewController: UIViewController {
         
         let groupedTransaction = Dictionary(grouping: viewModel.goalList) { goal in
             if let endDate = goal.endDate {
-                return endDate > .now ? "進行中" : "已結束"
+                return endDate > .now ? NSLocalizedString("GoalView_GoalSection_InProgress_Title", comment: "") : NSLocalizedString("GoalView_GoalSection_Ended_Title", comment: "")
             } else {
-                return "進行中"
+                return NSLocalizedString("GoalView_GoalSection_InProgress_Title", comment: "")
             }
         }
         snapShot.appendSections(groupedTransaction.keys.sorted().reversed())
@@ -204,8 +204,7 @@ extension GoalViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let editAction = UIContextualAction(style: .normal, title: "修改") { action, view, closure in
-            print("edit")
+        let editAction = UIContextualAction(style: .normal, title: NSLocalizedString("GoalView_GoalEdit_Title", comment: "")) { action, view, closure in
             guard let goal = self.dataSource.itemIdentifier(for: indexPath) else { return }
             let vc = AddOrEditGoalViewController(viewModel: AddOrEditGoalViewViewModel(mode: .edit, goal: goal))
             vc.modalPresentationStyle = .fullScreen
@@ -213,8 +212,7 @@ extension GoalViewController: UITableViewDelegate {
         }
         editAction.backgroundColor = .systemOrange
         
-        let deleteAction = UIContextualAction(style: .destructive, title: "刪除") { action, view, closure in
-            print("delete")
+        let deleteAction = UIContextualAction(style: .destructive, title: NSLocalizedString("GoalView_GoalDelete_Title", comment: "")) { action, view, closure in
         }
         return UISwipeActionsConfiguration(actions: [editAction, deleteAction])
     }

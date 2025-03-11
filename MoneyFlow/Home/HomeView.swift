@@ -13,8 +13,8 @@ class HomeView: UIView {
     private lazy var summaryLabel: UILabel = UILabel()
     lazy var segementControl: UISegmentedControl = UISegmentedControl()
     private lazy var horizonStack: UIStackView = UIStackView()
-    lazy var totalSpent: MoneyBalanceView = MoneyBalanceView(itemLabelText: "總花費")
-    lazy var totalIncome: MoneyBalanceView = MoneyBalanceView(itemLabelText: "總收入")
+    lazy var totalSpent: MoneyBalanceView = MoneyBalanceView(itemLabelText: NSLocalizedString("HomeView_MoneyBalanceView_Expense_Title", comment: ""))
+    lazy var totalIncome: MoneyBalanceView = MoneyBalanceView(itemLabelText: NSLocalizedString("HomeView_MoneyBalanceView_Income_Title", comment: ""))
     lazy var viewDetailButton: UIButton = UIButton(type: .system)
     private var summaryBottomAnchor: NSLayoutYAxisAnchor {
         get {
@@ -122,7 +122,7 @@ class HomeView: UIView {
     
     private func setUpViews() {
         // summary label
-        summaryLabel.text = "總覽"
+        summaryLabel.text = NSLocalizedString("HomeView_SummaryTitle", comment: "")
         summaryLabel.font = AppConfig.Font.title.value
         
         // segement control
@@ -134,7 +134,7 @@ class HomeView: UIView {
         horizonStack.spacing = 10
         
         // view detail button
-        viewDetailButton.setTitle("瀏覽花費收入詳細資料", for: .normal)
+        viewDetailButton.setTitle(NSLocalizedString("HomeView_ViewDetailButton_Title", comment: ""), for: .normal)
         viewDetailButton.titleLabel?.font = AppConfig.Font.tertiaryTitle.value
         viewDetailButton.tintColor = .white
         viewDetailButton.backgroundColor = .black
@@ -142,7 +142,7 @@ class HomeView: UIView {
         viewDetailButton.clipsToBounds = true
         
         // chart label
-        chartLabel.text = "圖表"
+        chartLabel.text = NSLocalizedString("HomeView_ChartLabel_Title", comment: "")
         chartLabel.font = AppConfig.Font.title.value
         
         // chart scroll view
@@ -169,7 +169,7 @@ class HomeView: UIView {
         chartPageControl.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).withAlphaComponent(0.1)
         
         // fast navigate label
-        fastNavigateLabel.text = "快速操作"
+        fastNavigateLabel.text = NSLocalizedString("HomeView_FastNavigateLabel_Title", comment: "")
         fastNavigateLabel.font = AppConfig.Font.title.value
         
         // fast navigate button stack view
@@ -178,16 +178,23 @@ class HomeView: UIView {
         fastNavigateButtonStackView.spacing = 10
         
         // detail button
-        detailButton.setTitle("詳細報表", for: .normal)
+        detailButton.setTitle(NSLocalizedString("HomeView_DetailButton_Title", comment: ""), for: .normal)
         detailButton.tintColor = .black
+        detailButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        detailButton.titleLabel?.numberOfLines = 1
+        detailButton.titleLabel?.lineBreakMode = .byTruncatingTail
         
         // set budget button
-        setBudgetButton.setTitle("設定預算", for: .normal)
+        setBudgetButton.setTitle(NSLocalizedString("HomeView_SetBudgetButton_Title", comment: ""), for: .normal)
         setBudgetButton.tintColor = .black
+        setBudgetButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        setBudgetButton.titleLabel?.numberOfLines = 1
         
         // set notification button
-        setNotificationButton.setTitle("設定提醒", for: .normal)
+        setNotificationButton.setTitle(NSLocalizedString("HomeView_SetNotificationButton_Title", comment: ""), for: .normal)
         setNotificationButton.tintColor = .black
+        setNotificationButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        setNotificationButton.titleLabel?.numberOfLines = 1
     }
 }
 

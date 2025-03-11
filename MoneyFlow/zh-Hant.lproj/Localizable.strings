@@ -1,0 +1,82 @@
+// Tab
+"Tab_HomeView_Title" = "總覽";
+"Tab_Transaction_Title" = "收入支出";
+"Tab_Goal_Title" = "目標";
+"Tab_Analysis_Title" = "分析";
+// HomeView
+"HomeView_SummaryTitle" = "總覽";
+"HomeView_SegementControl_Today" = "今天";
+"HomeView_SegementControl_ThisWeek" = "這週";
+"HomeView_SegementControl_ThisMonth" = "這個月";
+"HomeView_SegementControl_ThisYear" = "今年";
+"HomeView_MoneyBalanceView_Expense_Title" = "總支出";
+"HomeView_MoneyBalanceView_Income_Title" = "總收入";
+"HomeView_ViewDetailButton_Title" = "瀏覽記帳資訊";
+"HomeView_ChartLabel_Title" = "圖表";
+"HomeView_FastNavigateLabel_Title" = "快速操作";
+"HomeView_DetailButton_Title" = "詳細報告";
+"HomeView_SetBudgetButton_Title" = "設定預算";
+"HomeView_SetNotificationButton_Title" = "設定提醒";
+"HomeView_LineChartDataSet_Expense_Label" = "支出";
+"HomeView_LineChartDataSet_Income_Label" = "收入";
+// SideMenu
+"SideMenu_AppSetting_Title" = "App設定";
+// SideMenu - SettingView
+"SideMenu_SettingView_SetLanguage_Title" = "語言";
+"SideMenu_SettingView_SetLanguage_English_Title" = "英文";
+"SideMenu_SettingView_SetLanguage_TraditionalChinese_Title" = "繁體中文";
+"SideMenu_SettingView_PasswordAndBiometricVerification_Title" = "密碼或生物識別驗證";
+// GoalView
+"GoalView_SavingGoalTitleLabel_Title" = "儲蓄目標";
+"GoalView_NoSavingGoalLabel_Title" = "尚未建立儲蓄目標";
+"GoalView_ExpenseGoalTitleLabel_Title" = "花費限制";
+"GoalView_AddGoalButton_Title" = "新增目標";
+"GoalView_DailyExpenseGoal_Title" = "每日花費";
+"GoalView_WeeklyExpenseGoal_Title" = "每週花費";
+"GoalView_MonthlyExpenseGoal_Title" = "每月花費";
+"GoalView_GoalSection_InProgress_Title" = "進行中";
+"GoalView_GoalSection_Ended_Title" = "已結束";
+"GoalView_GoalEdit_Title" = "修改";
+"GoalView_GoalDelete_Title" = "刪除";
+// GoalView - UnitGoalPreview
+"GoalView_UnitGoalPreview_GoalNotSettingLabel_Title" = "尚未設定目標";
+// GoalDetailView
+"GoalDetailView_RelationTransactionTitleLabel_Title" = "關聯的收入";
+"GoalDetailView_GoalDurationLabel_Infinity_Title" = "很久以後";
+"GoalDetailView_GoalEdit_Title" = "編輯";
+// SettingExpenseGoalView
+"SettingExpenseGoalView_DailyExpenseLabel_Title" = "每日花費上限";
+"SettingExpenseGoalView_WeeklyExpenseLabel_Title" = "每週花費上限";
+"SettingExpenseGoalView_MonthlyExpenseLabel_Title" = "每月花費上限";
+"SettingExpenseGoalView_SaveButton_Title" = "設定";
+"SettingExpenseGoalView_CancelButton_Title" = "取消";
+"SettingExpenseGoalView_Success_Title" = "成功";
+"SettingExpenseGoalView_Success_Message" = "設定花費目標成功";
+"SettingExpenseGoalView_Error_Title" = "錯誤";
+"SettingExpenseGoalView_Ok_Title" = "好";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Head_Title" = "請在每";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Tail_Title" = "花費目標輸入正確的數字";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Day_Title" = "日";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Week_Title" = "週";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Month_Title" = "月";
+// AddOrEditGoalView
+"AddOrEditGoalView_CloseButton_Title" = "取消";
+"AddOrEditGoalView_SetButton_Add_Title" = "設定";
+"AddOrEditGoalView_SetButton_Edit_Title" = "修改";
+"AddOrEditGoalView_GoalNameLabel_Title" = "目標名稱";
+"AddOrEditGoalView_GoalAmountLabel_Title" = "目標金額";
+"AddOrEditGoalView_GoalAmountTextFieldKeyboardDoneButtonItem_Title" = "完成";
+"AddOrEditGoalView_GoalTimePeriodLabel_Title" = "目標持續時間";
+"AddOrEditGoalView_GoalTimePeriodInfiniteLabel_Title" = "目標無結束時間";
+"AddOrEditGoalView_GoalTimePeriodToDateLabel_Title" = "到";
+"AddOrEditGoalView_GoalTimePeriodInfiniteReplaceDatePickerLabel_Title" = "很久以後";
+"AddOrEditGoalView_ConfigurationGoal_Error_Title" = "錯誤";
+"AddOrEditGoalView_ConfigurationGoal_Ok_Title" = "好";
+"AddOrEditGoalView_GoalFaliureReason_NameEmpty_Title" = "請輸入目標名稱";
+"AddOrEditGoalView_GoalFaliureReason_AmountEmpty_Title" = "請輸入目標金額";
+"AddOrEditGoalView_GoalFaliureReason_AmountInvalid_Title" = "請輸入正確的金額";
+"AddOrEditGoalView_GoalFaliureReason_StartDateEmpty_Title" = "請輸入開始日期";
+"AddOrEditGoalView_GoalFaliureReason_EndDateEarlyThanStartDate_Title" = "結束日期必須在開始日期之後";
+"AddOrEditGoalView_GoalFaliureReason_NoEndDateError_Title" = "錯誤";
+"AddOrEditGoalView_GoalFaliureReason_ObjectIdNil_Title" = "objectId錯誤";
+"AddOrEditGoalView_GoalFaliureReason_GoalNil_Title" = "目標錯誤";

@@ -12,13 +12,13 @@ class GoalView: UIView {
     private let upperView: UIView = UIView()
     private let lowerView: UIView = UIView()
 
-    private let savingGoalTitleLabel: UILabel = createLabel(title: "儲蓄目標")
+    private let savingGoalTitleLabel: UILabel = createLabel(title: NSLocalizedString("GoalView_SavingGoalTitleLabel_Title", comment: ""))
     let addGoalButton: UIButton = UIButton(configuration: .tinted())
     
     let savingGoalPreviewTableView: UITableView = UITableView()
     let noSavingGoalLabel: UILabel = {
         let label = UILabel()
-        label.text = "尚未建立儲蓄目標"
+        label.text = NSLocalizedString("GoalView_NoSavingGoalLabel_Title", comment: "")
         label.textColor = .gray
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18)
@@ -26,7 +26,7 @@ class GoalView: UIView {
         return label
     }()
     
-    private let expenseGoalTitleLabel: UILabel = createLabel(title: "花費限制目標")
+    private let expenseGoalTitleLabel: UILabel = createLabel(title: NSLocalizedString("GoalView_ExpenseGoalTitleLabel_Title", comment: ""))
     let expenseGoalSettingButton: UIButton = UIButton(configuration: .tinted())
     let dailyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
     let weeklyExpenseGoal: UnitGoalPreview = UnitGoalPreview()
@@ -69,7 +69,7 @@ class GoalView: UIView {
 //        goalTitleLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
         
         addGoalButton.translatesAutoresizingMaskIntoConstraints = false
-        addGoalButton.setTitle("新增目標", for: .normal)
+        addGoalButton.setTitle(NSLocalizedString("GoalView_AddGoalButton_Title", comment: ""), for: .normal)
         addGoalButton.setImage(UIImage(systemName: "plus.circle"), for: .normal)
         addGoalButton.tintColor = .black
         upperView.addSubview(addGoalButton)

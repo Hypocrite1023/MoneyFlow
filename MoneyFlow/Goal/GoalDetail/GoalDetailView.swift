@@ -57,7 +57,7 @@ class GoalDetailView: UIView {
     private func setupRelationTransactionTitleLabel() {
         addSubview(relationTransactionTitleLabel)
         relationTransactionTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        relationTransactionTitleLabel.text = "關聯的收入"
+        relationTransactionTitleLabel.text = NSLocalizedString("GoalDetailView_RelationTransactionTitleLabel_Title", comment: "")
         relationTransactionTitleLabel.font = AppConfig.Font.title.value
         
         relationTransactionTitleLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 10).isActive = true
@@ -75,6 +75,6 @@ class GoalDetailView: UIView {
     }
     
     func setGoalDuration(startDate: Date, endDate: Date?) {
-        goalDurationLabel.text = "\(AppFormatter.shared.dateFormatter.string(from: startDate)) ~ \(endDate == nil ? "很久以後" : AppFormatter.shared.dateFormatter.string(from: endDate!))"
+        goalDurationLabel.text = "\(AppFormatter.shared.dateFormatter.string(from: startDate)) ~ \(endDate == nil ? NSLocalizedString("GoalDetailView_GoalDurationLabel_Infinity_Title", comment: "") : AppFormatter.shared.dateFormatter.string(from: endDate!))"
     }
 }

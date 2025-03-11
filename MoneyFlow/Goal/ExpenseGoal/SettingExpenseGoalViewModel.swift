@@ -22,7 +22,7 @@ class SettingExpenseGoalViewModel {
         var info: String {
             switch self {
             case .invalidInput(let str):
-                return "請在每\(str)花費目標輸入正確的數字"
+                return "\(NSLocalizedString("SettingExpenseGoalView_ExpenseGoalErrorInfo_Head_Title", comment: ""))\(str)\(NSLocalizedString("SettingExpenseGoalView_ExpenseGoalErrorInfo_Tail_Title", comment: ""))"
             }
         }
     }
@@ -57,7 +57,7 @@ class SettingExpenseGoalViewModel {
     
     func setExpenseGoal() -> Result<String?, ExpenseGoalError> {
         if !(dailyGoal == originalDailyGoal) {
-            switch checkExpenseGoal(value: dailyGoal, type: "日") {
+            switch checkExpenseGoal(value: dailyGoal, type: NSLocalizedString("SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Day_Title", comment: "")) {
                 
             case .success(_):
                 
@@ -68,7 +68,7 @@ class SettingExpenseGoalViewModel {
             }
         }
         if !(weeklyGoal == originalWeeklyGoal) {
-            switch checkExpenseGoal(value: weeklyGoal, type: "週") {
+            switch checkExpenseGoal(value: weeklyGoal, type: NSLocalizedString("SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Week_Title", comment: "")) {
                 
             case .success(_):
                 
@@ -79,7 +79,7 @@ class SettingExpenseGoalViewModel {
             }
         }
         if !(monthlyGoal == originalMonthlyGoal) {
-            switch checkExpenseGoal(value: monthlyGoal, type: "月") {
+            switch checkExpenseGoal(value: monthlyGoal, type: NSLocalizedString("SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Month_Title", comment: "")) {
                 
             case .success(_):
                 

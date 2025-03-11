@@ -15,6 +15,8 @@ class AppConfig {
         case weeklyExpenseLimit = "WeeklyExpenseLimit"
         case monthlyExpenseLimit = "MonthlyExpenseLimit"
     }
+    static var titleFontSize: CGFloat = UserDefaults.standard.string(forKey: "AppLanguage") ?? "English" == "English" ? 22 : 24
+    static var contentFontSize: CGFloat = UserDefaults.standard.string(forKey: "AppLanguage") ?? "English" == "English" ? 16 : 18
     enum Font {
         case title, secondaryTitle, tertiaryTitle, quaternaryTitle
         case content, subContent
@@ -22,17 +24,17 @@ class AppConfig {
         var value: UIFont {
             switch self {
             case .title:
-                return .systemFont(ofSize: 24, weight: .bold)
+                return .systemFont(ofSize: titleFontSize, weight: .bold)
             case .secondaryTitle:
-                return .systemFont(ofSize: 22, weight: .bold)
+                return .systemFont(ofSize: titleFontSize - 2, weight: .bold)
             case .tertiaryTitle:
-                return .systemFont(ofSize: 20, weight: .bold)
+                return .systemFont(ofSize: titleFontSize - 4, weight: .bold)
             case .quaternaryTitle:
-                return .systemFont(ofSize: 18, weight: .bold)
+                return .systemFont(ofSize: titleFontSize - 6, weight: .bold)
             case .content:
-                return .systemFont(ofSize: 16, weight: .regular)
+                return .systemFont(ofSize: contentFontSize, weight: .regular)
             case .subContent:
-                return .systemFont(ofSize: 14, weight: .regular)
+                return .systemFont(ofSize: contentFontSize - 2, weight: .regular)
             }
         }
     }

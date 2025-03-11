@@ -147,13 +147,13 @@ class AddOrEditGoalViewController: UIViewController {
         case .success(_):
             self.dismiss(animated: true)
         case .failure(let error):
-            errorAlert(title: "錯誤", message: error.infoMessage)
+            errorAlert(title: NSLocalizedString("AddOrEditGoalView_ConfigurationGoal_Error_Title", comment: ""), message: error.infoMessage)
         }
     }
     
     func errorAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+        let okAction = UIAlertAction(title: NSLocalizedString("AddOrEditGoalView_ConfigurationGoal_Ok_Title", comment: ""), style: .default) { _ in
             
         }
         alertController.addAction(okAction)

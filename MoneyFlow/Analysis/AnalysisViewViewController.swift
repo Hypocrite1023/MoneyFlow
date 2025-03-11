@@ -43,7 +43,7 @@ class AnalysisViewViewController: UIViewController {
 //        contentView.configPieChart(data: data)
         
 //        contentView.configCategoryExpenseList(categoryExpenseDictionary: ["早餐": 1000, "晚餐": 2000, "午餐": 3000, "交通": 4000, "娛樂": 5000])
-        contentView.configPaymentMethodBarChart(paymentMethodExpenseDictionary: ["現金": 10, "信用卡": 20, "ATM": 30, "轉帳": 40])
+//        contentView.configPaymentMethodBarChart(paymentMethodExpenseDictionary: ["現金": 10, "信用卡": 20, "ATM": 30, "轉帳": 40])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -131,6 +131,13 @@ class AnalysisViewViewController: UIViewController {
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] dict in
                     self?.contentView.configCategoryExpenseList(categoryExpenseDictionary: dict)
+                }
+                .store(in: &bindings)
+            viewModel.$expenseGroupByPaymentMethodDict
+                .removeDuplicates()
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] dict in
+                    self?.contentView.configPaymentMethodBarChart(paymentMethodExpenseDictionary: dict)
                 }
                 .store(in: &bindings)
         }

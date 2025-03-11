@@ -1,0 +1,83 @@
+// Tab
+"Tab_HomeView_Title" = "Summary";
+"Tab_Transaction_Title" = "Transaction";
+"Tab_Goal_Title" = "Goal";
+"Tab_Analysis_Title" = "Analysis";
+// HomeView
+"HomeView_SummaryTitle" = "Summary";
+"HomeView_SegementControl_Today" = "Today";
+"HomeView_SegementControl_ThisWeek" = "Week";
+"HomeView_SegementControl_ThisMonth" = "Month";
+"HomeView_SegementControl_ThisYear" = "Year";
+"HomeView_MoneyBalanceView_Expense_Title" = "Total Expense";
+"HomeView_MoneyBalanceView_Income_Title" = "Total Income";
+"HomeView_ViewDetailButton_Title" = "View Transaction Detail";
+"HomeView_ChartLabel_Title" = "Chart";
+"HomeView_FastNavigateLabel_Title" = "Quick Operation";
+"HomeView_DetailButton_Title" = "Detailed Report";
+"HomeView_SetBudgetButton_Title" = "Set A Budget";
+"HomeView_SetNotificationButton_Title" = "Set Reminder";
+"HomeView_LineChartDataSet_Expense_Label" = "Expense";
+"HomeView_LineChartDataSet_Income_Label" = "Income";
+// SideMenu
+"SideMenu_AppSetting_Title" = "App Setting";
+// SideMenu - SettingView
+"SideMenu_SettingView_SetLanguage_Title" = "Language";
+"SideMenu_SettingView_SetLanguage_English_Title" = "English";
+"SideMenu_SettingView_SetLanguage_TraditionalChinese_Title" = "Traditional Chinese";
+"SideMenu_SettingView_PasswordAndBiometricVerification_Title" = "Password Or Biometric Verification";
+// GoalView
+"GoalView_SavingGoalTitleLabel_Title" = "Saving Goal";
+"GoalView_NoSavingGoalLabel_Title" = "Have not established a savings goal";
+"GoalView_ExpenseGoalTitleLabel_Title" = "Spending limit";
+"GoalView_AddGoalButton_Title" = "Add Goal";
+"GoalView_DailyExpenseGoal_Title" = "Daily Expense";
+"GoalView_WeeklyExpenseGoal_Title" = "Weekly Expense";
+"GoalView_MonthlyExpenseGoal_Title" = "Monthly Expense";
+"GoalView_GoalSection_InProgress_Title" = "In Progress";
+"GoalView_GoalSection_Ended_Title" = "Ended";
+"GoalView_GoalEdit_Title" = "Edit";
+"GoalView_GoalDelete_Title" = "Delete";
+// GoalView - UnitGoalPreview
+"GoalView_UnitGoalPreview_GoalNotSettingLabel_Title" = "Not set yet";
+// GoalDetailView
+"GoalDetailView_RelationTransactionTitleLabel_Title" = "Relation Income";
+"GoalDetailView_GoalDurationLabel_Infinity_Title" = "A long time later";
+"GoalDetailView_GoalEdit_Title" = "Edit";
+// SettingExpenseGoalView
+"SettingExpenseGoalView_DailyExpenseLabel_Title" = "Daily Expense Limit";
+"SettingExpenseGoalView_WeeklyExpenseLabel_Title" = "Weekly Expense Limit";
+"SettingExpenseGoalView_MonthlyExpenseLabel_Title" = "Monthly Expense Limit";
+"SettingExpenseGoalView_SaveButton_Title" = "Set";
+"SettingExpenseGoalView_CancelButton_Title" = "Cancel";
+"SettingExpenseGoalView_Success_Title" = "Success";
+"SettingExpenseGoalView_Success_Message" = "Expense goal set successfully";
+"SettingExpenseGoalView_Error_Title" = "Error";
+"SettingExpenseGoalView_Ok_Title" = "OK";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Head_Title" = "Please enter a valid";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Tail_Title" = "expense goal value";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Day_Title" = "day";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Week_Title" = "week";
+"SettingExpenseGoalView_ExpenseGoalErrorInfo_Body_Month_Title" = "month";
+// AddOrEditGoalView
+"AddOrEditGoalView_CloseButton_Title" = "Cancel";
+"AddOrEditGoalView_SetButton_Add_Title" = "Set";
+"AddOrEditGoalView_SetButton_Edit_Title" = "Edit";
+"AddOrEditGoalView_GoalNameLabel_Title" = "Goal Name";
+"AddOrEditGoalView_GoalAmountLabel_Title" = "Goal Amount";
+"AddOrEditGoalView_GoalAmountTextFieldKeyboardDoneButtonItem_Title" = "Done";
+"AddOrEditGoalView_GoalTimePeriodLabel_Title" = "Goal Duration";
+"AddOrEditGoalView_GoalTimePeriodInfiniteLabel_Title" = "Goal has no end date";
+"AddOrEditGoalView_GoalTimePeriodToDateLabel_Title" = "To";
+"AddOrEditGoalView_GoalTimePeriodInfiniteReplaceDatePickerLabel_Title" = "Far in the future";
+"AddOrEditGoalView_ConfigurationGoal_Error_Title" = "Error";
+"AddOrEditGoalView_ConfigurationGoal_Ok_Title" = "OK";
+"AddOrEditGoalView_GoalFaliureReason_NameEmpty_Title" = "Please enter the goal name";
+"AddOrEditGoalView_GoalFaliureReason_AmountEmpty_Title" = "Please enter the goal amount";
+"AddOrEditGoalView_GoalFaliureReason_AmountInvalid_Title" = "Please enter a valid amount";
+"AddOrEditGoalView_GoalFaliureReason_StartDateEmpty_Title" = "Please enter the start date";
+"AddOrEditGoalView_GoalFaliureReason_EndDateEarlyThanStartDate_Title" = "The end date must be after the start date";
+"AddOrEditGoalView_GoalFaliureReason_NoEndDateError_Title" = "Error";
+"AddOrEditGoalView_GoalFaliureReason_ObjectIdNil_Title" = "Object ID error";
+"AddOrEditGoalView_GoalFaliureReason_GoalNil_Title" = "Goal error";
+

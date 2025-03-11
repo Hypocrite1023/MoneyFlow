@@ -39,20 +39,20 @@ class SettingExpenseGoalView: UIView {
         vstack.axis = .vertical
         vstack.spacing = 10
         
-        dailyExpenseLabel.text = "每日花費上限"
-        dailyExpenseLabel.font = AppConfig.Font.title.value
+        dailyExpenseLabel.text = NSLocalizedString("SettingExpenseGoalView_DailyExpenseLabel_Title", comment: "")
+        dailyExpenseLabel.font = AppConfig.Font.tertiaryTitle.value
         
         dailyExpenseTextField.borderStyle = .roundedRect
         dailyExpenseTextField.keyboardType = .decimalPad
         
-        weeklyExpenseLabel.text = "每週花費上限"
-        weeklyExpenseLabel.font = AppConfig.Font.title.value
+        weeklyExpenseLabel.text = NSLocalizedString("SettingExpenseGoalView_WeeklyExpenseLabel_Title", comment: "")
+        weeklyExpenseLabel.font = AppConfig.Font.tertiaryTitle.value
         
         weeklyExpenseTextField.borderStyle = .roundedRect
         weeklyExpenseTextField.keyboardType = .decimalPad
         
-        monthlyExpenseLabel.text = "每月花費上限"
-        monthlyExpenseLabel.font = AppConfig.Font.title.value
+        monthlyExpenseLabel.text = NSLocalizedString("SettingExpenseGoalView_MonthlyExpenseLabel_Title", comment: "")
+        monthlyExpenseLabel.font = AppConfig.Font.tertiaryTitle.value
         
         monthlyExpenseTextField.borderStyle = .roundedRect
         monthlyExpenseTextField.keyboardType = .decimalPad
@@ -61,10 +61,10 @@ class SettingExpenseGoalView: UIView {
         actionButtonHstack.spacing = 10
         
         saveButton.tintColor = .systemBlue
-        saveButton.setTitle("設定", for: .normal)
+        saveButton.setTitle(NSLocalizedString("SettingExpenseGoalView_SaveButton_Title", comment: ""), for: .normal)
         
         cancelButton.tintColor = .systemRed
-        cancelButton.setTitle("取消", for: .normal)
+        cancelButton.setTitle(NSLocalizedString("SettingExpenseGoalView_CancelButton_Title", comment: ""), for: .normal)
     }
     
     private func addView() {

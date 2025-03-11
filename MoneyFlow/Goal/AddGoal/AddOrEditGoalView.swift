@@ -58,16 +58,16 @@ class AddOrEditGoalView: UIView {
     private func setView() {
         backgroundColor = .white
         
-        closeButton.setTitle("取消", for: .normal)
+        closeButton.setTitle(NSLocalizedString("AddOrEditGoalView_CloseButton_Title", comment: ""), for: .normal)
         closeButton.tintColor = .systemRed
         
         switch mode {
             
         case .add:
-            setButton.setTitle("設定", for: .normal)
+            setButton.setTitle(NSLocalizedString("AddOrEditGoalView_SetButton_Add_Title", comment: ""), for: .normal)
             setButton.tintColor = .systemBlue
         case .edit:
-            setButton.setTitle("修改", for: .normal)
+            setButton.setTitle(NSLocalizedString("AddOrEditGoalView_SetButton_Edit_Title", comment: ""), for: .normal)
             setButton.tintColor = .systemOrange
         }
         buttonPanelStackView = UIStackView(arrangedSubviews: [closeButton, setButton])
@@ -76,8 +76,8 @@ class AddOrEditGoalView: UIView {
         buttonPanelStackView!.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         buttonPanelStackView!.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
         
-        goalNameLabel.text = "目標名稱"
-        goalNameLabel.font = AppConfig.Font.title.value
+        goalNameLabel.text = NSLocalizedString("AddOrEditGoalView_GoalNameLabel_Title", comment: "")
+        goalNameLabel.font = AppConfig.Font.tertiaryTitle.value
         
         goalNameTextField.borderStyle = .roundedRect
         
@@ -88,14 +88,14 @@ class AddOrEditGoalView: UIView {
         
         
         
-        goalAmountLabel.text = "目標金額"
-        goalAmountLabel.font = AppConfig.Font.title.value
+        goalAmountLabel.text = NSLocalizedString("AddOrEditGoalView_GoalAmountLabel_Title", comment: "")
+        goalAmountLabel.font = AppConfig.Font.tertiaryTitle.value
         
         goalAmountTextField.borderStyle = .roundedRect
         goalAmountTextField.keyboardType = .numberPad
         
         goalAmountTextFieldKeyboardDoneButton.sizeToFit()
-        goalAmountTextFieldKeyboardDoneButtonItem.title = "完成"
+        goalAmountTextFieldKeyboardDoneButtonItem.title = NSLocalizedString("AddOrEditGoalView_GoalAmountTextFieldKeyboardDoneButtonItem_Title", comment: "")
         goalAmountTextFieldKeyboardDoneButtonItem.style = .done
         goalAmountTextFieldKeyboardDoneButton.setItems([UIBarButtonItem(systemItem: .flexibleSpace), goalAmountTextFieldKeyboardDoneButtonItem], animated: true)
         goalAmountTextField.inputAccessoryView = goalAmountTextFieldKeyboardDoneButton
@@ -105,11 +105,11 @@ class AddOrEditGoalView: UIView {
         goalAmountStackView?.spacing = 8
         
         
-        goalTimePeriodLabel.text = "目標持續時間"
-        goalTimePeriodLabel.font = AppConfig.Font.title.value
+        goalTimePeriodLabel.text = NSLocalizedString("AddOrEditGoalView_GoalTimePeriodLabel_Title", comment: "")
+        goalTimePeriodLabel.font = AppConfig.Font.tertiaryTitle.value
         
-        goalTimePeriodInfiniteLabel.text = "目標無結束時間"
-        goalTimePeriodInfiniteLabel.font = AppConfig.Font.tertiaryTitle.value
+        goalTimePeriodInfiniteLabel.text = NSLocalizedString("AddOrEditGoalView_GoalTimePeriodInfiniteLabel_Title", comment: "")
+        goalTimePeriodInfiniteLabel.font = AppConfig.Font.content.value
         
         goalTimePeriodSwitchStackView = UIStackView(arrangedSubviews: [goalTimePeriodInfiniteLabel, goalTimePeriodSwitch])
         goalTimePeriodSwitchStackView?.axis = .horizontal
@@ -129,14 +129,14 @@ class AddOrEditGoalView: UIView {
         
         
         goalTimePeriodStartDatePicker.datePickerMode = .date
-        goalTimePeriodToDateLabel.text = "到"
-        goalTimePeriodToDateLabel.font = AppConfig.Font.title.value
+        goalTimePeriodToDateLabel.text = NSLocalizedString("AddOrEditGoalView_GoalTimePeriodToDateLabel_Title", comment: "")
+        goalTimePeriodToDateLabel.font = AppConfig.Font.tertiaryTitle.value
         goalTimePeriodToDateLabel.textAlignment = .center
         goalTimePeriodEndDatePicker.datePickerMode = .date
 //        goalTimePeriodEndDatePicker.minimumDate = .now
         
-        goalTimePeriodInfiniteReplaceDatePickerLabel.text = "很久以後"
-        goalTimePeriodInfiniteReplaceDatePickerLabel.font = AppConfig.Font.tertiaryTitle.value
+        goalTimePeriodInfiniteReplaceDatePickerLabel.text = NSLocalizedString("AddOrEditGoalView_GoalTimePeriodInfiniteReplaceDatePickerLabel_Title", comment: "")
+        goalTimePeriodInfiniteReplaceDatePickerLabel.font = AppConfig.Font.subContent.value
         goalTimePeriodInfiniteReplaceDatePickerLabel.isHidden = true
         goalTimePeriodInfiniteReplaceDatePickerLabel.textAlignment = .right
         

@@ -154,3 +154,44 @@ func hash(into hasher: inout Hasher) {
 }
 ```
 
+---
+
+## 2025.3.11
+
+### 有時候 table view 中的 cell 數量很少，如果用 auto layout 給他那麼大的空間感覺很怪，要怎麼根據 cell 的數量調整 table view 的大小？
+```swift View.swift
+var settingTableViewHeightConstraint: NSLayoutConstraint! // 將 table view 的 height anchor 獨立出來
+
+private func setView() {
+    settingTableView.layer.cornerRadius = 10
+    settingTableView.clipsToBounds = true
+    settingTableView.isScrollEnabled = false // 禁止滾動，讓它依據內容調整大小
+}
+
+private func setConstraints() {
+    NSLayoutConstraint.activate([
+        settingTableView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 20),
+        
+        settingTableView.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, constant: -20),
+        settingTableView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+    ])
+    settingTableViewHeightConstraint = settingTableView.heightAnchor.constraint(equalToConstant: 0)
+    settingTableViewHeightConstraint.isActive = true
+}
+```
+```swift ViewController.swift
+override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    contentView.updateSettingTableViewHeight()
+}
+/*
+viewDidLayoutSubviews 會在 視圖的佈局過程完成後 被調用，這通常發生在以下情況：
+    1.    視圖首次顯示時（例如 viewDidLoad 之後，佈局發生變化時）
+    2.    視圖的大小發生變化時（例如旋轉設備或改變 view 的 frame）
+    3.    子視圖的約束（Auto Layout）發生變化時（導致父視圖需要重新佈局）
+    4.    手動調用 view.setNeedsLayout() 或 view.layoutIfNeeded()
+
+這個方法適合用來 調整子視圖的佈局，但不適合用來初始化 UI，因為它可能被多次調用。
+*/
+```
+

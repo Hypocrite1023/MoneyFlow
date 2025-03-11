@@ -156,7 +156,6 @@ class AddOrEditGoalViewViewModel {
     func isGoalModified() -> Bool {
         guard let originGoal else { return false }
         if name != originGoal.name || Double(amount!)! != originGoal.targetAmount || startDate != originGoal.startDate || endDate != originGoal.endDate {
-            print("modify")
             return true
         } else {
             return false
@@ -178,21 +177,21 @@ enum GoalFaliureReason: Error {
         switch self {
             
         case .nameEmpty:
-            return "請輸入目標名稱"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_NameEmpty_Title", comment: "")
         case .amountEmpty:
-            return "請輸入目標金額"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_AmountEmpty_Title", comment: "")
         case .amountInvalid:
-            return "請輸入正確的金額"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_AmountInvalid_Title", comment: "")
         case .startDateEmpty:
-            return "請輸入開始日期"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_StartDateEmpty_Title", comment: "")
         case .endDateEarlyThanStartDate:
-            return "結束日期必須在開始日期之後"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_EndDateEarlyThanStartDate_Title", comment: "")
         case .noEndDateError:
-            return "錯誤"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_NoEndDateError_Title", comment: "")
         case .objectIdNil:
-            return "objectId錯誤"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_ObjectIdNil_Title", comment: "")
         case .goalNil:
-            return "目標錯誤"
+            return NSLocalizedString("AddOrEditGoalView_GoalFaliureReason_GoalNil_Title", comment: "")
         }
     }
 }

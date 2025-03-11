@@ -41,7 +41,7 @@ class HomeViewController: UIViewController {
         
         for dateRange in CoreDataPredicate.TransactionDateRange.allCases {
             print(dateRange.title, homeView.segementControl.numberOfSegments)
-            homeView.segementControl.insertSegment(withTitle: dateRange.title, at: homeView.segementControl.numberOfSegments, animated: false)
+            homeView.segementControl.insertSegment(withTitle: dateRange.localized, at: homeView.segementControl.numberOfSegments, animated: false)
         }
         homeView.segementControl.selectedSegmentIndex = 0
         setBindings()
@@ -104,14 +104,14 @@ class HomeViewController: UIViewController {
         }
         
         
-        let expenseDataSet = LineChartDataSet(entries: expenseEntries, label: "花費")
+        let expenseDataSet = LineChartDataSet(entries: expenseEntries, label: NSLocalizedString("HomeView_LineChartDataSet_Expense_Label", comment: ""))
         expenseDataSet.colors = [.systemBlue]
         expenseDataSet.circleColors = [.black] // 資料點顏色
         expenseDataSet.circleRadius = 5.0
         expenseDataSet.lineWidth = 3
         expenseDataSet.drawValuesEnabled = false
         
-        let incomeDataSet = LineChartDataSet(entries: incomeEntries, label: "收入")
+        let incomeDataSet = LineChartDataSet(entries: incomeEntries, label: NSLocalizedString("HomeView_LineChartDataSet_Income_Label", comment: ""))
         incomeDataSet.colors = [.systemRed]
         incomeDataSet.circleColors = [.systemGray] // 資料點顏色
         incomeDataSet.circleRadius = 5.0

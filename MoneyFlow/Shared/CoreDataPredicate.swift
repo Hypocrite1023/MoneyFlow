@@ -87,6 +87,19 @@ enum CoreDataPredicate {
         case thisMonth = 2
         case thisYear = 3
         
+        var localized: String {
+            switch self {
+            case .today:
+                return NSLocalizedString("HomeView_SegementControl_Today", comment: "")
+            case .thisWeek:
+                return NSLocalizedString("HomeView_SegementControl_ThisWeek", comment: "")
+            case .thisMonth:
+                return NSLocalizedString("HomeView_SegementControl_ThisMonth", comment: "")
+            case .thisYear:
+                return NSLocalizedString("HomeView_SegementControl_ThisYear", comment: "")
+            }
+        }
+        
         var title: String {
             switch self {
             case .today:

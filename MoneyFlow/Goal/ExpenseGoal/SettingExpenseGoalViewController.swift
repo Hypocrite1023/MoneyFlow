@@ -114,9 +114,9 @@ class SettingExpenseGoalViewController: UIViewController {
         switch result {
             
         case .success(_):
-            alert(title: "成功", message: "設定花費目標成功", type: .success)
+            alert(title: NSLocalizedString("SettingExpenseGoalView_Success_Title", comment: ""), message: NSLocalizedString("SettingExpenseGoalView_Success_Message", comment: ""), type: .success)
         case .failure(let error):
-            alert(title: "錯誤", message: error.info, type: .fail)
+            alert(title: NSLocalizedString("SettingExpenseGoalView_Error_Title", comment: ""), message: error.info, type: .fail)
         }
     }
     
@@ -133,7 +133,7 @@ class SettingExpenseGoalViewController: UIViewController {
                 alertController.dismiss(animated: true)
             }
         case .fail:
-            let okAction = UIAlertAction(title: "OK", style: .default)
+            let okAction = UIAlertAction(title: NSLocalizedString("SettingExpenseGoalView_Ok_Title", comment: ""), style: .default)
             alertController.addAction(okAction)
         }
         present(alertController, animated: true)

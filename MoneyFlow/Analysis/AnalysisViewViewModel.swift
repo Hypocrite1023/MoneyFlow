@@ -35,6 +35,7 @@ class AnalysisViewViewModel {
     @Published var commonUsedTagString: String?
     @Published var expensePieChartData: [PieChartDataEntry] = []
     @Published var expenseGroupByCategoryDict: [String: Double] = [:]
+    @Published var expenseGroupByPaymentMethodDict: [String: Double] = [:]
     
     init() {
         setBindings()
@@ -119,7 +120,14 @@ class AnalysisViewViewModel {
                 } else {
                     expenseByCategory.updateValue(expenseByCategory[transaction.category]! + transaction.amount, forKey: transaction.category)
                 }
+                if !expenseGroupByPaymentMethodDict.keys.contains(transaction.payMethod) {
+                    expenseGroupByPaymentMethodDict.updateValue(transaction.amount, forKey: transaction.payMethod)
+                } else {
+                    expenseGroupByPaymentMethodDict.updateValue(expenseGroupByPaymentMethodDict[transaction.payMethod]! + transaction.amount, forKey: transaction.payMethod)
+                }
             }
+            
+            
             
         }
         let topThreePaymentMethod = commonUsedPaymentMethod.sorted(by: { $0.value > $1.value }).prefix(3).map(\.key)

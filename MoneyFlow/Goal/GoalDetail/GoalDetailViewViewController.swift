@@ -78,7 +78,7 @@ class GoalDetailViewViewController: UIViewController {
 
 extension GoalDetailViewViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(style: .normal, title: "編輯") { action, view, closure in
+        let action = UIContextualAction(style: .normal, title: NSLocalizedString("GoalDetailView_GoalEdit_Title", comment: "")) { action, view, closure in
             print(action)
         }
         return UISwipeActionsConfiguration(actions: [action])

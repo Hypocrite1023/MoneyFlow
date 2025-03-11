@@ -70,8 +70,9 @@ class UnitGoalPreview: UIView {
         vstack?.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
         vstack?.leadingAnchor.constraint(lessThanOrEqualTo: centerXAnchor).isActive = true
         
-        goalNotSettingLabel.text = "尚未設定目標"
-        goalNotSettingLabel.font = AppConfig.Font.tertiaryTitle.value
+        goalNotSettingLabel.text = NSLocalizedString("GoalView_UnitGoalPreview_GoalNotSettingLabel_Title", comment: "")
+        goalNotSettingLabel.font = AppConfig.Font.content.value
+        goalNotSettingLabel.textColor = .secondaryLabel
         goalNotSettingLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(goalNotSettingLabel)
         
