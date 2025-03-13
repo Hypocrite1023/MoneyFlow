@@ -11,12 +11,12 @@ import Combine
 class TransactionDetailViewViewModel {
     let transaction: Transaction
     @Published var date: Date
-    @Published var type: String
+    @Published var type: UUID
     @Published var itemName: String
     @Published var amount: String
-    @Published var category: String
-    @Published var payMethod: String
-    @Published var tags: [String]?
+    @Published var category: UUID
+    @Published var payMethod: UUID
+    @Published var tags: [UUID]?
     @Published var note: String?
     @Published var relationGoal: UUID?
     

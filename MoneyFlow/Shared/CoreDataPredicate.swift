@@ -57,7 +57,7 @@ enum CoreDataPredicate {
                 
             }
             guard let interval else { return nil}
-            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), CoreDataPredicate.TransactionType.expense.predicate])
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate])
         }
         var incomePredicate: NSPredicate? {
             var interval: DateInterval?
@@ -77,7 +77,7 @@ enum CoreDataPredicate {
                 
             }
             guard let interval else { return nil}
-            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), CoreDataPredicate.TransactionType.income.predicate])
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [NSPredicate(format: "date >= %@ AND date <= %@", interval.start as NSDate, interval.end as NSDate), CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate])
         }
     }
     
@@ -139,65 +139,57 @@ enum CoreDataPredicate {
         }
     }
     
-    enum TransactionType: String, CaseIterable {
-        case expense = "支出", income = "收入"
-        
-        var title: String {
-            switch self {
-            case .income:
-                return "收入"
-            case .expense:
-                return "支出"
-            }
-        }
+    enum CoreDataPredicateTransactionType {
+//        case expense = "支出", income = "收入"
+        case type(uuid: UUID)
+//        var title: String {
+//            switch self {
+//            case .income:
+//                return "收入"
+//            case .expense:
+//                return "支出"
+//            }
+//        }
         
         var predicate: NSPredicate {
-            return NSPredicate(format: "type == %@", self.title)
+            switch self {
+            case .type(uuid: let uuid):
+                return NSPredicate(format: "uuid == %@", uuid as CVarArg)
+            }
         }
     }
     
     enum TransactionCategory {
-        enum CategoryType {
-            case all, expense, income
-        }
-        case category(categoryName: String), type(categoryType: CategoryType)
+        case category(categoryUUID: UUID), type(categoryType: UUID)
         
         var predicate: NSPredicate {
             switch self {
-            case .category(categoryName: let name):
-                return NSPredicate(format: "category == %@", name)
+            case .category(categoryUUID: let uuid):
+                return NSPredicate(format: "uuid == %@", uuid as CVarArg)
             case .type(categoryType: let type):
-                switch type {
-                    
-                case .all:
-                    return NSPredicate(format: "type == %@ || type == %@", "支出", "收入")
-                case .expense:
-                    return NSPredicate(format: "type == %@", "支出")
-                case .income:
-                    return NSPredicate(format: "type == %@", "收入")
-                }
+                return NSPredicate(format: "type == %@", type as CVarArg)
             }
         }
     }
     
     enum TransactionPaymentMethod {
-        case paymentMethod(paymentMethodName: String)
+        case paymentMethod(paymentMethodUUID: UUID)
         
         var predicate: NSPredicate {
             switch self {
-            case .paymentMethod(paymentMethodName: let name):
-                return NSPredicate(format: "paymentMethod == %@", name)
+            case .paymentMethod(paymentMethodUUID: let uuid):
+                return NSPredicate(format: "uuid == %@", uuid as CVarArg)
             }
         }
     }
     
     enum TransactionTag {
-        case tag(tagName: String)
+        case tag(tagUUID: UUID)
         
         var predicate: NSPredicate {
             switch self {
-            case .tag(tagName: let name):
-                return NSPredicate(format: "name == %@", name)
+            case .tag(tagUUID: let uuid):
+                return NSPredicate(format: "uuid == %@", uuid as CVarArg)
             }
         }
     }

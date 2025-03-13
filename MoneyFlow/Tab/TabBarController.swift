@@ -42,7 +42,7 @@ class TabBarController: UITabBarController {
         let analysisView = UINavigationController(rootViewController: AnalysisViewViewController())
         analysisView.tabBarItem = UITabBarItem(title: NSLocalizedString("Tab_Analysis_Title", comment: ""), image: UIImage(systemName: "chart.bar.fill"), tag: 4)
         viewControllers = [home, transactionView, placeholderVC2, goalView, analysisView]
-        
+
         accountingButton.addTarget(self, action: #selector(handleAddButtonTapped), for: .touchUpInside)
         self.view.addSubview(accountingButton)
         accountingButton.layer.cornerRadius = (tabBar.bounds.height + 10) / 2

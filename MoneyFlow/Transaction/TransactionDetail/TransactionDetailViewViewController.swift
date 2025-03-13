@@ -68,15 +68,15 @@ class TransactionDetailViewViewController: UIViewController {
     
     private func setupViewValues() {
         contentView.accountingDatePicker.date = viewModel.date
-        contentView.typeSelectionView.setSelectionList(selectionList: ["支出", "收入"], selected: viewModel.type)
+        contentView.typeSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionType().map { ($0.uuid, $0.nsLocalizedStringIdentifier) }, selected: viewModel.type)
         contentView.itemNameTextField.text = viewModel.itemName
         contentView.amountTextField.text = viewModel.amount.description
-        contentView.categorySelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .all)), selected: viewModel.category)
-        contentView.paymentMethodSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods(), selected: viewModel.payMethod)
-        contentView.tagSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionTags(), selected: Set(viewModel.tags ?? []))
+        contentView.categorySelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[1])).map {($0.uuid, $0.name)}, selected: viewModel.category)
+        contentView.paymentMethodSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods().map {($0.uuid, $0.paymentMethod)}, selected: viewModel.payMethod)
+        contentView.tagSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionTags().map {($0.uuid, $0.tag)}, selected: Set(viewModel.tags ?? []))
         contentView.noteTextField.text = viewModel.note
         if viewModel.note == "" || viewModel.note == nil {
-            contentView.noteTextField.placeholder = "沒有輸入任何備註"
+            contentView.noteTextField.placeholder = NSLocalizedString("TransactionDetailView_NoteTextField_Placeholder_Title", comment: "沒有輸入任何備註")
         }
     }
     
@@ -220,8 +220,8 @@ class TransactionDetailViewViewController: UIViewController {
                 case .failure(let error):
                     print(error)
                 
-                    let alertController = UIAlertController(title: "錯誤", message: error.errorMessage, preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                let alertController = UIAlertController(title: NSLocalizedString("TransactionDetailView_ErrorMessage_Title", comment: "錯誤"), message: error.errorMessage, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: NSLocalizedString("TransactionDetailView_ErrorMessage_Message", comment: "好"), style: .default) { _ in
     //                        print("")
                     }
                     alertController.addAction(okAction)

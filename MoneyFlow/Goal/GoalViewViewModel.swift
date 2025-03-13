@@ -42,8 +42,8 @@ class GoalViewViewModel {
     }
     
     func loadCurrentExpense() {
-        currentDailyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionDateRange.today.expensePredicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
-        currentWeeklyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionDateRange.thisWeek.expensePredicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
-        currentMonthlyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionDateRange.thisMonth.expensePredicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
+        currentDailyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionTimePredicate.today.bothPredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
+        currentWeeklyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionTimePredicate.week.bothPredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
+        currentMonthlyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionTimePredicate.month.bothPredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
     }
 }

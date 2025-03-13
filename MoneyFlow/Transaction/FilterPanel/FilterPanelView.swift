@@ -9,19 +9,22 @@ import UIKit
 
 class FilterPanelView: UIView {
 
-    private let filterByTimeLabel: UILabel = createLabel(title: "日期")
-    let dateRangeSelector: SingleSelectionView = SingleSelectionView(selectionList: CoreDataPredicate.TransactionDateRange.allCases.map { $0.title }, preselectIndex: 0)
-    private let filterByTypeLabel: UILabel = createLabel(title: "類型")
-    let typeSelector: MultiSelectionView = MultiSelectionView(selectionList: ["收入", "支出"], preselectIndex: ["收入", "支出"])
-    private let filterByCategoryLabel: UILabel = createLabel(title: "類別")
+    private let filterByTimeLabel: UILabel = createLabel(title: NSLocalizedString("FilterPanelView_FilterByTimeLabel_Title", comment: "日期"))
+    let dateRangeSelector: SingleSelectionView
+    private let filterByTypeLabel: UILabel = createLabel(title: NSLocalizedString("FilterPanelView_FilterByTypeLabel_Title", comment: "類型"))
+    let typeSelector: MultiSelectionView = MultiSelectionView(
+        selectionList: CoreDataManager.shared.fetchAllTransactionType().map { ($0.uuid, $0.nsLocalizedStringIdentifier) },
+        preselectIndex: Set(CoreDataManager.shared.fetchAllTransactionType().map(\.uuid)))
+    private let filterByCategoryLabel: UILabel = createLabel(title: NSLocalizedString("FilterPanelView_CategorySelector_Title", comment: "類別"))
     let categorySelector: MultiSelectionView = MultiSelectionView(selectionList: [])
-    private let filterByPaymentMethodLabel: UILabel = createLabel(title: "交易方式")
-    let paymentMethodSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods())
-    private let filterByTagLabel: UILabel = createLabel(title: "標籤")
-    let tagSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionTags(), mayNil: true, selectionListNilPrompt: "尚未建立任何標籤")
+    private let filterByPaymentMethodLabel: UILabel = createLabel(title: NSLocalizedString("FilterPanelView_FilterByPaymentMethodLabel_Title", comment: "交易方式"))
+    let paymentMethodSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods().map { ($0.uuid, $0.paymentMethod) })
+    private let filterByTagLabel: UILabel = createLabel(title: NSLocalizedString("FilterPanelView_PaymentMethodSelector_Title", comment: "標籤"))
+    let tagSelector: MultiSelectionView = MultiSelectionView(selectionList: CoreDataManager.shared.fetchAllTransactionTags().map { ($0.uuid, $0.tag) }, mayNil: true, selectionListNilPrompt: NSLocalizedString("FilterPanelView_TagSelector_SelectionListNilPrompt_Title", comment: "尚未建立任何標籤"))
 //    private let filterByAmountLabel: UILabel = createLabel(title: "金額")
     
-    override init(frame: CGRect) {
+    init(dateRangeSelectorSelectionList: [(UUID, String)], frame: CGRect) {
+        self.dateRangeSelector = SingleSelectionView(selectionList: dateRangeSelectorSelectionList, preselectIndex: nil)
         super.init(frame: frame)
         setView()
     }

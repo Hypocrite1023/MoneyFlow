@@ -10,12 +10,12 @@ import Combine
 
 class AccountingPageViewModel {
     var transactionDate: Date = .now
-    var transactionType: Int = -1 // -1 代表未選擇
+    var transactionType: UUID?
     var transactionName: String?
     var transactionAmount: String?
-    var transactionCategory: String?
-    var transactionPaymentMethod: String?
-    var transactionTag: [String]?
+    var transactionCategory: UUID?
+    var transactionPaymentMethod: UUID?
+    var transactionTag: [UUID]?
     var transactionNote: String?
     var relationGoalID: UUID?
     lazy var goalList: [GoalItem] = CoreDataManager.shared.fetchInProcessGoal()
@@ -23,12 +23,11 @@ class AccountingPageViewModel {
     
     func makeAccounting() -> Result<String?, CoreDataManager.AccountingError> {
         
-        guard let type = getAccountingType(index: transactionType), let transactionName, let transactionAmount, let amount = Double(transactionAmount), let category = transactionCategory, let payMethod = transactionPaymentMethod, let tags = transactionTag, let notes = transactionNote else {
+        guard let type = transactionType, let transactionName, let transactionAmount, let amount = Double(transactionAmount), let category = transactionCategory, let payMethod = transactionPaymentMethod, let tags = transactionTag, let notes = transactionNote else {
             return .failure(CoreDataManager.AccountingError.transactionError)
         }
         
         let transaction = Transaction(date: transactionDate, type: type, itemName: transactionName, amount: amount, category: category, payMethod: payMethod, tags: tags, note: notes, relationGoal: relationGoalID)
-        print(transaction)
         return CoreDataManager.shared.addTransaction(transaction)
     }
     

@@ -29,17 +29,17 @@ struct Transaction: Hashable {
     }
     var id: NSManagedObjectID?
     var date: Date
-    var type: String
+    var type: UUID
     var itemName: String
     var amount: Double
-    var category: String
+    var category: UUID
     var categorySystemImageName: String?
-    var payMethod: String
-    var tags: [String]?
+    var payMethod: UUID
+    var tags: [UUID]?
     var note: String?
     var relationGoal: UUID?
     
-    init(date: Date, type: String, itemName: String, amount: Double, category: String, categorySystemImageName: String? = nil, payMethod: String, tags: [String]?, note: String?, relationGoal: UUID?) {
+    init(date: Date, type: UUID, itemName: String, amount: Double, category: UUID, categorySystemImageName: String? = nil, payMethod: UUID, tags: [UUID]?, note: String?, relationGoal: UUID?) {
         self.date = date
         self.type = type
         self.itemName = itemName

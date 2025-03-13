@@ -80,4 +80,84 @@
 "AddOrEditGoalView_GoalFaliureReason_NoEndDateError_Title" = "Error";
 "AddOrEditGoalView_GoalFaliureReason_ObjectIdNil_Title" = "Object ID error";
 "AddOrEditGoalView_GoalFaliureReason_GoalNil_Title" = "Goal error";
-
+// AnalysisView
+"AnalysisView_AnalysisViewTitleLabel_Title" = "Analysis";
+"AnalysisView_AnalysisSummaryLabel_Title" = "Summary";
+"AnalysisView_MonthExpenseAnalysisCardView_Title" = "Total Expense";
+"AnalysisView_MonthIncomeAnalysisCardView_Title" = "Total Income";
+"AnalysisView_MonthBalanceAnalysisCardView_Title" = "Balance";
+"AnalysisView_MostCommonlyUsedPaymentMethodTitleLabel_Title" = "Most Frequently Used Payment Method";
+"AnalysisView_MostCommonlyUsedTagTitleLabel_Title" = "Most Frequently Used Tag";
+"AnalysisView_ExpenseAnalysisTitleLabel_Title" = "Expense Analysis";
+"AnalysisView_ByCategoryExpenseAnalysisTitleLabel_Title" = "By Category";
+"AnalysisView_ByCategoryListExpenseAnalysisTitleLabel_Title" = "Expense List by Category";
+"AnalysisView_ByPaymentMethodAnalysisTitleLabel_Title" = "By Payment Method";
+"AnalysisView_IncomeAnalysisTitleLabel_Title" = "Income Analysis";
+"AnalysisView_ExpensePiechartDataNilLabel_Title" = "No recorded transactions this month";
+"AnalysisView_ExpensePiechartView_PieChartDataSet_Title" = "Expense Categories";
+"AnalysisView_PaymentMethodExpenseAnalysisBarChartView_BarChartDataSet_Title" = "Income";
+"AnalysisView_CommonUsedPaymentMethodString_Nil_Title" = "No recorded transactions this month";
+"AnalysisView_CommonUsedTagString_Nil_Title" = "No tags used in recorded transactions this month";
+// YearMonthPicker
+"YearMonthPicker_YearLabel_Title" = ".";
+"YearMonthPicker_MonthLabel_Title" = ".";
+// FilterPanelView
+"FilterPanelView_FilterByTimeLabel_Title" = "Date";
+"FilterPanelView_FilterByTypeLabel_Title" = "Type";
+"FilterPanelView_TypeSelector_Income_Title" = "Income";
+"FilterPanelView_TypeSelector_Expense_Title" = "Expense";
+"FilterPanelView_CategorySelector_Title" = "Category";
+"FilterPanelView_FilterByPaymentMethodLabel_Title" = "Transaction Method";
+"FilterPanelView_PaymentMethodSelector_Title" = "Tags";
+"FilterPanelView_TagSelector_SelectionListNilPrompt_Title" = "No tags created yet";
+// TransactionDetailView
+"TransactionDetailView_DateLabel_Title" = "Date";
+"TransactionDetailView_TypeLabel_Title" = "Type";
+"TransactionDetailView_ItemNameLabel_Title" = "Item Name";
+"TransactionDetailView_AmountLabel_Title" = "Amount";
+"TransactionDetailView_CategoryLabel_Title" = "Category";
+"TransactionDetailView_PaymentMethodLabel_Title" = "Payment Method";
+"TransactionDetailView_TagLabel_Title" = "Tags";
+"TransactionDetailView_NoteLabel_Title" = "Note";
+"TransactionDetailView_IncomeDistributeLabel_Title" = "Distribute Income To";
+"TransactionDetailView_AddTagButton_Title" = "Add Tag";
+"TransactionDetailView_typeSelectionView_Expense_Title" = "Expense";
+"TransactionDetailView_typeSelectionView_Income_Title" = "Income";
+"TransactionDetailView_NoteTextField_Placeholder_Title" = "No note entered";
+"TransactionDetailView_ErrorMessage_Title" = "Error";
+"TransactionDetailView_ErrorMessage_Message" = "OK";
+// TransactionView
+"TransactionView_TransactionDetailLabel_Title" = "Records";
+"TransactionView_TransactionFilterButton_Title" = "Filter";
+"TransactionView_NoDatafoundLabel_Title" = "No matching data found";
+// Core Data - TransactionType
+"CoreData_TransactionType_Income_Title" = "Income";
+"CoreData_TransactionType_Expense_Title" = "Expense";
+// Core Data - TransactionCategory
+"CoreData_TransactionCategory_Expense_FoodAndDining" = "Food & Dining";
+"CoreData_TransactionCategory_Expense_Transportation" = "Transportation";
+"CoreData_TransactionCategory_Expense_Lifestyle" = "Lifestyle";
+"CoreData_TransactionCategory_Expense_Shopping" = "Shopping";
+"CoreData_TransactionCategory_Expense_Travel" = "Travel";
+"CoreData_TransactionCategory_Expense_Housing" = "Housing";
+"CoreData_TransactionCategory_Expense_Health" = "Health";
+"CoreData_TransactionCategory_Expense_Medical" = "Medical";
+"CoreData_TransactionCategory_Expense_Vehicles" = "Vehicles";
+"CoreData_TransactionCategory_Expense_Education" = "Education";
+"CoreData_TransactionCategory_Expense_Entertainment" = "Entertainment";
+"CoreData_TransactionCategory_Expense_Insurance" = "Insurance";
+"CoreData_TransactionCategory_Expense_Communication" = "Communication";
+"CoreData_TransactionCategory_Expense_Other" = "Other";
+"CoreData_TransactionCategory_Income_Salary" = "Salary";
+"CoreData_TransactionCategory_Income_Bonus" = "Bonus";
+"CoreData_TransactionCategory_Income_Allowance" = "Allowance";
+"CoreData_TransactionCategory_Income_Investment" = "Investment";
+"CoreData_TransactionCategory_Income_SideIncome" = "Side Income";
+"CoreData_TransactionCategory_Income_RedEnvelope" = "Red Envelope";
+"CoreData_TransactionCategory_Income_Other" = "Other";
+// Core Data - Transaction Payment Method
+"CoreData_TransactionPaymentMethod_Cash" = "Cash";
+"CoreData_TransactionPaymentMethod_MobilePayment" = "Mobile Payment";
+"CoreData_TransactionPaymentMethod_CreditCard" = "Credit Card";
+"CoreData_TransactionPaymentMethod_Transfer" = "Transfer";
+"CoreData_TransactionPaymentMethod_Other" = "Other";

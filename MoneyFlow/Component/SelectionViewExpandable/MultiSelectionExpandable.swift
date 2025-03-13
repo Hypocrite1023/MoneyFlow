@@ -9,12 +9,12 @@ import UIKit
 
 class MultiSelectionExpandable: SelectionViewExpandable {
     
-    @Published var selected: Set<String> = []
+    @Published var selected: Set<UUID> = []
     private var initialButton: [UIButton] = []
     lazy var placeHolder: UILabel = UILabel()
     private let prompt: String
     
-    init(selected: Set<String> = [], height: CGFloat = 30, width: CGFloat = 60, spacing: CGFloat = 10, selectedNilPrompt: String) {
+    init(height: CGFloat = 30, width: CGFloat = 60, spacing: CGFloat = 10, selectedNilPrompt: String) {
         self.prompt = selectedNilPrompt
         super.init(height: height, width: width, spacing: spacing)
 //        setView()
@@ -35,15 +35,22 @@ class MultiSelectionExpandable: SelectionViewExpandable {
             self.heightAnchor.constraint(equalToConstant: 40).isActive = true
         }
         
-        for title in Array(selected) {
+        for selectedItem in Array(selected) {
             let button = UIButton(configuration: .plain())
             var conf = button.configuration
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-            button.setTitle(title, for: .normal)
+            button.setTitle(NSLocalizedString((selectionList.first(where: { (uuid: UUID, locolizedKey: String) -> Bool in
+                selectedItem == uuid
+            })?.locolizedKey)!, comment: ""), for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
             button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
             button.layer.cornerRadius = 5
             button.clipsToBounds = true
+                        
+            button.tag = selectionList.firstIndex(where: { (uuid: UUID, locolizedKey: String) -> Bool in
+                selectedItem == uuid
+            })!
+            
             button.translatesAutoresizingMaskIntoConstraints = false
             button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
             horizonStack.addArrangedSubview(button)
@@ -52,16 +59,19 @@ class MultiSelectionExpandable: SelectionViewExpandable {
             
         
         
-        for title in selectionList {
-            if selected.contains(title) { continue }
+        for (index, selectionItem) in selectionList.enumerated() {
+            if selected.contains(selectionItem.uuid) { continue }
             let button = UIButton(configuration: .plain())
             var conf = button.configuration
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-            button.setTitle(title, for: .normal)
+            button.setTitle(NSLocalizedString(selectionItem.locolizedKey, comment: ""), for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
             button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
             button.layer.cornerRadius = 5
             button.clipsToBounds = true
+            
+            button.tag = index
+            
             button.translatesAutoresizingMaskIntoConstraints = false
             button.isHidden = true
             button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
@@ -97,7 +107,7 @@ class MultiSelectionExpandable: SelectionViewExpandable {
         }
     }
     
-    func setSelectionList(selectionList: [String], selected: Set<String> = []) {
+    func setSelectionList(selectionList: [(UUID, String)], selected: Set<UUID> = []) {
         self.selected = selected
         super.setSelectionList(selectionList: selectionList)
         setView()
@@ -107,7 +117,7 @@ class MultiSelectionExpandable: SelectionViewExpandable {
 extension MultiSelectionExpandable: SelectionButtonCanUpdate {
     func updateSelectionButtonStatus() {
         for (index, button) in expandButtonList.enumerated() {
-            if selected.contains(button.title(for: .normal)!) {
+            if selected.contains(selectionList[button.tag].uuid) {
                 button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
                 button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
                 initialButton.append(expandButtonList.remove(at: index))
@@ -117,7 +127,7 @@ extension MultiSelectionExpandable: SelectionButtonCanUpdate {
             }
         }
         for (index, button) in initialButton.enumerated() {
-            if selected.contains(button.title(for: .normal)!) {
+            if selected.contains(selectionList[button.tag].uuid) {
                 button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
                 button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
             } else {
@@ -137,10 +147,10 @@ extension MultiSelectionExpandable: SelectionButtonCanUpdate {
     }
     
     @objc func buttonAction(sender: UIButton) {
-        if selected.contains(sender.title(for: .normal)!) {
-            selected.remove(sender.title(for: .normal)!)
+        if selected.contains(selectionList[sender.tag].uuid) {
+            selected.remove(selectionList[sender.tag].uuid)
         } else {
-            selected.insert(sender.title(for: .normal)!)
+            selected.insert(selectionList[sender.tag].uuid)
         }
         updateSelectionButtonStatus()
     }

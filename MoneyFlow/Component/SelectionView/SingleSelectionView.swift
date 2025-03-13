@@ -11,7 +11,7 @@ import Combine
 class SingleSelectionView: SelectionView, ObservableObject {
 
     var mayNil: Bool
-    @Published var selectedIndex: Int? {
+    @Published var selectedIndex: UUID? {
         didSet {
             if selectedIndex != nil {
                 updateButtonStatus()
@@ -22,7 +22,7 @@ class SingleSelectionView: SelectionView, ObservableObject {
 //    static let singleSelectionButtonStateChangeNotification: NSNotification.Name = NSNotification.Name("SingleSelectionButtonStateChangeNotification")
     
     
-    init(selectionList: [String], mayNil: Bool = false, preselectIndex: Int? = nil) {
+    init(selectionList: [(UUID, String)], mayNil: Bool = false, preselectIndex: UUID? = nil) {
         self.mayNil = mayNil
         self.selectedIndex = preselectIndex
         super.init(selectionList: selectionList)
@@ -43,7 +43,7 @@ class SingleSelectionView: SelectionView, ObservableObject {
         
     }
     
-    internal func updateSelectionList(list: [String]) {
+    internal func updateSelectionList(list: [(UUID, String)]) {
         self.selectionList = list
         horizonStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         setView()
@@ -51,7 +51,7 @@ class SingleSelectionView: SelectionView, ObservableObject {
     
     open func updateButtonStatus() {
         for (index, button) in buttonList.enumerated() {
-            if index == selectedIndex {
+            if selectedIndex == selectionList[button.tag].uuid {
                 button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
                 button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
             } else {
@@ -62,8 +62,8 @@ class SingleSelectionView: SelectionView, ObservableObject {
     }
     
     @objc func buttonAction(_ sender: UIButton) {
-        if selectedIndex != sender.tag || selectedIndex == nil {
-            selectedIndex = sender.tag
+        if selectedIndex != selectionList[sender.tag].uuid || selectedIndex == nil {
+            selectedIndex = selectionList[sender.tag].uuid
             updateButtonStatus()
 //            NotificationCenter.default.post(name: SingleSelectionView.singleSelectionButtonStateChangeNotification, object: self)
         }

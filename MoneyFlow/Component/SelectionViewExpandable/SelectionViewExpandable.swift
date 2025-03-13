@@ -10,7 +10,7 @@ import UIKit
 class SelectionViewExpandable: UIView {
     
     var buttonScrollView: UIScrollView = UIScrollView()
-    var selectionList: [String] = []
+    var selectionList: [(uuid: UUID, locolizedKey: String)] = []
     var expandButtonList: [UIButton] = []
     var horizonStack: UIStackView = UIStackView()
     
@@ -103,7 +103,7 @@ class SelectionViewExpandable: UIView {
         }
     }
     
-    func setSelectionList(selectionList: [String]) {
+    func setSelectionList(selectionList: [(uuid: UUID, locolizedKey: String)]) {
         self.selectionList = selectionList
     }
 }

@@ -33,17 +33,6 @@ class AnalysisViewViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         setBindings()
-        
-//        contentView.mostCommonlyUsedPaymentMethod.text = "現金、信用卡"
-//        contentView.mostCommonlyUsedTag.text = "早餐、午餐、晚餐"
-//        var data = [PieChartDataEntry]()
-//        data.append(PieChartDataEntry(value: 45, label: "食物"))
-//        data.append(PieChartDataEntry(value: 25, label: "交通"))
-//        data.append(PieChartDataEntry(value: 30, label: "娛樂"))
-//        contentView.configPieChart(data: data)
-        
-//        contentView.configCategoryExpenseList(categoryExpenseDictionary: ["早餐": 1000, "晚餐": 2000, "午餐": 3000, "交通": 4000, "娛樂": 5000])
-//        contentView.configPaymentMethodBarChart(paymentMethodExpenseDictionary: ["現金": 10, "信用卡": 20, "ATM": 30, "轉帳": 40])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -99,7 +88,7 @@ class AnalysisViewViewController: UIViewController {
                 .receive(on: DispatchQueue.main)
                 .map {
                     if $0 == "" {
-                        return Optional("這個月還沒有任何記帳資料")
+                        return Optional(NSLocalizedString("AnalysisView_CommonUsedPaymentMethodString_Nil_Title", comment: "這個月還沒有任何記帳資料"))
                     } else {
                         return $0
                     }
@@ -111,7 +100,7 @@ class AnalysisViewViewController: UIViewController {
                 .receive(on: DispatchQueue.main)
                 .map {
                     if $0 == "" {
-                        return Optional("這個月沒有任何記帳資料使用到標籤")
+                        return Optional(NSLocalizedString("AnalysisView_CommonUsedTagString_Nil_Title", comment: "這個月沒有任何記帳資料使用到標籤"))
                     } else {
                         return $0
                     }

@@ -44,29 +44,40 @@ extension CoreDataManager {
 extension CoreDataManager {
     func addTransaction(_ transaction: Transaction) -> Result<String?, AccountingError> {
         let dataIntegrityCheck = checkDataIntegrity(transactionDate: transaction.date, transactionType: transaction.type, transactionName: transaction.itemName, transactionAmount: transaction.amount.description, transactionCategory: transaction.category, transactionPaymentMethod: transaction.payMethod, transactionTag: transaction.tags, transactionNote: transaction.note, transactionRelationGoal: transaction.relationGoal)
+        
         switch dataIntegrityCheck {
             
         case .success(_):
+//            print(transaction)
             break
         case .failure(let error):
             return .failure(error)
         }
         let context = persistentContainer.viewContext
         let newTransaction = TransactionEntity(context: context)
+        
         newTransaction.date = transaction.date
-        newTransaction.type = transaction.type
+//        newTransaction.type = transaction.type
         newTransaction.itemName = transaction.itemName
         newTransaction.amount = transaction.amount
         newTransaction.note = transaction.note
         
+        
+        let typeFetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
+        typeFetchRequest.predicate = NSPredicate(format: "uuid == %@", transaction.type as CVarArg)
+        if let type = try? context.fetch(typeFetchRequest).first {
+            newTransaction.transactionType = type
+        }
+        
         let categoryFetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
-        categoryFetchRequest.predicate = NSPredicate(format: "category == %@ AND type == %@", transaction.category, transaction.type)
+        categoryFetchRequest.predicate = NSPredicate(format: "uuid == %@", transaction.category as CVarArg)
         if let category = try? context.fetch(categoryFetchRequest).first {
             newTransaction.transactionCategory = category
         }
         
+        
         let paymentMethodFetchRequest: NSFetchRequest<TransactionPaymentMethod> = TransactionPaymentMethod.fetchRequest()
-        paymentMethodFetchRequest.predicate = NSPredicate(format: "paymentMethod == %@", transaction.payMethod)
+        paymentMethodFetchRequest.predicate = NSPredicate(format: "uuid == %@", transaction.payMethod as CVarArg)
         if let paymentMethod = try? context.fetch(paymentMethodFetchRequest).first {
             newTransaction.transactionPaymentMethod = paymentMethod
         }
@@ -83,7 +94,7 @@ extension CoreDataManager {
         if let transactionTags = transaction.tags {
             for transactionTag in transactionTags {
                 let tagsFetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
-                tagsFetchRequest.predicate = NSPredicate(format: "name == %@", transactionTag)
+                tagsFetchRequest.predicate = NSPredicate(format: "uuid == %@", transactionTag as CVarArg)
                 if let tag = try? context.fetch(tagsFetchRequest).first {
                     transactionTagSet.insert(tag)
                 }
@@ -119,19 +130,25 @@ extension CoreDataManager {
             var transactionRecord = try context.existingObject(with: transactionID) as? TransactionEntity
             guard let transactionRecord else { return .failure(.transactionIdNotExist)}
             transactionRecord.date = transaction.date
-            transactionRecord.type = transaction.type
+//            transactionRecord.type = transaction.type
             transactionRecord.itemName = transaction.itemName
             transactionRecord.amount = transaction.amount
             transactionRecord.note = transaction.note
             
+            let typeFetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
+            typeFetchRequest.predicate = NSPredicate(format: "uuid == %@", transaction.type as CVarArg)
+            if let type = try? context.fetch(typeFetchRequest).first {
+                transactionRecord.transactionType = type
+            }
+            
             let categoryFetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
-            categoryFetchRequest.predicate = NSPredicate(format: "category == %@ AND type == %@", transaction.category, transaction.type)
+            categoryFetchRequest.predicate = NSPredicate(format: "uuid == %@ AND type == %@", transaction.category as CVarArg, transaction.type as CVarArg)
             if let category = try? context.fetch(categoryFetchRequest).first {
                 transactionRecord.transactionCategory = category
             }
             
             let paymentMethodFetchRequest: NSFetchRequest<TransactionPaymentMethod> = TransactionPaymentMethod.fetchRequest()
-            paymentMethodFetchRequest.predicate = NSPredicate(format: "paymentMethod == %@", transaction.payMethod)
+            paymentMethodFetchRequest.predicate = NSPredicate(format: "uuid == %@", transaction.payMethod as CVarArg)
             if let paymentMethod = try? context.fetch(paymentMethodFetchRequest).first {
                 transactionRecord.transactionPaymentMethod = paymentMethod
             }
@@ -148,7 +165,7 @@ extension CoreDataManager {
             if let transactionTags = transaction.tags {
                 for transactionTag in transactionTags {
                     let tagsFetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
-                    tagsFetchRequest.predicate = NSPredicate(format: "name == %@", transactionTag)
+                    tagsFetchRequest.predicate = NSPredicate(format: "uuid == %@", transactionTag as CVarArg)
                     if let tag = try? context.fetch(tagsFetchRequest).first {
                         transactionTagSet.insert(tag)
                     }
@@ -191,10 +208,16 @@ extension CoreDataManager {
 //        return nil
 //    }
     
-    func fetchTransaction(withPredicate: (transactionPredicate: NSPredicate?, categoryPredicate: NSPredicate?, paymentMethodPredicate: NSPredicate?, tagPredicate: NSPredicate?)) -> [Transaction] {
+    func fetchTransaction(withPredicate: (transactionPredicate: NSPredicate?, typePredicate: NSPredicate?,  categoryPredicate: NSPredicate?, paymentMethodPredicate: NSPredicate?, tagPredicate: NSPredicate?)) -> [Transaction] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
         fetchRequest.predicate = withPredicate.transactionPredicate
+        
+        let typeFetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
+        typeFetchRequest.predicate = withPredicate.typePredicate
+        guard let type = try? context.fetch(typeFetchRequest) else {
+            return []
+        }
         
         let categoryFetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
         categoryFetchRequest.predicate = withPredicate.categoryPredicate
@@ -223,7 +246,7 @@ extension CoreDataManager {
                     return nil
                 }
                 
-                if !categories.contains($0.transactionCategory!) || !paymentMethods.contains($0.transactionPaymentMethod!) {
+                if !categories.contains($0.transactionCategory!) || !paymentMethods.contains($0.transactionPaymentMethod!) || !type.contains($0.transactionType!) {
                     return nil
                 }
                 
@@ -237,17 +260,17 @@ extension CoreDataManager {
                 }
                 
                 
-                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                let tags = $0.transactionTag?.compactMap{ (tag) -> UUID? in
                     guard let tag = tag as? TransactionTag else { return nil }
-                    return tag.name
+                    return tag.uuid
                 }
                 var transaction = Transaction(date: $0.date!,
-                                              type: $0.type!,
+                                              type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
-                                              category: ($0.transactionCategory?.category)!,
+                                              category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
-                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              payMethod: ($0.transactionPaymentMethod?.uuid)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
                 transaction.id = $0.objectID
@@ -268,17 +291,17 @@ extension CoreDataManager {
         do {
             let transactionEntities = try context.fetch(fetchRequest)
             return transactionEntities.compactMap({
-                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                let tags = $0.transactionTag?.compactMap{ (tag) -> UUID? in
                     guard let tag = tag as? TransactionTag else { return nil }
-                    return tag.name
+                    return tag.uuid
                 }
                 var transaction = Transaction(date: $0.date!,
-                                              type: $0.type!,
+                                              type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
-                                              category: ($0.transactionCategory?.category)!,
+                                              category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
-                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              payMethod: ($0.transactionPaymentMethod?.uuid)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
                 transaction.id = $0.objectID
@@ -290,29 +313,35 @@ extension CoreDataManager {
         return nil
     }
     
-    func fetchTransactionWith(withSpecifyDateRange: (start: Date, end: Date), type: CoreDataPredicate.TransactionType) -> [Transaction]? {
+    func fetchTransactionWith(withSpecifyDateRange: (start: Date, end: Date), type: CoreDataPredicate.CoreDataPredicateTransactionType) -> [Transaction]? {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionEntity> = TransactionEntity.fetchRequest()
         
         let datePredicate = NSPredicate(format: "(date >= %@) AND (date < %@)", withSpecifyDateRange.start as NSDate, withSpecifyDateRange.end as NSDate)
         let typePredicate = type.predicate
-        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [datePredicate, typePredicate])
+        let typeFetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
+        typeFetchRequest.predicate = typePredicate
+        guard let type = try? context.fetch(typeFetchRequest) else {
+            return []
+        }
+//        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [datePredicate, typePredicate])
 //        print(predicate)
-        fetchRequest.predicate = predicate
+        fetchRequest.predicate = datePredicate
         do {
             let transactionEntities = try context.fetch(fetchRequest)
-            return transactionEntities.map({
-                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+            return transactionEntities.compactMap({
+                if !type.contains($0.transactionType!) { return nil }
+                let tags = $0.transactionTag?.compactMap{ (tag) -> UUID? in
                     guard let tag = tag as? TransactionTag else { return nil }
-                    return tag.name
+                    return tag.uuid
                 }
                 var transaction = Transaction(date: $0.date!,
-                                              type: $0.type!,
+                                              type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
-                                              category: ($0.transactionCategory?.category)!,
+                                              category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
-                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              payMethod: ($0.transactionPaymentMethod?.uuid)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
                 transaction.id = $0.objectID
@@ -344,17 +373,17 @@ extension CoreDataManager {
         do {
             let transactionEntities = try context.fetch(fetchRequest)
             return transactionEntities.map({
-                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                let tags = $0.transactionTag?.compactMap{ (tag) -> UUID? in
                     guard let tag = tag as? TransactionTag else { return nil }
-                    return tag.name
+                    return tag.uuid
                 }
                 var transaction = Transaction(date: $0.date!,
-                                              type: $0.type!,
+                                              type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
-                                              category: ($0.transactionCategory?.category)!,
+                                              category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
-                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              payMethod: ($0.transactionPaymentMethod?.uuid)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
                 transaction.id = $0.objectID
@@ -368,13 +397,15 @@ extension CoreDataManager {
 }
 // MARK: - Transaction Category
 extension CoreDataManager {
-    func fetchTransactionCategories(predicate: CoreDataPredicate.TransactionCategory) -> [String] {
+    func fetchTransactionCategories(predicate: CoreDataPredicate.TransactionCategory) -> [CoreDataTransactionCategory] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionCategory> = TransactionCategory.fetchRequest()
         fetchRequest.predicate = predicate.predicate
         do {
             let categories = try context.fetch(fetchRequest)
-            return categories.compactMap({$0.category})
+            return categories.compactMap {
+                CoreDataTransactionCategory(name: $0.category!, uuid: $0.uuid!, systemImage: $0.systemImage ?? nil)
+            }
         } catch {
             print(error.localizedDescription)
         }
@@ -384,13 +415,15 @@ extension CoreDataManager {
 }
 // MARK: - Transaction Payment Method
 extension CoreDataManager {
-    func fetchAllTransactionPaymentMethods() -> [String] {
+    func fetchAllTransactionPaymentMethods() -> [CoreDataTransactionPaymentMethod] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionPaymentMethod> = TransactionPaymentMethod.fetchRequest()
         
         do {
             let paymentMethods = try context.fetch(fetchRequest)
-            return paymentMethods.compactMap({$0.paymentMethod})
+            return paymentMethods.compactMap {
+                CoreDataTransactionPaymentMethod(paymentMethod: $0.paymentMethod!, uuid: $0.uuid!)
+            }
         } catch {
             print(error.localizedDescription)
         }
@@ -400,15 +433,17 @@ extension CoreDataManager {
 }
 // MARK: - Transaction Tags
 extension CoreDataManager {
-    func fetchAllTransactionTags() -> [String] {
+    func fetchAllTransactionTags() -> [CoreDataTransactionTag] {
         let context = persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TransactionTag> = TransactionTag.fetchRequest()
         
         do {
             let tags = try context.fetch(fetchRequest)
 //            print(tags.compactMap({$0.name}), "tags")
-            let result = tags.compactMap({$0.name})
-            return result.count == 0 ? [] : result
+            let result = tags.compactMap {
+                CoreDataTransactionTag(tag: $0.name!, uuid: $0.uuid!)
+            }
+            return result
         } catch {
             print(error.localizedDescription)
         }
@@ -524,16 +559,16 @@ extension CoreDataManager {
             }
             
             return transactions.map {
-                let tags = $0.transactionTag?.compactMap{ (tag) -> String? in
+                let tags = $0.transactionTag?.compactMap{ (tag) -> UUID? in
                     guard let tag = tag as? TransactionTag else { return nil }
-                    return tag.name
+                    return tag.uuid
                 }
                 var transaction = Transaction(date: $0.date!,
-                                              type: $0.type!,
+                                              type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
-                                              category: ($0.transactionCategory?.category)!,
-                                              payMethod: ($0.transactionPaymentMethod?.paymentMethod)!,
+                                              category: ($0.transactionCategory?.uuid)!,
+                                              payMethod: ($0.transactionPaymentMethod?.uuid)!,
                                               tags: tags,
                                               note: $0.note, relationGoal: nil)
                 transaction.id = $0.objectID
@@ -543,6 +578,22 @@ extension CoreDataManager {
             
         }
         return []
+    }
+}
+// MARK: - Transaction Type
+extension CoreDataManager {
+    func fetchAllTransactionType() -> [CoreDataTransactionType] {
+        let context = persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
+        do {
+            let types = try context.fetch(fetchRequest)
+            return types.map {
+                CoreDataTransactionType(nsLocalizedStringIdentifier: $0.type!, uuid: $0.uuid!)
+            }
+        } catch {
+            print(error.localizedDescription)
+            return []
+        }
     }
 }
 
@@ -587,10 +638,10 @@ extension CoreDataManager {
         }
     }
     
-    func checkDataIntegrity(transactionDate: Date?, transactionType: String?, transactionName: String?, transactionAmount: String?, transactionCategory: String?, transactionPaymentMethod: String?, transactionTag: [String]?, transactionNote: String?, transactionRelationGoal: UUID?) -> Result<String?, AccountingError> {
+    func checkDataIntegrity(transactionDate: Date?, transactionType: UUID?, transactionName: String?, transactionAmount: String?, transactionCategory: UUID?, transactionPaymentMethod: UUID?, transactionTag: [UUID]?, transactionNote: String?, transactionRelationGoal: UUID?) -> Result<String?, AccountingError> {
         
         func transactionTypeChecking() -> Result<String?, AccountingError> {
-            guard let transactionType, transactionType == "收入" || transactionType == "支出" else {
+            guard let transactionType else {
                 return .failure(.transactionTypeNotSelect)
             }
             return .success(nil)
@@ -623,14 +674,14 @@ extension CoreDataManager {
         }
         
         func transactionCategoryChecking() -> Result<String?, AccountingError> {
-            guard transactionCategory != nil && transactionCategory != ""  else {
+            guard transactionCategory != nil else {
                 return .failure(.transactionCategoryNotSelect)
             }
             return .success(nil)
         }
         
         func transactionPaymentMethodChecking() -> Result<String?, AccountingError> {
-            guard transactionPaymentMethod != nil && transactionPaymentMethod != "" else {
+            guard transactionPaymentMethod != nil else {
                 return .failure(.transactionPaymentMethodNotSelect)
             }
             return .success(nil)

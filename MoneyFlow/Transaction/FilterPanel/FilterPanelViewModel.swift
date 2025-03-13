@@ -10,29 +10,31 @@ import Combine
 
 class FilterPanelViewModel {
     @Published var dateRangeSelected: Int = 0
-    @Published var transactionTypeSelected: [String] = ["收入", "支出"]
-    @Published var categorySelected: [String] = []
-    @Published var paymentMethodSelected: [String] = []
-    @Published var tagSelected: [String] = []
+    @Published var transactionTypeSelected: [UUID] = CoreDataInitializer.shared.transactionTypeUUID
+    @Published var categorySelected: [UUID] = []
+    @Published var paymentMethodSelected: [UUID] = []
+    @Published var tagSelected: [UUID] = []
     
-    func generateFilterPredicate() -> (transactionPredicate: NSPredicate?, categoryPredicate: NSPredicate?, paymentMethodPredicate: NSPredicate?, tagPredicate: NSPredicate?) {
+    let dateRangeOptions: [(UUID, Int, String)] = [(UUID(), 0, "HomeView_SegementControl_Today"), (UUID(), 1, "HomeView_SegementControl_ThisWeek"), (UUID(), 2, "HomeView_SegementControl_ThisMonth"), (UUID(), 3, "HomeView_SegementControl_ThisYear")] // "今天", "這週", "這個月", "今年"
+    
+    func generateFilterPredicate() -> (transactionPredicate: NSPredicate?, typePredicate: NSPredicate?, categoryPredicate: NSPredicate?, paymentMethodPredicate: NSPredicate?, tagPredicate: NSPredicate?) {
         
         let datePredicate: NSPredicate = CoreDataPredicate.TransactionDateRange(rawValue: dateRangeSelected)!.predicate
         let typePredicate: NSPredicate? = transactionTypeSelected.count == 0 ? nil : NSCompoundPredicate(orPredicateWithSubpredicates: transactionTypeSelected.map {
-            CoreDataPredicate.TransactionType(rawValue: $0)!.predicate
+            CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: $0).predicate
         })
         let categoryPredicate: NSPredicate? = categorySelected.isEmpty ? nil : NSCompoundPredicate(orPredicateWithSubpredicates: categorySelected.map {
-            CoreDataPredicate.TransactionCategory.category(categoryName: $0).predicate
+            CoreDataPredicate.TransactionCategory.category(categoryUUID: $0).predicate
         })
         let paymentMethodPredicate: NSPredicate? = paymentMethodSelected.isEmpty ? nil : NSCompoundPredicate(orPredicateWithSubpredicates: paymentMethodSelected.map {
-            CoreDataPredicate.TransactionPaymentMethod.paymentMethod(paymentMethodName: $0).predicate
+            CoreDataPredicate.TransactionPaymentMethod.paymentMethod(paymentMethodUUID: $0).predicate
         })
         let tagPredicate: NSPredicate? =  tagSelected.count == 0 ? nil : NSCompoundPredicate(orPredicateWithSubpredicates: tagSelected.map {
-            CoreDataPredicate.TransactionTag.tag(tagName: $0).predicate
+            CoreDataPredicate.TransactionTag.tag(tagUUID: $0).predicate
         })
         
-        let transaction = NSCompoundPredicate(andPredicateWithSubpredicates: (([datePredicate, typePredicate] as [NSPredicate?]).compactMap { $0 }))
-        return (transaction, categoryPredicate, paymentMethodPredicate, tagPredicate)
+//        let transaction = NSCompoundPredicate(andPredicateWithSubpredicates: (([datePredicate, typePredicate] as [NSPredicate?]).compactMap { $0 }))
+        return (datePredicate, typePredicate, categoryPredicate, paymentMethodPredicate, tagPredicate)
         
     }
 }

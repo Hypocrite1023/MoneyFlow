@@ -12,7 +12,7 @@ class MultiSelectionView: SelectionView, ObservableObject {
     let mayNil: Bool
     let selectionListNilPrompt: String
     let promptLabel: UILabel = UILabel()
-    @Published var selectedIndex: Set<String> = [] {
+    @Published var selectedIndex: Set<UUID> = [] {
         didSet {
             if selectedIndex != [] {
                 updateButtonStatus()
@@ -20,7 +20,7 @@ class MultiSelectionView: SelectionView, ObservableObject {
         }
     }
     
-    init(selectionList: [String], mayNil: Bool = false, selectionListNilPrompt: String = "尚未有任何選項", preselectIndex: Set<String> = []) {
+    init(selectionList: [(UUID, String)], mayNil: Bool = false, selectionListNilPrompt: String = "尚未有任何選項", preselectIndex: Set<UUID> = []) {
         self.mayNil = mayNil
         self.selectedIndex = preselectIndex
         self.selectionListNilPrompt = selectionListNilPrompt
@@ -44,7 +44,7 @@ class MultiSelectionView: SelectionView, ObservableObject {
 
     func updateButtonStatus() {
         for (_, button) in buttonList.enumerated() {
-            if selectedIndex.contains(button.title(for: .normal)!) {
+            if selectedIndex.contains(selectionList[button.tag].uuid) {
                 button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
                 button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
             } else {
@@ -54,7 +54,7 @@ class MultiSelectionView: SelectionView, ObservableObject {
         }
     }
     
-    internal func updateSelectionList(list: [String]) {
+    internal func updateSelectionList(list: [(UUID, String)]) {
         promptLabel.removeFromSuperview()
         self.selectionList = list
         horizonStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
@@ -65,17 +65,16 @@ class MultiSelectionView: SelectionView, ObservableObject {
     }
     
     @objc func buttonAction(_ sender: UIButton) {
-        if selectedIndex.contains(sender.title(for: .normal)!) {
-            selectedIndex.remove(sender.title(for: .normal)!)
+        if selectedIndex.contains(selectionList[sender.tag].uuid) {
+            selectedIndex.remove(selectionList[sender.tag].uuid)
         } else {
-            selectedIndex.insert(sender.title(for: .normal)!)
+            selectedIndex.insert(selectionList[sender.tag].uuid)
         }
         updateButtonStatus()
     }
     
     private func ifSelectionListNilSetPrompt() {
-        if mayNil == true && selectionList == [] {
-            print("nil")
+        if mayNil == true && selectionList.isEmpty {
             promptLabel.text = selectionListNilPrompt
             promptLabel.textColor = .secondaryLabel
             promptLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -88,14 +87,15 @@ class MultiSelectionView: SelectionView, ObservableObject {
     }
     
     private func checkSelected() {
+        let selectionListUUID = selectionList.map { $0.uuid }
         for select in selectedIndex {
-            if selectionList.contains(select) == false {
+            if selectionListUUID.contains(select) == false {
                 selectedIndex.remove(select)
             }
         }
     }
     
-    func refreshTags() {
-        self.selectionList = Array(AccountingTagManager.shared.getTags()!)
-    }
+//    func refreshTags() {
+//        self.selectionList = Array(AccountingTagManager.shared.getTags()!)
+//    }
 }

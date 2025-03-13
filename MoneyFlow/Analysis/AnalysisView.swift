@@ -61,20 +61,20 @@ class AnalysisView: UIView {
     private let wholePageScrollView: UIScrollView = UIScrollView()
     private let wholePageContentView: UIView = UIView()
     // 總支出、總收入、結餘
-    private let analysisViewTitleLabel: UILabel = createLabel(title: "分析", font: AppConfig.Font.title.value)
+    private let analysisViewTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_AnalysisViewTitleLabel_Title", comment: "分析"), font: AppConfig.Font.title.value)
     let yearMonthPicker: YearMonthPicker = YearMonthPicker(yearList: Array(2020...Calendar.current.component(.year, from: .now)), selectedYear: Calendar.current.component(.year, from: .now), selectedMonth: Calendar.current.component(.month, from: .now))
     // MARK: - 摘要
-    private let analysisSummaryLabel: UILabel = createLabel(title: "摘要", font: AppConfig.Font.secondaryTitle.value)
+    private let analysisSummaryLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_AnalysisSummaryLabel_Title", comment: "摘要"), font: AppConfig.Font.secondaryTitle.value)
     private let analysisCardHScrollView: UIScrollView = UIScrollView()
     private let analysisCardHStackView: UIStackView = UIStackView()
-    let monthExpenseAnalysisCardView: AnalysisCardView = AnalysisCardView(title: "總支出")
-    let monthIncomeAnalysisCardView: AnalysisCardView = AnalysisCardView(title: "總收入")
-    let monthBalanceAnalysisCardView: AnalysisCardView = AnalysisCardView(title: "結餘")
+    let monthExpenseAnalysisCardView: AnalysisCardView = AnalysisCardView(title: NSLocalizedString("AnalysisView_MonthExpenseAnalysisCardView_Title", comment: "總支出"))
+    let monthIncomeAnalysisCardView: AnalysisCardView = AnalysisCardView(title: NSLocalizedString("AnalysisView_MonthIncomeAnalysisCardView_Title", comment: "總收入"))
+    let monthBalanceAnalysisCardView: AnalysisCardView = AnalysisCardView(title: NSLocalizedString("AnalysisView_MonthBalanceAnalysisCardView_Title", comment: "結餘"))
     
-    private let mostCommonlyUsedPaymentMethodTitleLabel: UILabel = createLabel(title: "經常使用的支付方式:", font: AppConfig.Font.secondaryTitle.value)
+    private let mostCommonlyUsedPaymentMethodTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_MostCommonlyUsedPaymentMethodTitleLabel_Title", comment: "經常使用的支付方式"), font: AppConfig.Font.secondaryTitle.value)
     let mostCommonlyUsedPaymentMethod: UILabel = UILabel()
     
-    private let mostCommonlyUsedTagTitleLabel: UILabel = createLabel(title: "經常使用的標籤:", font: AppConfig.Font.secondaryTitle.value)
+    private let mostCommonlyUsedTagTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_MostCommonlyUsedTagTitleLabel_Title", comment: "經常使用的標籤"), font: AppConfig.Font.secondaryTitle.value)
     let mostCommonlyUsedTag: UILabel = UILabel()
     
     // MARK: - 支出分析
@@ -95,18 +95,18 @@ class AnalysisView: UIView {
          •    長條圖顯示各支付類別支出比例
          •    例如：「現金 50%、信用卡 30%、電子支付 20%」
      */
-    private let expenseAnalysisTitleLabel: UILabel = createLabel(title: "支出分析", font: AppConfig.Font.secondaryTitle.value)
-    private let byCategoryExpenseAnalysisTitleLabel: UILabel = createLabel(title: "按類別", font: AppConfig.Font.quaternaryTitle.value)
+    private let expenseAnalysisTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_ExpenseAnalysisTitleLabel_Title", comment: "支出分析"), font: AppConfig.Font.secondaryTitle.value)
+    private let byCategoryExpenseAnalysisTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_ByCategoryExpenseAnalysisTitleLabel_Title", comment: "按類別"), font: AppConfig.Font.quaternaryTitle.value)
     let expensePiechartView: PieChartView = PieChartView()
     private let expensePiechartDataNilLabel: UILabel = UILabel()
     
-    private let byCategoryListExpenseAnalysisTitleLabel: UILabel = createLabel(title: "各項類別支出列表", font: AppConfig.Font.quaternaryTitle.value)
+    private let byCategoryListExpenseAnalysisTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_ByCategoryListExpenseAnalysisTitleLabel_Title", comment: "各項類別支出列表"), font: AppConfig.Font.quaternaryTitle.value)
     private let categoryExpenseAnalysisHScrollView: UIScrollView = UIScrollView()
     private let categoryExpenseAnalysisHStackView: UIStackView = UIStackView()
     
     
     
-    private let byPaymentMethodAnalysisTitleLabel: UILabel = createLabel(title: "按支付方式", font: AppConfig.Font.quaternaryTitle.value)
+    private let byPaymentMethodAnalysisTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_ByPaymentMethodAnalysisTitleLabel_Title", comment: "按支付方式"), font: AppConfig.Font.quaternaryTitle.value)
     let paymentMethodExpenseAnalysisBarChartView: BarChartView = BarChartView()
     
     // MARK: - 收入分析
@@ -116,7 +116,7 @@ class AnalysisView: UIView {
     📌 收入來源
         •    長條圖：顯示不同收入來源（薪水、投資、紅包等）的占比
      */
-    private let incomeAnalysisTitleLabel: UILabel = createLabel(title: "收入分析", font: AppConfig.Font.secondaryTitle.value)
+    private let incomeAnalysisTitleLabel: UILabel = createLabel(title: NSLocalizedString("AnalysisView_IncomeAnalysisTitleLabel_Title", comment: "收入分析"), font: AppConfig.Font.secondaryTitle.value)
     
     init() {
         super.init(frame: .zero)
@@ -151,7 +151,7 @@ class AnalysisView: UIView {
         categoryExpenseAnalysisHStackView.axis = .horizontal
         categoryExpenseAnalysisHStackView.spacing = 8
         
-        expensePiechartDataNilLabel.text = "這個月還沒有任何記帳資料"
+        expensePiechartDataNilLabel.text = NSLocalizedString("AnalysisView_ExpensePiechartDataNilLabel_Title", comment: "這個月還沒有任何記帳資料")
         expensePiechartDataNilLabel.font = AppConfig.Font.quaternaryTitle.value
         expensePiechartDataNilLabel.textColor = .secondaryLabel
     }
@@ -298,7 +298,7 @@ class AnalysisView: UIView {
     func configPieChart(data: [PieChartDataEntry]) {
         
         // 設置數據集
-        let dataSet = PieChartDataSet(entries: data, label: "支出類別")
+        let dataSet = PieChartDataSet(entries: data, label: NSLocalizedString("AnalysisView_ExpensePiechartView_PieChartDataSet_Title", comment: "支出類別"))
         let colors: [UIColor] = (0..<data.count).map { i in
             UIColor(hue: CGFloat(i) / CGFloat(data.count), saturation: 0.8, brightness: 0.9, alpha: 1.0)
         }
@@ -318,11 +318,11 @@ class AnalysisView: UIView {
         
     }
     
-    func configCategoryExpenseList(categoryExpenseDictionary: [String: Double]) {
+    func configCategoryExpenseList(categoryExpenseDictionary: [UUID: Double]) {
         for category in categoryExpenseDictionary.sorted(by: { $0.value > $1.value }) {
             let tagExpenseLabel: UILabel = UILabel()
             guard let expense = AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: category.value)) else { continue }
-            tagExpenseLabel.text = "\(category.key): \(expense)"
+            tagExpenseLabel.text = "\(NSLocalizedString(CoreDataInitializer.shared.transactionCategory[category.key]!, comment: "")): \(expense)"
             tagExpenseLabel.font = AppConfig.Font.content.value
             tagExpenseLabel.textColor = .secondaryLabel
             categoryExpenseAnalysisHStackView.addArrangedSubview(tagExpenseLabel)
@@ -331,7 +331,7 @@ class AnalysisView: UIView {
         
     }
     
-    func configPaymentMethodBarChart(paymentMethodExpenseDictionary: [String: Double]) {
+    func configPaymentMethodBarChart(paymentMethodExpenseDictionary: [UUID: Double]) {
 //        let values: [Double] = [10, 20, 30, 15, 25]
 //        let labels: [String] = ["一月", "二月", "三月", "四月", "五月"]
 
@@ -341,7 +341,7 @@ class AnalysisView: UIView {
             dataEntries.append(entry)
         }
 
-        let dataSet = BarChartDataSet(entries: dataEntries, label: "收入")
+        let dataSet = BarChartDataSet(entries: dataEntries, label: NSLocalizedString("AnalysisView_PaymentMethodExpenseAnalysisBarChartView_BarChartDataSet_Title", comment: "收入"))
         dataSet.colors = [UIColor.systemBlue]  // 設定顏色
         dataSet.valueTextColor = .black  // 數值顏色
         dataSet.valueFont = .systemFont(ofSize: 10)
@@ -350,7 +350,7 @@ class AnalysisView: UIView {
         paymentMethodExpenseAnalysisBarChartView.data = data
 
         // 設定 X 軸標籤
-        paymentMethodExpenseAnalysisBarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: paymentMethodExpenseDictionary.keys.sorted(by: <))
+        paymentMethodExpenseAnalysisBarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: paymentMethodExpenseDictionary.keys.sorted(by: <).map { NSLocalizedString(CoreDataInitializer.shared.transactionCategory[$0]!, comment: "")})
         paymentMethodExpenseAnalysisBarChartView.xAxis.labelPosition = .bottom
         paymentMethodExpenseAnalysisBarChartView.xAxis.granularity = 1
     }

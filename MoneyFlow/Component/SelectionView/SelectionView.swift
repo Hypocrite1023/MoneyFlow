@@ -10,7 +10,7 @@ import UIKit
 class SelectionView: UIView {
     
     internal var buttonList: [UIButton] = []
-    var selectionList: [String]
+    var selectionList: [(uuid: UUID, locolizedKey: String)]
     
     let horizonScrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -29,7 +29,7 @@ class SelectionView: UIView {
     }()
     
     
-    init(selectionList: [String]) {
+    init(selectionList: [(UUID, String)]) {
         self.selectionList = selectionList
         super.init(frame: .zero)
         setView()
@@ -49,7 +49,7 @@ class SelectionView: UIView {
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
             button.layer.cornerRadius = 5
             button.clipsToBounds = true
-            button.setTitle(selection, for: .normal)
+            button.setTitle(NSLocalizedString(selection.locolizedKey, comment: ""), for: .normal)
             button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
             button.titleLabel?.font = .systemFont(ofSize: 24, weight: .medium)

@@ -10,7 +10,7 @@ import Combine
 
 class SingleSelectionExpandable: SelectionViewExpandable, ObservableObject {
     
-    @Published var selected: String?
+    @Published var selected: UUID?
     private var initialButton: UIButton?
     
     override init(height: CGFloat = 30, width: CGFloat = 60, spacing: CGFloat = 10) {
@@ -28,7 +28,9 @@ class SingleSelectionExpandable: SelectionViewExpandable, ObservableObject {
             let button = UIButton(configuration: .plain())
             var conf = button.configuration
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-            button.setTitle(selected, for: .normal)
+            button.setTitle(NSLocalizedString((selectionList.first(where: { (uuid: UUID, locolizedKey: String) -> Bool in
+                selected == uuid
+            })?.locolizedKey)!, comment: ""), for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
             button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
             button.layer.cornerRadius = 5
@@ -41,16 +43,19 @@ class SingleSelectionExpandable: SelectionViewExpandable, ObservableObject {
             initialButton = button
         }
         
-        for title in selectionList {
-            if let selected, selected == title { continue }
+        for (index, selectionItem) in selectionList.enumerated() {
+            if let selected, selected == selectionItem.uuid { initialButton?.tag = index; continue }
             let button = UIButton(configuration: .plain())
             var conf = button.configuration
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-            button.setTitle(title, for: .normal)
+            button.setTitle(NSLocalizedString(selectionItem.locolizedKey, comment: ""), for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
             button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
             button.layer.cornerRadius = 5
             button.clipsToBounds = true
+            
+            button.tag = index
+            
             button.translatesAutoresizingMaskIntoConstraints = false
 //            button.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
 //            button.widthAnchor.constraint(equalToConstant: buttonWidth).isActive = true
@@ -61,7 +66,7 @@ class SingleSelectionExpandable: SelectionViewExpandable, ObservableObject {
         }
     }
     
-    func setSelectionList(selectionList: [String], selected: String?) {
+    func setSelectionList(selectionList: [(UUID, String)], selected: UUID?) {
         self.selected = selected
         super.setSelectionList(selectionList: selectionList)
         setView()
@@ -72,17 +77,24 @@ extension SingleSelectionExpandable: SelectionButtonCanUpdate {
     func updateSelectionButtonStatus() {
         var exchangeIndex: Int?
         for (index, button) in expandButtonList.enumerated() {
-            if button.title(for: .normal) == selected {
+//            if button.title(for: .normal) == selected {
+//                button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
+//                button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
+//                exchangeIndex = index
+//            } else {
+//                button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
+//                button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
+//            }
+            if selected == selectionList[button.tag].uuid {
                 button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
                 button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
-                exchangeIndex = index
             } else {
                 button.setTitleColor(AppConfig.ButtonColor.unselected.fontColor, for: .normal)
                 button.backgroundColor = AppConfig.ButtonColor.unselected.backgroundColor
             }
         }
         if let initialButton {
-            if initialButton.title(for: .normal) == selected {
+            if selectionList[initialButton.tag].uuid == selected {
                 initialButton.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
                 initialButton.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
             } else {
@@ -103,10 +115,10 @@ extension SingleSelectionExpandable: SelectionButtonCanUpdate {
     }
     
     @objc func buttonAction(sender: UIButton) {
-        if selected == sender.title(for: .normal) {
+        if selected == selectionList[sender.tag].uuid {
             
         } else {
-            selected = sender.title(for: .normal)
+            selected = selectionList[sender.tag].uuid
             updateSelectionButtonStatus()
         }
     }

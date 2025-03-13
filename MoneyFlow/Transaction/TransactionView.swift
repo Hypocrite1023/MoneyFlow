@@ -10,7 +10,7 @@ import UIKit
 class TransactionView: UIView {
     
     var transactionTableView: UITableView = UITableView()
-    private let transactionDetailLabel: UILabel = createLabel(title: "紀錄")
+    private let transactionDetailLabel: UILabel = createLabel(title: NSLocalizedString("TransactionView_TransactionDetailLabel_Title", comment: "紀錄"))
     var transactionFilterButton: UIButton = UIButton(configuration: .plain())
     
     override init(frame: CGRect) {
@@ -38,7 +38,7 @@ class TransactionView: UIView {
     private func setTransactionFilterButton() {
         transactionFilterButton.translatesAutoresizingMaskIntoConstraints = false
         transactionFilterButton.setImage(UIImage(systemName: "line.3.horizontal.decrease.circle"), for: .normal)
-        transactionFilterButton.setTitle("篩選", for: .normal)
+        transactionFilterButton.setTitle(NSLocalizedString("TransactionView_TransactionFilterButton_Title", comment: "篩選"), for: .normal)
         addSubview(transactionFilterButton)
         transactionFilterButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         transactionFilterButton.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -AppConfig.SideSpace.standard.value).isActive = true
@@ -63,7 +63,7 @@ class TransactionView: UIView {
             imageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
             let noDatafoundLabel: UILabel = {
                 let label: UILabel = UILabel()
-                label.text = "沒有符合的資料"
+                label.text = NSLocalizedString("TransactionView_NoDatafoundLabel_Title", comment: "沒有符合的資料")
                 label.font = AppConfig.Font.title.value
                 label.textColor = .secondaryLabel
                 return label

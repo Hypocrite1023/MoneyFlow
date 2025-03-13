@@ -34,17 +34,21 @@ final class HomeViewModel: ObservableObject {
     
     func reloadExpenseAndIncomeData() {
         if let timeRangePredicate = CoreDataPredicate.TransactionDateRange(rawValue: selectedDateRange)?.predicate {
-            expense = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.TransactionType.expense.predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
-            income = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.TransactionType.income.predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
+            expense = CoreDataManager.shared.fetchTransaction(withPredicate: (timeRangePredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) {$0 + $1.amount}
+            
+            income = CoreDataManager.shared.fetchTransaction(withPredicate: (timeRangePredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[0]).predicate, nil, nil, nil)).reduce(0) {$0 + $1.amount}
+            
+//            expense = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
+//            income = CoreDataManager.shared.fetchTransaction(withPredicate: NSCompoundPredicate(andPredicateWithSubpredicates: [timeRangePredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[0]).predicate]))?.reduce(0) {$0 + $1.amount} ?? 0
         }
     }
     
     func reloadTransactionData() {
         sevenUnitExpense = AppDateGenerater.shared.generatePastSevenUnitDateInfo(from: .now, unit: AppDateGenerater.DateUnit(rawValue: selectedDateRange)!).map{ (_, startDate, endDate) in
-            return CoreDataManager.shared.fetchTransactionWith(withSpecifyDateRange: (startDate, endDate), type: .expense)?.reduce(0) { $0 + $1.amount } ?? 0
+            return CoreDataManager.shared.fetchTransactionWith(withSpecifyDateRange: (startDate, endDate), type: .type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]))?.reduce(0) { $0 + $1.amount } ?? 0
         }
         sevenUnitIncome = AppDateGenerater.shared.generatePastSevenUnitDateInfo(from: .now, unit: AppDateGenerater.DateUnit(rawValue: selectedDateRange)!).map{ (_, startDate, endDate) in
-            return CoreDataManager.shared.fetchTransactionWith(withSpecifyDateRange: (startDate, endDate), type: .income)?.reduce(0) { $0 + $1.amount } ?? 0
+            return CoreDataManager.shared.fetchTransactionWith(withSpecifyDateRange: (startDate, endDate), type: .type(uuid: CoreDataInitializer.shared.transactionTypeUUID[0]))?.reduce(0) { $0 + $1.amount } ?? 0
         }
         sevenUnitDates = AppDateGenerater.shared.generatePastSevenUnitDateInfo(from: .now, unit: AppDateGenerater.DateUnit(rawValue: selectedDateRange)!).map{ (dateString, _, _) in
             return dateString

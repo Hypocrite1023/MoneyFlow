@@ -11,26 +11,26 @@ class TransactionDetailView: UIView {
         
     private let pageScrollView: UIScrollView = UIScrollView()
     private let pageStack: UIStackView = UIStackView()
-    private let dateLabel: UILabel = createLabel(title: "日期")
+    private let dateLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_DateLabel_Title", comment: "日期"))
     let accountingDatePicker: UIDatePicker = UIDatePicker()
-    private let typeLabel: UILabel = createLabel(title: "類型")
+    private let typeLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_TypeLabel_Title", comment: "類型"))
     var typeSelectionView: SingleSelectionExpandable = SingleSelectionExpandable()
-    private let itemNameLabel: UILabel = createLabel(title: "項目名稱")
+    private let itemNameLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_ItemNameLabel_Title", comment: "項目名稱"))
     var itemNameTextField: UITextField = UITextField()
-    private let amountLabel: UILabel = createLabel(title: "金額")
+    private let amountLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_AmountLabel_Title", comment: "金額"))
     var amountTextField: UITextField = UITextField()
-    private let categoryLabel: UILabel = createLabel(title: "類別")
+    private let categoryLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_CategoryLabel_Title", comment: "類別"))
     var categorySelectionView: SingleSelectionExpandable = SingleSelectionExpandable()
-    private let paymentMethodLabel: UILabel = createLabel(title: "支付方式")
+    private let paymentMethodLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_PaymentMethodLabel_Title", comment: "支付方式"))
     var paymentMethodSelectionView: SingleSelectionExpandable = SingleSelectionExpandable()
-    private let tagLabel: UILabel = createLabel(title: "標籤")
-    var tagSelectionView: MultiSelectionExpandable = MultiSelectionExpandable(selectedNilPrompt: "標籤")
+    private let tagLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_TagLabel_Title", comment: "標籤"))
+    var tagSelectionView: MultiSelectionExpandable = MultiSelectionExpandable(selectedNilPrompt: NSLocalizedString("TransactionDetailView_TagLabel_Title", comment: "標籤"))
     let addTagButton: UIButton = UIButton(configuration: .plain())
     
-    private let noteLabel: UILabel = createLabel(title: "備註")
+    private let noteLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_NoteLabel_Title", comment: "備註"))
     let noteTextField: UITextField = UITextField()
     
-    let incomeDistributeLabel: UILabel = createLabel(title: "將收入分配給")
+    let incomeDistributeLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_IncomeDistributeLabel_Title", comment: "將收入分配給"))
 //    let incomedistributeTableView: UITableView = UITableView()
     
     init() {
@@ -160,7 +160,7 @@ class TransactionDetailView: UIView {
         var conf = UIButton.Configuration.plain()
         conf.imagePlacement = .trailing
         conf.image = UIImage(systemName: "chevron.forward")
-        conf.title = "新增標籤"
+        conf.title = NSLocalizedString("TransactionDetailView_AddTagButton_Title", comment: "新增標籤")
         conf.buttonSize = .mini
         addTagButton.configuration = conf
         addTagButton.tintColor = .black

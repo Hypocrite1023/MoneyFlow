@@ -12,7 +12,7 @@ class AccountingPageViewController: UIViewController {
     
     private let viewModel: AccountingPageViewModel
     private var bindings: Set<AnyCancellable> = Set<AnyCancellable>()
-    private var contentView: AccountingPage = AccountingPage(categoryList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)), paymentMethodList: CoreDataManager.shared.fetchAllTransactionPaymentMethods(), tagList: CoreDataManager.shared.fetchAllTransactionTags())
+    private var contentView: AccountingPage = AccountingPage(categoryList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[1])).map {($0.uuid, $0.name)}, paymentMethodList: CoreDataManager.shared.fetchAllTransactionPaymentMethods().map {($0.uuid, $0.paymentMethod)}, tagList: CoreDataManager.shared.fetchAllTransactionTags().map {($0.uuid, $0.tag)})
     
     private var activeTextField: UITextField?
     private var accountingTagManager: AccountingTagManager = AccountingTagManager.shared
@@ -91,37 +91,37 @@ class AccountingPageViewController: UIViewController {
 //                .assign(to: \.transactionCategory, on: viewModel)
 //                .store(in: &bindings)
             contentView.paymentMethodControl.$selectedIndex
-                .map {
-                    if let index = $0 {
-                        return self.contentView.paymentMethodControl.buttonList[index].title(for: .normal)
-                    } else {
-                        return nil
-                    }
-                }
+//                .map {
+//                    if let index = $0 {
+//                        return index
+//                    } else {
+//                        return nil
+//                    }
+//                }
                 .receive(on: RunLoop.main)
                 .assign(to: \.transactionPaymentMethod, on: viewModel)
                 .store(in: &bindings)
             contentView.typeSegmentControl.publisher(for: \.selectedSegmentIndex)
-                .map {
-                    if $0 == UISegmentedControl.noSegment {
-                        self.contentView.incomeDistributeLabel.isHidden = true
-                        self.contentView.incomedistributeTableView.isHidden = true
-                        return -1
-                    } else {
-                        if $0 == 1 {
-                            self.contentView.incomeDistributeLabel.isHidden = false
-                            self.contentView.incomedistributeTableView.isHidden = false
-                            self.contentView.configureCategoryControl(type: .income)
-                        } else {
-                            self.contentView.incomeDistributeLabel.isHidden = true
-                            self.contentView.incomedistributeTableView.isHidden = true
-                            self.contentView.configureCategoryControl(type: .expense)
-                        }
-                        return $0
-                    }
-                }
                 .receive(on: RunLoop.main)
-                .assign(to: \.transactionType, on: viewModel)
+                .sink(receiveValue: { [weak self] selectedIndex in
+                    if selectedIndex == UISegmentedControl.noSegment {
+                        self?.contentView.incomeDistributeLabel.isHidden = true
+                        self?.contentView.incomedistributeTableView.isHidden = true
+                    } else {
+                        if selectedIndex == 1 {
+                            self?.contentView.incomeDistributeLabel.isHidden = false
+                            self?.contentView.incomedistributeTableView.isHidden = false
+//                            self?.contentView.configureCategoryControl(type: .type(uuid: CoreDataInitializer.shared.transactionTypeUUID[selectedIndex]))
+                        } else {
+                            self?.contentView.incomeDistributeLabel.isHidden = true
+                            self?.contentView.incomedistributeTableView.isHidden = true
+//                            self?.contentView.configureCategoryControl(type: .expense)
+                        }
+                        self?.contentView.configureCategoryControl(type: .type(uuid: CoreDataInitializer.shared.transactionTypeUUID[selectedIndex]))
+                        self?.viewModel.transactionType = CoreDataInitializer.shared.transactionTypeUUID[selectedIndex]
+                    }
+                    
+                })
                 .store(in: &bindings)
             contentView.tagControl.$selectedIndex
                 .map {
@@ -159,10 +159,8 @@ class AccountingPageViewController: UIViewController {
     }
     
     @objc func handleMultiSelectionButtonStatus() {
-        if let accountingPage = view as? AccountingPage {
-            DispatchQueue.main.async {
-                accountingPage.tagControl.updateSelectionList(list: CoreDataManager.shared.fetchAllTransactionTags())
-            }
+        DispatchQueue.main.async {
+            self.contentView.tagControl.updateSelectionList(list: CoreDataManager.shared.fetchAllTransactionTags().map { ($0.uuid, $0.tag) })
         }
     }
     
@@ -187,7 +185,7 @@ class AccountingPageViewController: UIViewController {
     
     @objc func makeAccounting() {
         if let index = contentView.categoryControl.selectedIndex {
-            viewModel.transactionCategory = contentView.categoryControl.buttonList[index].title(for: .normal) ?? nil
+            viewModel.transactionCategory = index
         }
         
         let result = viewModel.makeAccounting()

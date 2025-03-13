@@ -39,14 +39,14 @@ class YearMonthPicker: UIView {
         yearPicker.tintColor = .black
         configureYearPicker()
         
-        yearLabel.text = "年"
+        yearLabel.text = NSLocalizedString("YearMonthPicker_YearLabel_Title", comment: "年")
         
         monthPicker.setTitle(selectedMonth.description, for: .normal)
         monthPicker.tintColor = .black
         reloadMonthAction()
         monthPicker.showsMenuAsPrimaryAction = true
         
-        monthLabel.text = "月"
+        monthLabel.text = NSLocalizedString("YearMonthPicker_MonthLabel_Title", comment: "月")
     }
     
     private func setupConstraint() {

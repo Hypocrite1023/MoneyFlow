@@ -80,3 +80,85 @@
 "AddOrEditGoalView_GoalFaliureReason_NoEndDateError_Title" = "錯誤";
 "AddOrEditGoalView_GoalFaliureReason_ObjectIdNil_Title" = "objectId錯誤";
 "AddOrEditGoalView_GoalFaliureReason_GoalNil_Title" = "目標錯誤";
+// AnalysisView
+"AnalysisView_AnalysisViewTitleLabel_Title" = "分析";
+"AnalysisView_AnalysisSummaryLabel_Title" = "摘要";
+"AnalysisView_MonthExpenseAnalysisCardView_Title" = "總支出";
+"AnalysisView_MonthIncomeAnalysisCardView_Title" = "總收入";
+"AnalysisView_MonthBalanceAnalysisCardView_Title" = "結餘";
+"AnalysisView_MostCommonlyUsedPaymentMethodTitleLabel_Title" = "經常使用的支付方式";
+"AnalysisView_MostCommonlyUsedTagTitleLabel_Title" = "經常使用的標籤";
+"AnalysisView_ExpenseAnalysisTitleLabel_Title" = "支出分析";
+"AnalysisView_ByCategoryExpenseAnalysisTitleLabel_Title" = "按類別";
+"AnalysisView_ByCategoryListExpenseAnalysisTitleLabel_Title" = "各項類別支出列表";
+"AnalysisView_ByPaymentMethodAnalysisTitleLabel_Title" = "按支付方式";
+"AnalysisView_IncomeAnalysisTitleLabel_Title" = "收入分析";
+"AnalysisView_ExpensePiechartDataNilLabel_Title" = "這個月還沒有任何記帳資料";
+"AnalysisView_ExpensePiechartView_PieChartDataSet_Title" = "支出類別";
+"AnalysisView_PaymentMethodExpenseAnalysisBarChartView_BarChartDataSet_Title" = "收入";
+"AnalysisView_CommonUsedPaymentMethodString_Nil_Title" = "這個月還沒有任何記帳資料";
+"AnalysisView_CommonUsedTagString_Nil_Title" = "這個月沒有任何記帳資料使用到標籤";
+// YearMonthPicker
+"YearMonthPicker_YearLabel_Title" = "年";
+"YearMonthPicker_MonthLabel_Title" = "月";
+// FilterPanelView
+"FilterPanelView_FilterByTimeLabel_Title" = "日期";
+"FilterPanelView_FilterByTypeLabel_Title" = "類型";
+"FilterPanelView_TypeSelector_Income_Title" = "收入";
+"FilterPanelView_TypeSelector_Expense_Title" = "支出";
+"FilterPanelView_CategorySelector_Title" = "類別";
+"FilterPanelView_FilterByPaymentMethodLabel_Title" = "交易方式";
+"FilterPanelView_PaymentMethodSelector_Title" = "標籤";
+"FilterPanelView_TagSelector_SelectionListNilPrompt_Title" = "尚未建立任何標籤";
+// TransactionDetailView
+"TransactionDetailView_DateLabel_Title" = "日期";
+"TransactionDetailView_TypeLabel_Title" = "類型";
+"TransactionDetailView_ItemNameLabel_Title" = "項目名稱";
+"TransactionDetailView_AmountLabel_Title" = "金額";
+"TransactionDetailView_CategoryLabel_Title" = "類別";
+"TransactionDetailView_PaymentMethodLabel_Title" = "支付方式";
+"TransactionDetailView_TagLabel_Title" = "標籤";
+"TransactionDetailView_NoteLabel_Title" = "備註";
+"TransactionDetailView_IncomeDistributeLabel_Title" = "將收入分配給";
+"TransactionDetailView_AddTagButton_Title" = "新增標籤";
+"TransactionDetailView_typeSelectionView_Expense_Title" = "支出";
+"TransactionDetailView_typeSelectionView_Income_Title" = "收入";
+"TransactionDetailView_NoteTextField_Placeholder_Title" = "沒有輸入任何備註";
+"TransactionDetailView_ErrorMessage_Title" = "錯誤";
+"TransactionDetailView_ErrorMessage_Message" = "好";
+// TransactionView
+"TransactionView_TransactionDetailLabel_Title" = "紀錄";
+"TransactionView_TransactionFilterButton_Title" = "篩選";
+"TransactionView_NoDatafoundLabel_Title" = "沒有符合的資料";
+// Core Data - TransactionType
+"CoreData_TransactionType_Income_Title" = "收入";
+"CoreData_TransactionType_Expense_Title" = "支出";
+// Core Data - TransactionCategory
+"CoreData_TransactionCategory_Expense_FoodAndDining" = "飲食";
+"CoreData_TransactionCategory_Expense_Transportation" = "交通";
+"CoreData_TransactionCategory_Expense_Lifestyle" = "生活";
+"CoreData_TransactionCategory_Expense_Shopping" = "購物";
+"CoreData_TransactionCategory_Expense_Travel" = "旅行";
+"CoreData_TransactionCategory_Expense_Housing" = "居住";
+"CoreData_TransactionCategory_Expense_Health" = "健康";
+"CoreData_TransactionCategory_Expense_Medical" = "醫療";
+"CoreData_TransactionCategory_Expense_Vehicles" = "車輛";
+"CoreData_TransactionCategory_Expense_Education" = "教育";
+"CoreData_TransactionCategory_Expense_Entertainment" = "娛樂";
+"CoreData_TransactionCategory_Expense_Insurance" = "保險";
+"CoreData_TransactionCategory_Expense_Communication" = "通訊";
+"CoreData_TransactionCategory_Expense_Other" = "其他";
+"CoreData_TransactionCategory_Income_Salary" = "薪資";
+"CoreData_TransactionCategory_Income_Bonus" = "獎金";
+"CoreData_TransactionCategory_Income_Allowance" = "津貼";
+"CoreData_TransactionCategory_Income_Investment" = "投資";
+"CoreData_TransactionCategory_Income_SideIncome" = "副業收入";
+"CoreData_TransactionCategory_Income_RedEnvelope" = "紅包";
+"CoreData_TransactionCategory_Income_Other" = "其他";
+// Core Data - Transaction Payment Method
+"CoreData_TransactionPaymentMethod_Cash" = "現金";
+"CoreData_TransactionPaymentMethod_MobilePayment" = "行動支付";
+"CoreData_TransactionPaymentMethod_CreditCard" = "信用卡";
+"CoreData_TransactionPaymentMethod_Transfer" = "轉帳";
+"CoreData_TransactionPaymentMethod_Other" = "其他";
+

@@ -34,8 +34,8 @@ class AnalysisViewViewModel {
     @Published var commonUsedPaymentMethodString: String?
     @Published var commonUsedTagString: String?
     @Published var expensePieChartData: [PieChartDataEntry] = []
-    @Published var expenseGroupByCategoryDict: [String: Double] = [:]
-    @Published var expenseGroupByPaymentMethodDict: [String: Double] = [:]
+    @Published var expenseGroupByCategoryDict: [UUID: Double] = [:]
+    @Published var expenseGroupByPaymentMethodDict: [UUID: Double] = [:]
     
     init() {
         setBindings()
@@ -81,24 +81,24 @@ class AnalysisViewViewModel {
     
     private func calculateTransactionInfo() {
         rhsExpense = rhsTransactions.reduce(0) {
-            return $1.type == "支出" ? $0 + $1.amount : $0
+            return $1.type == CoreDataInitializer.shared.transactionTypeUUID[1] ? $0 + $1.amount : $0
         }
         rhsIncome = rhsTransactions.reduce(0) {
-            return $1.type == "收入" ? $0 + $1.amount : $0
+            return $1.type == CoreDataInitializer.shared.transactionTypeUUID[0] ? $0 + $1.amount : $0
         }
         rhsBalance = rhsIncome - rhsExpense
         
         lhsExpense = lhsTransactions.reduce(0) {
-            return $1.type == "支出" ? $0 + $1.amount : $0
+            return $1.type == CoreDataInitializer.shared.transactionTypeUUID[1] ? $0 + $1.amount : $0
         }
         lhsIncome = lhsTransactions.reduce(0) {
-            return $1.type == "收入" ? $0 + $1.amount : $0
+            return $1.type == CoreDataInitializer.shared.transactionTypeUUID[0] ? $0 + $1.amount : $0
         }
         lhsBalance = lhsIncome - lhsExpense
         
-        var commonUsedPaymentMethod: [String: Int] = [:]
-        var commonUsedTag: [String: Int] = [:]
-        var expenseByCategory: [String: Double] = [:]
+        var commonUsedPaymentMethod: [UUID: Int] = [:]
+        var commonUsedTag: [UUID: Int] = [:]
+        var expenseByCategory: [UUID: Double] = [:]
         rhsTransactions.forEach { transaction in
             if !commonUsedPaymentMethod.keys.contains(transaction.payMethod) {
                 commonUsedPaymentMethod.updateValue(1, forKey: transaction.payMethod)
@@ -114,7 +114,7 @@ class AnalysisViewViewModel {
                     }
                 }
             }
-            if transaction.type == "支出" {
+            if transaction.type == CoreDataInitializer.shared.transactionTypeUUID[1] {
                 if !expenseByCategory.keys.contains(transaction.category) {
                     expenseByCategory.updateValue(transaction.amount, forKey: transaction.category)
                 } else {
@@ -132,10 +132,10 @@ class AnalysisViewViewModel {
         }
         let topThreePaymentMethod = commonUsedPaymentMethod.sorted(by: { $0.value > $1.value }).prefix(3).map(\.key)
         let topThreeTag = commonUsedTag.sorted(by: { $0.value > $1.value }).prefix(3).map(\.key)
-        commonUsedPaymentMethodString = topThreePaymentMethod.joined(separator: "、")
-        commonUsedTagString = topThreeTag.joined(separator: "、")
+        commonUsedPaymentMethodString = topThreePaymentMethod.compactMap { CoreDataInitializer.shared.transactionPaymentMethod[$0] }.joined(separator: "、")
+        commonUsedTagString = topThreeTag.compactMap { CoreDataInitializer.shared.transactionTag[$0] }.joined(separator: "、")
         for key in expenseByCategory.keys {
-            expensePieChartData.append(PieChartDataEntry(value: expenseByCategory[key]! / rhsExpense * 100, label: key))
+            expensePieChartData.append(PieChartDataEntry(value: expenseByCategory[key]! / rhsExpense * 100, label: CoreDataInitializer.shared.transactionCategory[key]))
         }
         expensePieChartData.sort { $0.value > $1.value }
         expenseGroupByCategoryDict = expenseByCategory

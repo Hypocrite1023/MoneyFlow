@@ -64,7 +64,7 @@ class AccountingPage: UIView {
     private let dateLabel: UILabel = createLabel(title: "日期")
     let accountingDatePicker: UIDatePicker = UIDatePicker()
     private let typeLabel: UILabel = createLabel(title: "類型")
-    let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: CoreDataPredicate.TransactionType.allCases.map(\.title))
+    let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: CoreDataManager.shared.fetchAllTransactionType().map {NSLocalizedString($0.nsLocalizedStringIdentifier, comment: "")})
     private let itemNameLabel: UILabel = createLabel(title: "項目名稱")
     let itemNameTextField: UITextField = UITextField()
     private let amountLabel: UILabel = createLabel(title: "金額")
@@ -89,7 +89,7 @@ class AccountingPage: UIView {
     let accountingButton: UIButton = UIButton(configuration: .tinted())
     let cancelAccountingButton: UIButton = UIButton(configuration: .tinted())
     
-    init(categoryList: [String], paymentMethodList: [String], tagList: [String]) {
+    init(categoryList: [(UUID, String)], paymentMethodList: [(UUID, String)], tagList: [(UUID, String)]) {
         categoryControl = SingleSelectionView(selectionList: categoryList, preselectIndex: nil)
         paymentMethodControl = SingleSelectionView(selectionList: paymentMethodList, preselectIndex: nil)
         tagControl = MultiSelectionView(selectionList: tagList, mayNil: true)
@@ -356,32 +356,44 @@ class AccountingPage: UIView {
         innerView.widthAnchor.constraint(equalTo: outerView.widthAnchor).isActive = true
     }
     
-    func configureCategoryControl(type: CoreDataPredicate.TransactionType) {
+    func configureCategoryControl(type: CoreDataPredicate.CoreDataPredicateTransactionType) {
         
         switch type {
-        case .expense:            
+        case .type(let uuid):
             if let index = categoryBlockStack.arrangedSubviews.firstIndex(of: categoryControl) {
                 categoryControl.removeFromSuperview()
-                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)))
+                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: uuid)).map { ($0.uuid, $0.name) })
                 categoryBlockStack.insertArrangedSubview(categoryControl, at: index)
             } else {
                 selectTransactionTypeFirstPromptLabel.removeFromSuperview()
-                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)))
+                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: uuid)).map { ($0.uuid, $0.name) })
                 categoryBlockStack.insertArrangedSubview(categoryControl, at: 1)
                 categoryBlockStack.setNeedsLayout()
                 
             }
-        case .income:
-            if let index = categoryBlockStack.arrangedSubviews.firstIndex(of: categoryControl) {
-                categoryControl.removeFromSuperview()
-                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))
-                categoryBlockStack.insertArrangedSubview(categoryControl, at: index)
-            } else {
-                selectTransactionTypeFirstPromptLabel.removeFromSuperview()
-                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))
-                categoryBlockStack.insertArrangedSubview(categoryControl, at: 1)
-                
-            }
+//        case .expense:
+//            if let index = categoryBlockStack.arrangedSubviews.firstIndex(of: categoryControl) {
+//                categoryControl.removeFromSuperview()
+//                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[1])).map { ($0.uuid, $0.name) })
+//                categoryBlockStack.insertArrangedSubview(categoryControl, at: index)
+//            } else {
+//                selectTransactionTypeFirstPromptLabel.removeFromSuperview()
+//                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[1])).map { ($0.uuid, $0.name) })
+//                categoryBlockStack.insertArrangedSubview(categoryControl, at: 1)
+//                categoryBlockStack.setNeedsLayout()
+//                
+//            }
+//        case .income:
+//            if let index = categoryBlockStack.arrangedSubviews.firstIndex(of: categoryControl) {
+//                categoryControl.removeFromSuperview()
+//                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[0])).map { ($0.uuid, $0.name) })
+//                categoryBlockStack.insertArrangedSubview(categoryControl, at: index)
+//            } else {
+//                selectTransactionTypeFirstPromptLabel.removeFromSuperview()
+//                categoryControl = SingleSelectionView(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[0])).map { ($0.uuid, $0.name) })
+//                categoryBlockStack.insertArrangedSubview(categoryControl, at: 1)
+//                
+//            }
             
         }
     }

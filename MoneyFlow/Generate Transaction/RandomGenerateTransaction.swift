@@ -11,39 +11,34 @@ class RandomGenerateTransaction {
     func randomDate() -> Date {
         let calendar = Calendar.current
         let now = Date.now
-        let past = calendar.date(byAdding: .year, value: -3, to: now)!
+        let past = calendar.date(byAdding: .year, value: -5, to: now)!
 //        let interval = calendar.dateInterval(of: .year, for: .now)!
         
         let randomTimeInterval = TimeInterval.random(in: past.timeIntervalSince1970...now.timeIntervalSince1970)
         return Date(timeIntervalSince1970: randomTimeInterval)
     }
     
-    func randomType() -> String {
-        return ["支出", "收入"].randomElement()!
+    func randomType() -> UUID {
+        return CoreDataManager.shared.fetchAllTransactionType().randomElement()!.uuid
     }
     
     func randomAmount() -> Double {
         return Double(Int.random(in: 10...10000))
     }
     
-    func randomCategory(type: String) -> String {
-        var categories: [String] = []
-        if type == "支出" {
-            categories = CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense))
-        } else {
-            categories = CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income))
-        }
+    func randomCategory(type: UUID) -> UUID {
+        let categories: [UUID] = CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: type)).map { $0.uuid }
         
         return (categories.randomElement())!
     }
 
-    func randomPaymentMethod() -> String {
-        let paymentMethods = CoreDataManager.shared.fetchAllTransactionPaymentMethods()
+    func randomPaymentMethod() -> UUID {
+        let paymentMethods = CoreDataManager.shared.fetchAllTransactionPaymentMethods().map { $0.uuid }
         return (paymentMethods.randomElement())!
     }
     
-    func randomTag() -> [String]? {
-        let tags = CoreDataManager.shared.fetchAllTransactionTags()
+    func randomTag() -> [UUID]? {
+        let tags = CoreDataManager.shared.fetchAllTransactionTags().map { $0.uuid }
         let numberOfTags = Int.random(in: 0...3) // 最多 3 個標籤
             
             // 將陣列隨機排序後，選取前 N 個
@@ -61,9 +56,15 @@ class RandomGenerateTransaction {
     }
     
     func createRandomTransactionRecord() {
+        CoreDataManager.shared.fetchAllTransactionType().forEach { type in
+            print(NSLocalizedString(type.nsLocalizedStringIdentifier, comment: ""))
+        }
+        print(CoreDataManager.shared.fetchAllTransactionType().map(\.uuid))
+        print(CoreDataInitializer.shared.transactionTypeUUID)
         for _ in 0..<3000 {
             let type = randomType()
             let transaction = Transaction(date: randomDate(), type: type, itemName: randomCombinedItemName(), amount: randomAmount(), category: randomCategory(type: type), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
+//            print(NSLocalizedString((CoreDataManager.shared.fetchTransactionCategories(predicate: .category(categoryUUID: transaction.category)).first?.name)!, comment: ""))
             CoreDataManager.shared.addTransaction(transaction)
         }
     }

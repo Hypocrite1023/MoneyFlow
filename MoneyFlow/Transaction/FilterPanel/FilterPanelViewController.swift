@@ -16,7 +16,7 @@ class FilterPanelViewController: UIViewController {
     weak var filterDataDelegate: TransactionFilterDataDelegate?
     
     init(viewModel: FilterPanelViewModel) {
-        self.contentView = FilterPanelView()
+        self.contentView = FilterPanelView(dateRangeSelectorSelectionList: viewModel.dateRangeOptions.map{($0.0, $0.2)}, frame: .zero)
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -46,17 +46,19 @@ class FilterPanelViewController: UIViewController {
             contentView.dateRangeSelector.$selectedIndex
                 .dropFirst()
                 .removeDuplicates()
-                .map {
-                    $0!
-                }
+//                .map {
+//                    $0!
+//                }
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] value in
-                    guard let self else {
+                    guard let value else {
                         return
                     }
-                    print(value, "bindViewToViewModel")
-                    self.viewModel.dateRangeSelected = value
-                    self.filterDataDelegate?.reloadTransaction()
+//                    print(value, "bindViewToViewModel")
+                    self?.viewModel.dateRangeSelected = (self?.viewModel.dateRangeOptions.firstIndex(where: { (uuid, index, str) in
+                        value == uuid
+                    }))!
+                    self?.filterDataDelegate?.reloadTransaction()
                     
                 }
                 .store(in: &bindings)
@@ -73,11 +75,7 @@ class FilterPanelViewController: UIViewController {
                     if self.viewModel.transactionTypeSelected.count == 2 {
                         self.contentView.categorySelector.updateSelectionList(list: [])
                     } else if self.viewModel.transactionTypeSelected.count == 1 {
-                        if self.viewModel.transactionTypeSelected[0] == "收入" {
-                            self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .income)))
-                        } else {
-                            self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: .expense)))
-                        }
+                        self.contentView.categorySelector.updateSelectionList(list: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[0])).map { ($0.uuid, $0.name) } )
                     } else {
                         self.contentView.categorySelector.updateSelectionList(list: [])
                     }
@@ -94,7 +92,7 @@ class FilterPanelViewController: UIViewController {
                     }
 //                    print(value)
                     self.viewModel.categorySelected = Array(value)
-                    print(self.viewModel.categorySelected, "----")
+//                    print(self.viewModel.categorySelected, "----")
                     self.filterDataDelegate?.reloadTransaction()
                 }
                 .store(in: &bindings)
@@ -128,8 +126,8 @@ class FilterPanelViewController: UIViewController {
                 .removeDuplicates()
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] index in
-                    print(index, "bindViewModelToView")
-                    self?.contentView.dateRangeSelector.selectedIndex = index
+//                    print(index, "bindViewModelToView")
+                    self?.contentView.dateRangeSelector.selectedIndex = self?.viewModel.dateRangeOptions[index].0
                 }
                 .store(in: &bindings)
             viewModel.$transactionTypeSelected
