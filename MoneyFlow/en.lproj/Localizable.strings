@@ -161,3 +161,18 @@
 "CoreData_TransactionPaymentMethod_CreditCard" = "Credit Card";
 "CoreData_TransactionPaymentMethod_Transfer" = "Transfer";
 "CoreData_TransactionPaymentMethod_Other" = "Other";
+// AccountingPage
+"AccountingPage_DateLabel_Title" = "Date";
+"AccountingPage_TypeLabel_Title" = "Type";
+"AccountingPage_ItemNameLabel_Title" = "Item Name";
+"AccountingPage_AmountLabel_Title" = "Amount";
+"AccountingPage_CategoryLabel_Title" = "Category";
+"AccountingPage_PaymentMethodLabel_Title" = "Payment Method";
+"AccountingPage_TagLabel_Title" = "Tag";
+"AccountingPage_NoteLabel_Title" = "Note";
+"AccountingPage_IncomeDistributeLabel_Title" = "Distribute Income To";
+"AccountingPage_AccountingButton_Title" = "Record!";
+"AccountingPage_CancelAccountingButton_Title" = "Cancel";
+"AccountingPage_SelectTransactionTypeFirstPromptLabel_Title" = "Please select a transaction type";
+"AccountingPage_AddTagButton_Title" = "Add Tag";
+"AccountingPage_NoteTextField_Placeholder_Title" = "Add a brief description";

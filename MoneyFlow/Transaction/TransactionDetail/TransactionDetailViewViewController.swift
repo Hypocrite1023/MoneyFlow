@@ -71,7 +71,7 @@ class TransactionDetailViewViewController: UIViewController {
         contentView.typeSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionType().map { ($0.uuid, $0.nsLocalizedStringIdentifier) }, selected: viewModel.type)
         contentView.itemNameTextField.text = viewModel.itemName
         contentView.amountTextField.text = viewModel.amount.description
-        contentView.categorySelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: CoreDataInitializer.shared.transactionTypeUUID[1])).map {($0.uuid, $0.name)}, selected: viewModel.category)
+        contentView.categorySelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: viewModel.type)).map {($0.uuid, $0.name)}, selected: viewModel.category)
         contentView.paymentMethodSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionPaymentMethods().map {($0.uuid, $0.paymentMethod)}, selected: viewModel.payMethod)
         contentView.tagSelectionView.setSelectionList(selectionList: CoreDataManager.shared.fetchAllTransactionTags().map {($0.uuid, $0.tag)}, selected: Set(viewModel.tags ?? []))
         contentView.noteTextField.text = viewModel.note

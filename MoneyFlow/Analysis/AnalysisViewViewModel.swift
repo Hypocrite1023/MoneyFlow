@@ -132,10 +132,10 @@ class AnalysisViewViewModel {
         }
         let topThreePaymentMethod = commonUsedPaymentMethod.sorted(by: { $0.value > $1.value }).prefix(3).map(\.key)
         let topThreeTag = commonUsedTag.sorted(by: { $0.value > $1.value }).prefix(3).map(\.key)
-        commonUsedPaymentMethodString = topThreePaymentMethod.compactMap { CoreDataInitializer.shared.transactionPaymentMethod[$0] }.joined(separator: "、")
+        commonUsedPaymentMethodString = topThreePaymentMethod.compactMap { NSLocalizedString(CoreDataInitializer.shared.transactionPaymentMethod[$0]!, comment: "")  }.joined(separator: "、")
         commonUsedTagString = topThreeTag.compactMap { CoreDataInitializer.shared.transactionTag[$0] }.joined(separator: "、")
         for key in expenseByCategory.keys {
-            expensePieChartData.append(PieChartDataEntry(value: expenseByCategory[key]! / rhsExpense * 100, label: CoreDataInitializer.shared.transactionCategory[key]))
+            expensePieChartData.append(PieChartDataEntry(value: expenseByCategory[key]! / rhsExpense * 100, label: NSLocalizedString(CoreDataInitializer.shared.transactionCategory[key]!, comment: "")))
         }
         expensePieChartData.sort { $0.value > $1.value }
         expenseGroupByCategoryDict = expenseByCategory

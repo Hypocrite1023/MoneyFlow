@@ -161,4 +161,18 @@
 "CoreData_TransactionPaymentMethod_CreditCard" = "信用卡";
 "CoreData_TransactionPaymentMethod_Transfer" = "轉帳";
 "CoreData_TransactionPaymentMethod_Other" = "其他";
-
+// AccountingPage
+"AccountingPage_DateLabel_Title" = "日期";
+"AccountingPage_TypeLabel_Title" = "類型";
+"AccountingPage_ItemNameLabel_Title" = "項目名稱";
+"AccountingPage_AmountLabel_Title" = "金額";
+"AccountingPage_CategoryLabel_Title" = "類別";
+"AccountingPage_PaymentMethodLabel_Title" = "支付方式";
+"AccountingPage_TagLabel_Title" = "標籤";
+"AccountingPage_NoteLabel_Title" = "備註";
+"AccountingPage_IncomeDistributeLabel_Title" = "將收入分配給";
+"AccountingPage_AccountingButton_Title" = "紀錄!";
+"AccountingPage_CancelAccountingButton_Title" = "取消";
+"AccountingPage_SelectTransactionTypeFirstPromptLabel_Title" = "請選擇交易類型";
+"AccountingPage_AddTagButton_Title" = "新增標籤";
+"AccountingPage_NoteTextField_Placeholder_Title" = "加入一些簡單的說明吧";

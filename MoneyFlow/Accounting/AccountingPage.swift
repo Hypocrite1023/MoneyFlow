@@ -61,29 +61,29 @@ class AccountingPage: UIView {
     
     private let pageScrollView: UIScrollView = UIScrollView()
     private let pageStack: UIStackView = UIStackView()
-    private let dateLabel: UILabel = createLabel(title: "日期")
+    private let dateLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_DateLabel_Title", comment: "日期"))
     let accountingDatePicker: UIDatePicker = UIDatePicker()
-    private let typeLabel: UILabel = createLabel(title: "類型")
+    private let typeLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_TypeLabel_Title", comment: "類型"))
     let typeSegmentControl: UISegmentedControl = UISegmentedControl(items: CoreDataManager.shared.fetchAllTransactionType().map {NSLocalizedString($0.nsLocalizedStringIdentifier, comment: "")})
-    private let itemNameLabel: UILabel = createLabel(title: "項目名稱")
+    private let itemNameLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_ItemNameLabel_Title", comment: "項目名稱"))
     let itemNameTextField: UITextField = UITextField()
-    private let amountLabel: UILabel = createLabel(title: "金額")
+    private let amountLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_AmountLabel_Title", comment: "金額"))
     let amountTextField: UITextField = UITextField()
     
     private let categoryBlockStack: UIStackView = UIStackView()
-    private let categoryLabel: UILabel = createLabel(title: "類別")
+    private let categoryLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_CategoryLabel_Title", comment: "類別"))
     let selectTransactionTypeFirstPromptLabel: UILabel = UILabel()
     var categoryControl: SingleSelectionView
-    private let paymentMethodLabel: UILabel = createLabel(title: "支付方式")
+    private let paymentMethodLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_PaymentMethodLabel_Title", comment: "支付方式"))
     let paymentMethodControl: SingleSelectionView
-    private let tagLabel: UILabel = createLabel(title: "標籤")
+    private let tagLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_TagLabel_Title", comment: "標籤"))
     let addTagButton: UIButton = UIButton(configuration: .plain())
     let tagControl: MultiSelectionView
     
-    private let noteLabel: UILabel = createLabel(title: "備註")
+    private let noteLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_NoteLabel_Title", comment: "備註"))
     let noteTextField: UITextField = UITextField()
     
-    let incomeDistributeLabel: UILabel = createLabel(title: "將收入分配給")
+    let incomeDistributeLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_IncomeDistributeLabel_Title", comment: "將收入分配給"))
     let incomedistributeTableView: UITableView = UITableView()
     
     let accountingButton: UIButton = UIButton(configuration: .tinted())
@@ -148,10 +148,10 @@ class AccountingPage: UIView {
         horizonStack.alignment = .center
         horizonStack.distribution = .fillEqually
         pageScrollView.addSubview(horizonStack)
-        accountingButton.setTitle("紀錄！", for: .normal)
+        accountingButton.setTitle(NSLocalizedString("AccountingPage_AccountingButton_Title", comment: "紀錄!"), for: .normal)
         
         
-        cancelAccountingButton.setTitle("取消", for: .normal)
+        cancelAccountingButton.setTitle(NSLocalizedString("AccountingPage_CancelAccountingButton_Title", comment: "取消"), for: .normal)
         cancelAccountingButton.tintColor = .darkGray
         
         horizonStack.bottomAnchor.constraint(equalTo: pageScrollView.frameLayoutGuide.bottomAnchor, constant: -15).isActive = true
@@ -210,7 +210,7 @@ class AccountingPage: UIView {
     }
     
     private func setupCategoryBlock() {
-        selectTransactionTypeFirstPromptLabel.text = "請選擇交易類型"
+        selectTransactionTypeFirstPromptLabel.text = NSLocalizedString("AccountingPage_SelectTransactionTypeFirstPromptLabel_Title", comment: "請選擇交易類型")
         selectTransactionTypeFirstPromptLabel.font = AppConfig.Font.content.value
         selectTransactionTypeFirstPromptLabel.textColor = .secondaryLabel
 //        selectTransactionTypeFirstPromptLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -246,7 +246,7 @@ class AccountingPage: UIView {
         var conf = UIButton.Configuration.plain()
         conf.imagePlacement = .trailing
         conf.image = UIImage(systemName: "chevron.forward")
-        conf.title = "新增標籤"
+        conf.title = NSLocalizedString("AccountingPage_AddTagButton_Title", comment: "新增標籤")
         conf.buttonSize = .mini
         addTagButton.configuration = conf
         addTagButton.tintColor = .black
@@ -284,7 +284,7 @@ class AccountingPage: UIView {
         let vstack = createVStack()
         vstack.addArrangedSubview(noteLabel)
         noteTextField.borderStyle = .roundedRect
-        noteTextField.placeholder = "加入一些簡單的說明吧"
+        noteTextField.placeholder = NSLocalizedString("AccountingPage_NoteTextField_Placeholder_Title", comment: "加入一些簡單的說明吧")
         noteTextField.keyboardType = .default
         noteTextField.returnKeyType = .done
         vstack.addArrangedSubview(noteTextField)

@@ -33,8 +33,8 @@ class HomeViewController: UIViewController {
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.isHidden = true
         
-        let randomGenerateTransaction = RandomGenerateTransaction()
-        randomGenerateTransaction.createRandomTransactionRecord()
+//        let randomGenerateTransaction = RandomGenerateTransaction()
+//        randomGenerateTransaction.createRandomTransactionRecord()
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
         homeView.setBudgetButton.addTarget(self, action: #selector(setBudget), for: .touchUpInside)

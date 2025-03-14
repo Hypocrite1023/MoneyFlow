@@ -28,9 +28,18 @@ class SingleSelectionExpandable: SelectionViewExpandable, ObservableObject {
             let button = UIButton(configuration: .plain())
             var conf = button.configuration
             conf?.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-            button.setTitle(NSLocalizedString((selectionList.first(where: { (uuid: UUID, locolizedKey: String) -> Bool in
-                selected == uuid
-            })?.locolizedKey)!, comment: ""), for: .normal)
+            print(selected)
+            print(selectionList)
+            let tmp = selectionList.compactMap {
+                print($0.uuid, selected)
+                if $0.uuid == selected {
+                    return $0
+                } else {
+                    return nil
+                }
+            }
+            print(tmp.first?.locolizedKey)
+            button.setTitle(NSLocalizedString(tmp.first!.locolizedKey, comment: ""), for: .normal)
             button.backgroundColor = AppConfig.ButtonColor.selected.backgroundColor
             button.setTitleColor(AppConfig.ButtonColor.selected.fontColor, for: .normal)
             button.layer.cornerRadius = 5

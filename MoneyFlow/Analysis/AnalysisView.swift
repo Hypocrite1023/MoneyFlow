@@ -350,7 +350,9 @@ class AnalysisView: UIView {
         paymentMethodExpenseAnalysisBarChartView.data = data
 
         // 設定 X 軸標籤
-        paymentMethodExpenseAnalysisBarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: paymentMethodExpenseDictionary.keys.sorted(by: <).map { NSLocalizedString(CoreDataInitializer.shared.transactionCategory[$0]!, comment: "")})
+        print(paymentMethodExpenseDictionary)
+        print(CoreDataInitializer.shared.transactionCategory)
+        paymentMethodExpenseAnalysisBarChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: paymentMethodExpenseDictionary.keys.sorted(by: <).map { NSLocalizedString(CoreDataInitializer.shared.transactionPaymentMethod[$0]!, comment: "")})
         paymentMethodExpenseAnalysisBarChartView.xAxis.labelPosition = .bottom
         paymentMethodExpenseAnalysisBarChartView.xAxis.granularity = 1
     }
