@@ -39,11 +39,14 @@ class GoalViewViewModel {
         if let monthlyGoalValue = UserDefaults.standard.object(forKey: AppConfig.UserDefaultKey.monthlyExpenseLimit.rawValue) as? Double {
             monthlyGoal = monthlyGoalValue
         }
+        
+//        print(dailyGoal, weeklyGoal, monthlyGoal)
     }
     
     func loadCurrentExpense() {
         currentDailyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionTimePredicate.today.bothPredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
         currentWeeklyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionTimePredicate.week.bothPredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
         currentMonthlyExpense = CoreDataManager.shared.fetchTransaction(withPredicate: (CoreDataPredicate.TransactionTimePredicate.month.bothPredicate, CoreDataPredicate.CoreDataPredicateTransactionType.type(uuid: CoreDataInitializer.shared.transactionTypeUUID[1]).predicate, nil, nil, nil)).reduce(0) { $0 + $1.amount }
+//        print(currentDailyExpense, currentWeeklyExpense, currentMonthlyExpense)
     }
 }

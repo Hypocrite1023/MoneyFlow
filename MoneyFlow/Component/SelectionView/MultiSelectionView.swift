@@ -7,11 +7,24 @@
 
 import UIKit
 
+
+/// # 自訂按鈕視圖
+///
+/// 這個 `MultiSelectionView` 提供了多個按鈕，並且支援多選
+///
+/// - 參數:
+///   - `selectionList`: 按鈕的UUID及NSLocalizedString
+///   - `mayNil`: 這個view有沒有可能沒有按鈕
+///   - `selectionListNilPrompt`: view沒有按鈕的提示字
+///   - `preselectIndex`: 預選的按鈕UUID
+/// - 結果:
+///   - `selectedIndex`: 所有選中的按鈕的UUID
 class MultiSelectionView: SelectionView, ObservableObject {
     
     let mayNil: Bool
     let selectionListNilPrompt: String
     let promptLabel: UILabel = UILabel()
+    
     @Published var selectedIndex: Set<UUID> = [] {
         didSet {
             if selectedIndex != [] {

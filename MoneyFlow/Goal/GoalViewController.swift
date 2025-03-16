@@ -118,45 +118,52 @@ class GoalViewController: UIViewController {
 //                    self?.applySnapshot()
                 })
                 .store(in: &bindings)
-            viewModel.$dailyGoal
-                .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { [weak self] value in
-                    self?.contentView.dailyExpenseGoal.setGoalAmount(goalAmount: value)
-                })
-                .store(in: &bindings)
-            viewModel.$weeklyGoal
-                .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { [weak self] value in
-                    self?.contentView.weeklyExpenseGoal.setGoalAmount(goalAmount: value)
-                })
-                .store(in: &bindings)
-            viewModel.$monthlyGoal
-                .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { [weak self] value in
-                    self?.contentView.monthlyExpenseGoal.setGoalAmount(goalAmount: value)
-                })
-                .store(in: &bindings)
+//            viewModel.$dailyGoal
+//                .receive(on: DispatchQueue.main)
+//                .sink(receiveValue: { [weak self] value in
+//                    self?.contentView.dailyExpenseGoal.setGoalAmount(goalAmount: value)
+//                })
+//                .store(in: &bindings)
+//            viewModel.$weeklyGoal
+//                .receive(on: DispatchQueue.main)
+//                .sink(receiveValue: { [weak self] value in
+//                    self?.contentView.weeklyExpenseGoal.setGoalAmount(goalAmount: value)
+//                })
+//                .store(in: &bindings)
+//            viewModel.$monthlyGoal
+//                .receive(on: DispatchQueue.main)
+//                .sink(receiveValue: { [weak self] value in
+//                    self?.contentView.monthlyExpenseGoal.setGoalAmount(goalAmount: value)
+//                })
+//                .store(in: &bindings)
             viewModel.$currentDailyExpense
+                .zip(viewModel.$dailyGoal)
                 .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { [weak self] currentDailyExpense in
+                .sink(receiveValue: { [weak self] currentDailyExpense, dailyGoal in
                     self?.contentView.dailyExpenseGoal.nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: currentDailyExpense as NSNumber)
-                    guard let dailyGoal = self?.viewModel.dailyGoal else { return }
+                    self?.contentView.dailyExpenseGoal.setGoalAmount(goalAmount: dailyGoal)
+                    guard let dailyGoal else { return }
                     self?.contentView.dailyExpenseGoal.setGoalProgressView(progress: currentDailyExpense / dailyGoal)
+//                    print("set daily progress", (currentDailyExpense / dailyGoal) == .infinity)
                 })
                 .store(in: &bindings)
             viewModel.$currentWeeklyExpense
+                .zip(viewModel.$weeklyGoal)
                 .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { [weak self] currentWeeklyExpense in
+                .sink(receiveValue: { [weak self] currentWeeklyExpense, weeklyGoal in
                     self?.contentView.weeklyExpenseGoal.nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: currentWeeklyExpense as NSNumber)
-                    guard let weeklyGoal = self?.viewModel.dailyGoal else { return }
+                    self?.contentView.weeklyExpenseGoal.setGoalAmount(goalAmount: weeklyGoal)
+                    guard let weeklyGoal else { return }
                     self?.contentView.weeklyExpenseGoal.setGoalProgressView(progress: currentWeeklyExpense / weeklyGoal)
                 })
                 .store(in: &bindings)
             viewModel.$currentMonthlyExpense
+                .zip(viewModel.$monthlyGoal)
                 .receive(on: DispatchQueue.main)
-                .sink(receiveValue: { [weak self] currentMonthlyExpense in
+                .sink(receiveValue: { [weak self] currentMonthlyExpense, monthlyGoal in
                     self?.contentView.monthlyExpenseGoal.nowAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: currentMonthlyExpense as NSNumber)
-                    guard let monthlyGoal = self?.viewModel.dailyGoal else { return }
+                    self?.contentView.monthlyExpenseGoal.setGoalAmount(goalAmount: monthlyGoal)
+                    guard let monthlyGoal else { return }
                     self?.contentView.monthlyExpenseGoal.setGoalProgressView(progress: currentMonthlyExpense / monthlyGoal)
                 })
                 .store(in: &bindings)

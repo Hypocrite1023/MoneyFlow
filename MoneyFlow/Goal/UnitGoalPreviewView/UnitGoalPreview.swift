@@ -101,18 +101,18 @@ class UnitGoalPreview: UIView {
             goalNotSettingLabel.isHidden = false
             return
         }
-        guard !(goalAmount == 0.0) else {
-            vstack?.arrangedSubviews.forEach({$0.isHidden = true})
-            goalNotSettingLabel.isHidden = false
-            return
-        }
+//        guard !(goalAmount == 0.0) else {
+//            vstack?.arrangedSubviews.forEach({$0.isHidden = true})
+//            goalNotSettingLabel.isHidden = false
+//            return
+//        }
         vstack?.arrangedSubviews.forEach({$0.isHidden = false})
         goalNotSettingLabel.isHidden = true
         goalAmountLabel.text = AppFormatter.shared.currencyNumberFormatter.string(from: goalAmount as NSNumber)
     }
     
     func setGoalProgressView(progress: Double) {
-        if progress >= 1 {
+        if progress >= 1 || progress == .infinity {
             goalProgressView.setProgress(1.0, animated: true)
             goalProgressView.progressTintColor = .systemRed
         }
