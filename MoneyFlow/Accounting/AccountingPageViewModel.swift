@@ -20,6 +20,51 @@ class AccountingPageViewModel {
     var relationGoalID: UUID?
     lazy var goalList: [GoalItem] = CoreDataManager.shared.fetchInProcessGoal()
     
+    @Published var currencies: [CurrencyInformation.Information]?
+    @Published var selectedCurrency: String = "TWD"
+    
+//    var currencyRate: CurrencyRate?
+//    var currencyHistory: CurrencyRate?
+    var errorMessage: String? {
+        didSet {
+            print(errorMessage)
+        }
+    }
+    private var bindings: Set<AnyCancellable> = []
+    
+    init() {
+        CurrencyApi.shared.fetchSupportedCurrencies()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                case .finished:
+                    break
+                }
+            }, receiveValue: { [weak self] value in
+                let currencies: CurrencyInformation = value
+                self?.currencies = currencies.response
+            })
+            .store(in: &bindings)
+        
+//        CurrencyApi.shared.fetchCurrenciesLatest(base: "TWD")
+//            .receive(on: DispatchQueue.main)
+//            .sink { completion in
+//                switch completion {
+//                    
+//                case .finished:
+//                    break
+//                case .failure(let error):
+//                    self.errorMessage = error.localizedDescription
+//                }
+//            } receiveValue: { [weak self] value in
+//                self?.currencyRate = value
+//            }
+//            .store(in: &bindings)
+
+    }
+    
     
     func makeAccounting() -> Result<String?, CoreDataManager.AccountingError> {
         
@@ -27,7 +72,7 @@ class AccountingPageViewModel {
             return .failure(CoreDataManager.AccountingError.transactionError)
         }
         
-        let transaction = Transaction(date: transactionDate, type: type, itemName: transactionName, amount: amount, category: category, payMethod: payMethod, tags: tags, note: notes, relationGoal: relationGoalID)
+        let transaction = Transaction(date: transactionDate, type: type, itemName: transactionName, amount: amount, currencyCode: selectedCurrency, category: category, payMethod: payMethod, tags: tags, note: notes, relationGoal: relationGoalID)
         return CoreDataManager.shared.addTransaction(transaction)
     }
     

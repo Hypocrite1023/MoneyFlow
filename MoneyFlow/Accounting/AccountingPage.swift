@@ -69,6 +69,7 @@ class AccountingPage: UIView {
     let itemNameTextField: UITextField = UITextField()
     private let amountLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_AmountLabel_Title", comment: "金額"))
     let amountTextField: UITextField = UITextField()
+    let currencySelectionButton: UIButton = UIButton(configuration: .tinted())
     
     private let categoryBlockStack: UIStackView = UIStackView()
     private let categoryLabel: UILabel = createLabel(title: NSLocalizedString("AccountingPage_CategoryLabel_Title", comment: "類別"))
@@ -200,14 +201,32 @@ class AccountingPage: UIView {
     private func setupAmountBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(amountLabel)
-        vstack.addArrangedSubview(amountTextField)
+//        vstack.addArrangedSubview(amountTextField)
+        let containerView: UIView = UIView()
+        containerView.addSubview(amountTextField)
+        containerView.addSubview(currencySelectionButton)
+        amountTextField.translatesAutoresizingMaskIntoConstraints = false
+        currencySelectionButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            amountTextField.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            amountTextField.trailingAnchor.constraint(equalTo: currencySelectionButton.leadingAnchor, constant: -5),
+            amountTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor),
+            currencySelectionButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            currencySelectionButton.heightAnchor.constraint(equalTo: containerView.heightAnchor),
+            ])
+        vstack.addArrangedSubview(containerView)
         amountTextField.borderStyle = .roundedRect
         amountTextField.keyboardType = .decimalPad
-                
+        
+        currencySelectionButton.tintColor = .black
+        currencySelectionButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
         pageStack.addArrangedSubview(vstack)
         
         constraintToWidth(innerView: vstack, outerView: pageStack)
     }
+    
+    
     
     private func setupCategoryBlock() {
         selectTransactionTypeFirstPromptLabel.text = NSLocalizedString("AccountingPage_SelectTransactionTypeFirstPromptLabel_Title", comment: "請選擇交易類型")

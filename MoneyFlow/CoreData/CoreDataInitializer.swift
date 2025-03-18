@@ -20,6 +20,8 @@ class CoreDataInitializer {
     func initializeData() {
 //        CoreDataManager.resetCoreDataStore()
         
+        
+        
         // 檢查 transaction type 的資料有沒有存在
         let transactionTypeFetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
         if (try? context.count(for: transactionTypeFetchRequest)) == 0 {

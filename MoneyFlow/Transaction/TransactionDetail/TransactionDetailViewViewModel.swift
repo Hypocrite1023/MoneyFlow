@@ -14,6 +14,7 @@ class TransactionDetailViewViewModel {
     @Published var type: UUID
     @Published var itemName: String
     @Published var amount: String
+    @Published var currencyCode: String
     @Published var category: UUID
     @Published var payMethod: UUID
     @Published var tags: [UUID]?
@@ -28,6 +29,7 @@ class TransactionDetailViewViewModel {
         self.type = transaction.type
         self.itemName = transaction.itemName
         self.amount = transaction.amount.description
+        self.currencyCode = transaction.currencyCode
         self.category = transaction.category
         self.payMethod = transaction.payMethod
         self.tags = transaction.tags

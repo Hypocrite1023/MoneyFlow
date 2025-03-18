@@ -209,7 +209,7 @@ class TransactionDetailViewViewController: UIViewController {
         // date picker date publisher 沒有正常運作 需要額外設定date
         viewModel.date = contentView.accountingDatePicker.date
         if viewModel.isTransactionModified() {
-            var transaction = Transaction(date: viewModel.date, type: viewModel.type, itemName: viewModel.itemName, amount: Double(viewModel.amount)!, category: viewModel.category, payMethod: viewModel.payMethod, tags: viewModel.tags, note: viewModel.note, relationGoal: viewModel.relationGoal)
+            var transaction = Transaction(date: viewModel.date, type: viewModel.type, itemName: viewModel.itemName, amount: Double(viewModel.amount)!, currencyCode: viewModel.currencyCode, category: viewModel.category, payMethod: viewModel.payMethod, tags: viewModel.tags, note: viewModel.note, relationGoal: viewModel.relationGoal)
             transaction.id = viewModel.transaction.id!
             let result = CoreDataManager.shared.modifyTransaction(transaction)
             

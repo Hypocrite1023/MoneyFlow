@@ -33,8 +33,7 @@ class HomeViewController: UIViewController {
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.isHidden = true
         
-//        let randomGenerateTransaction = RandomGenerateTransaction()
-//        randomGenerateTransaction.createRandomTransactionRecord()
+//        let _ = RandomGenerateTransaction()
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
         homeView.setBudgetButton.addTarget(self, action: #selector(setBudget), for: .touchUpInside)
@@ -45,7 +44,6 @@ class HomeViewController: UIViewController {
         }
         homeView.segementControl.selectedSegmentIndex = 0
         setBindings()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {

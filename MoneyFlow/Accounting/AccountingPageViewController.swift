@@ -136,7 +136,19 @@ class AccountingPageViewController: UIViewController {
                 .store(in: &bindings)
         }
         func bindViewModelToView() {
-            
+            viewModel.$selectedCurrency
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] currency in
+                    self?.contentView.currencySelectionButton.setTitle(currency, for: .normal)
+                }
+                .store(in: &bindings)
+            viewModel.$currencies
+                .receive(on: DispatchQueue.main)
+                .replaceNil(with: [])
+                .sink { [weak self] currencies in
+                    self?.setCurrencyButtonMenu(supportCurrencyList: currencies)
+                }
+                .store(in: &bindings)
         }
         bindViewToViewModel()
         bindViewModelToView()
@@ -204,6 +216,47 @@ class AccountingPageViewController: UIViewController {
     
     @objc func cancelAccounting() {
         self.dismiss(animated: true)
+    }
+    
+    func setCurrencyButtonMenu(supportCurrencyList: [CurrencyInformation.Information]) {
+        let menuItem = supportCurrencyList.map {
+            if $0.shortCode == viewModel.selectedCurrency {
+                UIAction(title: $0.name, subtitle: $0.shortCode, state: .on) { action in
+                    self.viewModel.selectedCurrency = action.subtitle ?? ""
+                    let resetMenuItem = supportCurrencyList.map {
+                        if $0.shortCode == self.viewModel.selectedCurrency {
+                            UIAction(title: $0.name, subtitle: $0.shortCode, state: .on) { action in
+                                self.viewModel.selectedCurrency = action.subtitle ?? ""
+                            }
+                        } else {
+                            UIAction(title: $0.name, subtitle: $0.shortCode) { action in
+                                self.viewModel.selectedCurrency = action.subtitle ?? ""
+                            }
+                        }
+                    }
+                    self.contentView.currencySelectionButton.menu = UIMenu(title: "", options: [.singleSelection], children: resetMenuItem)
+                }
+            } else {
+                UIAction(title: $0.name, subtitle: $0.shortCode) { action in
+                    self.viewModel.selectedCurrency = action.subtitle ?? ""
+                    let resetMenuItem = supportCurrencyList.map {
+                        if $0.shortCode == self.viewModel.selectedCurrency {
+                            UIAction(title: $0.name, subtitle: $0.shortCode, state: .on) { action in
+                                self.viewModel.selectedCurrency = action.subtitle ?? ""
+                            }
+                        } else {
+                            UIAction(title: $0.name, subtitle: $0.shortCode) { action in
+                                self.viewModel.selectedCurrency = action.subtitle ?? ""
+                            }
+                        }
+                    }
+                    self.contentView.currencySelectionButton.menu = UIMenu(title: "", options: [.singleSelection], children: resetMenuItem)
+                }
+            }
+        }
+        let menu = UIMenu(title: "", options: [.singleSelection], children: menuItem)
+        contentView.currencySelectionButton.menu = menu
+        contentView.currencySelectionButton.showsMenuAsPrimaryAction = true
     }
 }
 

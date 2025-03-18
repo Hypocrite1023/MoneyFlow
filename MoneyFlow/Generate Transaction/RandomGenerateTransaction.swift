@@ -6,8 +6,40 @@
 //
 
 import Foundation
+import Combine
 
 class RandomGenerateTransaction {
+    
+    var currencies: [CurrencyInformation.Information] = [] {
+        didSet {
+            if !currencies.isEmpty {
+                createRandomTransactionRecord()
+            }
+        }
+    }
+    var cancellable: AnyCancellable?
+    
+    init() {
+        cancellable = CurrencyApi.shared.fetchSupportedCurrencies()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                    
+                case .finished:
+                    break
+                case .failure(_):
+                    break
+                }
+            } receiveValue: { value in
+                let currency: CurrencyInformation = value
+                self.currencies = currency.response
+            }
+    }
+    
+    deinit {
+        cancellable?.cancel()
+    }
+    
     func randomDate() -> Date {
         let calendar = Calendar.current
         let now = Date.now
@@ -30,6 +62,14 @@ class RandomGenerateTransaction {
         let categories: [UUID] = CoreDataManager.shared.fetchTransactionCategories(predicate: .type(categoryType: type)).map { $0.uuid }
         
         return (categories.randomElement())!
+    }
+    
+    func randomCurrency() -> String {
+        if Int.random(in: 1...10) != 10 {
+            return "TWD"
+        } else {
+            return currencies.randomElement()?.shortCode ?? "TWD"
+        }
     }
 
     func randomPaymentMethod() -> UUID {
@@ -59,13 +99,11 @@ class RandomGenerateTransaction {
         CoreDataManager.shared.fetchAllTransactionType().forEach { type in
             print(NSLocalizedString(type.nsLocalizedStringIdentifier, comment: ""))
         }
-        print(CoreDataManager.shared.fetchAllTransactionType().map(\.uuid))
-        print(CoreDataInitializer.shared.transactionTypeUUID)
-        for _ in 0..<3000 {
+        for _ in 0..<30000 {
             let type = randomType()
-            let transaction = Transaction(date: randomDate(), type: type, itemName: randomCombinedItemName(), amount: randomAmount(), category: randomCategory(type: type), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
-//            print(NSLocalizedString((CoreDataManager.shared.fetchTransactionCategories(predicate: .category(categoryUUID: transaction.category)).first?.name)!, comment: ""))
-            CoreDataManager.shared.addTransaction(transaction)
+            let transaction = Transaction(date: randomDate(), type: type, itemName: randomCombinedItemName(), amount: randomAmount(), currencyCode: randomCurrency(), category: randomCategory(type: type), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
+            let result = CoreDataManager.shared.addTransaction(transaction)
+            print(result)
         }
     }
 }

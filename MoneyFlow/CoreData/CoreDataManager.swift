@@ -60,6 +60,7 @@ extension CoreDataManager {
 //        newTransaction.type = transaction.type
         newTransaction.itemName = transaction.itemName
         newTransaction.amount = transaction.amount
+        newTransaction.currency = transaction.currencyCode
         newTransaction.note = transaction.note
         
         
@@ -133,6 +134,7 @@ extension CoreDataManager {
 //            transactionRecord.type = transaction.type
             transactionRecord.itemName = transaction.itemName
             transactionRecord.amount = transaction.amount
+            transactionRecord.currency = transaction.currencyCode
             transactionRecord.note = transaction.note
             
             let typeFetchRequest: NSFetchRequest<TransactionType> = TransactionType.fetchRequest()
@@ -268,6 +270,7 @@ extension CoreDataManager {
                                               type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
+                                              currencyCode: $0.currency!,
                                               category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
                                               payMethod: ($0.transactionPaymentMethod?.uuid)!,
@@ -299,6 +302,7 @@ extension CoreDataManager {
                                               type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
+                                              currencyCode: $0.currency!,
                                               category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
                                               payMethod: ($0.transactionPaymentMethod?.uuid)!,
@@ -339,6 +343,7 @@ extension CoreDataManager {
                                               type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
+                                              currencyCode: $0.currency!,
                                               category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
                                               payMethod: ($0.transactionPaymentMethod?.uuid)!,
@@ -381,6 +386,7 @@ extension CoreDataManager {
                                               type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
+                                              currencyCode: $0.currency!,
                                               category: ($0.transactionCategory?.uuid)!,
                                               categorySystemImageName: $0.transactionCategory?.systemImage,
                                               payMethod: ($0.transactionPaymentMethod?.uuid)!,
@@ -567,6 +573,7 @@ extension CoreDataManager {
                                               type: ($0.transactionType?.uuid)!,
                                               itemName: $0.itemName!,
                                               amount: $0.amount,
+                                              currencyCode: $0.currency!,
                                               category: ($0.transactionCategory?.uuid)!,
                                               payMethod: ($0.transactionPaymentMethod?.uuid)!,
                                               tags: tags,

@@ -32,6 +32,7 @@ struct Transaction: Hashable {
     var type: UUID
     var itemName: String
     var amount: Double
+    var currencyCode: String
     var category: UUID
     var categorySystemImageName: String?
     var payMethod: UUID
@@ -39,11 +40,12 @@ struct Transaction: Hashable {
     var note: String?
     var relationGoal: UUID?
     
-    init(date: Date, type: UUID, itemName: String, amount: Double, category: UUID, categorySystemImageName: String? = nil, payMethod: UUID, tags: [UUID]?, note: String?, relationGoal: UUID?) {
+    init(date: Date, type: UUID, itemName: String, amount: Double, currencyCode: String, category: UUID, categorySystemImageName: String? = nil, payMethod: UUID, tags: [UUID]?, note: String?, relationGoal: UUID?) {
         self.date = date
         self.type = type
         self.itemName = itemName
         self.amount = amount
+        self.currencyCode = currencyCode
         self.category = category
         self.categorySystemImageName = categorySystemImageName
         self.payMethod = payMethod
