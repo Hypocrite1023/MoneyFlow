@@ -55,7 +55,7 @@ class RandomGenerateTransaction {
     }
     
     func randomAmount() -> Double {
-        return Double(Int.random(in: 10...10000))
+        return Double(Int.random(in: 1...10000))
     }
     
     func randomCategory(type: UUID) -> UUID {
@@ -65,7 +65,7 @@ class RandomGenerateTransaction {
     }
     
     func randomCurrency() -> String {
-        if Int.random(in: 1...10) != 10 {
+        if Int.random(in: 1...10) < 5 {
             return "TWD"
         } else {
             return currencies.randomElement()?.shortCode ?? "TWD"
@@ -103,7 +103,7 @@ class RandomGenerateTransaction {
             let type = randomType()
             let transaction = Transaction(date: randomDate(), type: type, itemName: randomCombinedItemName(), amount: randomAmount(), currencyCode: randomCurrency(), category: randomCategory(type: type), payMethod: randomPaymentMethod(), tags: randomTag(), note: "", relationGoal: nil)
             let result = CoreDataManager.shared.addTransaction(transaction)
-            print(result)
+//            print(result)
         }
     }
 }

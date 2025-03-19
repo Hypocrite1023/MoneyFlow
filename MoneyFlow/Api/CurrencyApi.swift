@@ -74,6 +74,8 @@ class CurrencyApi {
     }()
     
     static let shared = CurrencyApi()
+    var supportedCurrencies: [CurrencyInformation.Information] = []
+    var cancellable: AnyCancellable?
     
     private init() {}
     
@@ -133,8 +135,58 @@ class CurrencyApi {
     /// - symbols - A list of currencies you would like to see rates for. You can view all supported currencies here.
     ///
     ///   This endpoint provides historical exchange rate data for past dates going back to 1996. Simply attach the date parameter with a valid date to the API’s historical endpoint. You can also specify a base currency and a list of symbols to be returned. View all supported currencies here.
-    func fetchCurrenciesHistorical<T: Decodable>(base: String, date: String) -> AnyPublisher<T, NetworkError> {
-        var url = "https://api.currencybeacon.com/v1/historical?api_key=\(CurrencyApi.apiToken)&base=\(base)&date=\(date)"
-        return fetchData(fromURL: url)
+    func fetchCurrenciesHistorical(base: String, date: String) -> AnyPublisher<CurrencyRatePair, NetworkError> {
+        let ensureSupportedCurrenciesPublisher: AnyPublisher<[CurrencyInformation.Information], Never>
+        if supportedCurrencies.isEmpty {
+            ensureSupportedCurrenciesPublisher = fetchSupportedCurrencies()
+                .map { value -> [CurrencyInformation.Information] in
+                    let currencyInfo: CurrencyInformation = value
+                    self.supportedCurrencies = currencyInfo.response
+                    return currencyInfo.response
+                }
+                .replaceError(with: []) // 如果失敗，就不做任何事
+                .eraseToAnyPublisher()
+        } else {
+            ensureSupportedCurrenciesPublisher = Just(supportedCurrencies)
+                .eraseToAnyPublisher()
+        }
+        if let cachedResponse = CurrencyRateCacheManager.shared.getCurrencyRatePair(forDate: date) {
+            print("cache有值", date)
+            return Just(cachedResponse)
+                .setFailureType(to: NetworkError.self)
+                .eraseToAnyPublisher()
+        }
+        return ensureSupportedCurrenciesPublisher.flatMap { supportedCurrencies -> AnyPublisher<CurrencyRatePair, NetworkError> in
+            let url = "https://api.currencybeacon.com/v1/historical?api_key=\(CurrencyApi.apiToken)&base=\(base)&date=\(date)&symbols=\(supportedCurrencies.map(\.shortCode).joined(separator: ","))"
+//            print(url)
+            return self.fetchData(fromURL: url)
+        }
+        .eraseToAnyPublisher()
+        
+    }
+    
+    func fetchCurrenciesRate(base: String, dates: [String]) -> AnyPublisher<[String: CurrencyRatePair], Never> {
+        let publishers = dates.map { date in
+            fetchCurrenciesHistorical(base: base, date: date)
+                .map {
+//                    let currencyInfo: CurrencyRate = $0
+                    return (date, $0)
+                }
+                .replaceError(with: (String(), CurrencyRatePair(rates: [:], base: String())))
+                .eraseToAnyPublisher()
+                
+        }
+        
+        return Publishers.MergeMany(publishers)
+            .map { (date, rate) in
+                CurrencyRateCacheManager.shared.setCurrencyRatePair(rate, forDate: date)
+                return (date, rate)
+            }
+            .collect()  // 等所有請求完成
+            .map { results in
+                
+                Dictionary(uniqueKeysWithValues: results) // 轉換成 [日期: 匯率]
+            }
+            .eraseToAnyPublisher()
     }
 }

@@ -88,7 +88,7 @@ class TransactionItemView: UITableViewCell {
     }
     
     func setUpCell(with transaction: Transaction) {
-        itemValueLabel.text = "\(transaction.type == CoreDataInitializer.shared.transactionTypeUUID[1] ? "" : "+")\(AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: transaction.type == CoreDataInitializer.shared.transactionTypeUUID[1] ? -transaction.amount : transaction.amount))!)" 
+        itemValueLabel.text = "\(transaction.type == CoreDataInitializer.shared.transactionTypeUUID[1] ? "" : "+")\(AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: transaction.type == CoreDataInitializer.shared.transactionTypeUUID[1] ? -transaction.amount : transaction.amount))!) \(transaction.currencyCode)" 
         itemCategoryLabel.text = NSLocalizedString(CoreDataInitializer.shared.transactionCategory[transaction.category]!, comment: "")
         categoryImageView.image = UIImage(systemName: transaction.categorySystemImageName ?? "photo")
         itemDescriptionLabel.text = transaction.itemName

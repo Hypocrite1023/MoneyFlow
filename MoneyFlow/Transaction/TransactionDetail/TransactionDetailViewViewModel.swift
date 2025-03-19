@@ -23,6 +23,9 @@ class TransactionDetailViewViewModel {
     
     @Published var isEditing: Bool = false
     
+    @Published var currencies: [CurrencyInformation.Information]?
+    var cancellable: AnyCancellable?
+    
     init(transaction: Transaction) {
         self.transaction = transaction
         self.date = transaction.date
@@ -35,10 +38,37 @@ class TransactionDetailViewViewModel {
         self.tags = transaction.tags
         self.note = transaction.note
         self.relationGoal = transaction.relationGoal
+        
+        cancellable = CurrencyApi.shared.fetchSupportedCurrencies()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(_):
+                    break
+                case .finished:
+                    break
+                }
+            }, receiveValue: { [weak self] value in
+                let currencies: CurrencyInformation = value
+                self?.currencies = currencies.response
+            })
+    }
+    
+    deinit {
+        cancellable?.cancel()
     }
     
     func isTransactionModified() -> Bool {
-        return !(date == transaction.date && type == transaction.type && itemName == transaction.itemName && amount == transaction.amount.description && category == transaction.category && payMethod == transaction.payMethod && tags == transaction.tags && note == transaction.note && relationGoal == transaction.relationGoal)
+        return !(date == transaction.date && type == transaction.type && itemName == transaction.itemName && amount == transaction.amount.description && currencyCode == transaction.currencyCode && category == transaction.category && payMethod == transaction.payMethod && tags == transaction.tags && note == transaction.note && relationGoal == transaction.relationGoal)
+    }
+    
+    func modifyTransaction() -> Result<String?, CoreDataManager.AccountingError>? {
+        if isTransactionModified() {
+            var modifiedTransaction = Transaction(date: date, type: type, itemName: itemName, amount: Double(amount)!, currencyCode: currencyCode, category: category, payMethod: payMethod, tags: tags, note: note, relationGoal: relationGoal)
+            modifiedTransaction.id = transaction.id!
+            return CoreDataManager.shared.modifyTransaction(modifiedTransaction)
+        }
+        return nil
     }
     
     func resetTransaction() {
@@ -46,6 +76,7 @@ class TransactionDetailViewViewModel {
         type = transaction.type
         itemName = transaction.itemName
         amount = transaction.amount.description
+        currencyCode = transaction.currencyCode
         category = transaction.category
         payMethod = transaction.payMethod
         tags = transaction.tags

@@ -112,6 +112,12 @@ class TransactionDetailViewViewController: UIViewController {
                 .receive(on: DispatchQueue.main)
                 .assign(to: \.text, on: contentView.amountTextField)
                 .store(in: &bindings)
+            viewModel.$currencyCode
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { [weak self] code in
+                    self?.contentView.currencySelectionButton.setTitle(code, for: .normal)
+                })
+                .store(in: &bindings)
             viewModel.$category
                 .removeDuplicates()
                 .map { Optional($0) }
@@ -136,6 +142,14 @@ class TransactionDetailViewViewController: UIViewController {
                 .receive(on: DispatchQueue.main)
                 .assign(to: \.text, on: contentView.noteTextField)
                 .store(in: &bindings)
+            viewModel.$currencies
+                .receive(on: DispatchQueue.main)
+                .replaceNil(with: [])
+                .sink { [weak self] value in
+                    self?.setCurrencyButtonMenu(supportCurrencyList: value)
+                }
+                .store(in: &bindings)
+
         }
         func bindViewToViewModel() {
             contentView.accountingDatePicker.publisher(for: \.date)
@@ -208,11 +222,7 @@ class TransactionDetailViewViewController: UIViewController {
     @objc func doneButtonTapped() {
         // date picker date publisher 沒有正常運作 需要額外設定date
         viewModel.date = contentView.accountingDatePicker.date
-        if viewModel.isTransactionModified() {
-            var transaction = Transaction(date: viewModel.date, type: viewModel.type, itemName: viewModel.itemName, amount: Double(viewModel.amount)!, currencyCode: viewModel.currencyCode, category: viewModel.category, payMethod: viewModel.payMethod, tags: viewModel.tags, note: viewModel.note, relationGoal: viewModel.relationGoal)
-            transaction.id = viewModel.transaction.id!
-            let result = CoreDataManager.shared.modifyTransaction(transaction)
-            
+        if let result = viewModel.modifyTransaction() {
             switch result {
                 case .success(_):
                     navigationItem.rightBarButtonItems = [editAccountingToolBarItem!]
@@ -263,6 +273,47 @@ class TransactionDetailViewViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.view.transform = .identity
         }
+    }
+    
+    func setCurrencyButtonMenu(supportCurrencyList: [CurrencyInformation.Information]) {
+        let menuItem = supportCurrencyList.map {
+            if $0.shortCode == viewModel.currencyCode {
+                UIAction(title: $0.name, subtitle: $0.shortCode, state: .on) { action in
+                    self.viewModel.currencyCode = action.subtitle ?? ""
+                    let resetMenuItem = supportCurrencyList.map {
+                        if $0.shortCode == self.viewModel.currencyCode {
+                            UIAction(title: $0.name, subtitle: $0.shortCode, state: .on) { action in
+                                self.viewModel.currencyCode = action.subtitle ?? ""
+                            }
+                        } else {
+                            UIAction(title: $0.name, subtitle: $0.shortCode) { action in
+                                self.viewModel.currencyCode = action.subtitle ?? ""
+                            }
+                        }
+                    }
+                    self.contentView.currencySelectionButton.menu = UIMenu(title: "", options: [.singleSelection], children: resetMenuItem)
+                }
+            } else {
+                UIAction(title: $0.name, subtitle: $0.shortCode) { action in
+                    self.viewModel.currencyCode = action.subtitle ?? ""
+                    let resetMenuItem = supportCurrencyList.map {
+                        if $0.shortCode == self.viewModel.currencyCode {
+                            UIAction(title: $0.name, subtitle: $0.shortCode, state: .on) { action in
+                                self.viewModel.currencyCode = action.subtitle ?? ""
+                            }
+                        } else {
+                            UIAction(title: $0.name, subtitle: $0.shortCode) { action in
+                                self.viewModel.currencyCode = action.subtitle ?? ""
+                            }
+                        }
+                    }
+                    self.contentView.currencySelectionButton.menu = UIMenu(title: "", options: [.singleSelection], children: resetMenuItem)
+                }
+            }
+        }
+        let menu = UIMenu(title: "", options: [.singleSelection], children: menuItem)
+        contentView.currencySelectionButton.menu = menu
+        contentView.currencySelectionButton.showsMenuAsPrimaryAction = true
     }
 }
 

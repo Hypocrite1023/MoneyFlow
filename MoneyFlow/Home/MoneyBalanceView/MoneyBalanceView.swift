@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SkeletonView
 
 class MoneyBalanceView: UIView {
     
@@ -28,7 +29,7 @@ class MoneyBalanceView: UIView {
         labelVerticalStack.translatesAutoresizingMaskIntoConstraints = false
         labelVerticalStack.axis = .vertical
         labelVerticalStack.spacing = 5
-        labelVerticalStack.distribution = .fill
+        labelVerticalStack.distribution = .fillEqually
         labelVerticalStack.addArrangedSubview(itemLabel)
         labelVerticalStack.addArrangedSubview(balanceLabel)
         
@@ -37,6 +38,7 @@ class MoneyBalanceView: UIView {
         itemLabel.textColor = .darkGray
         itemLabel.textAlignment = .left
         itemLabel.font = UIFont.systemFont(ofSize: 17)
+        
         
         // balance label
         balanceLabel.textAlignment = .left
@@ -51,5 +53,17 @@ class MoneyBalanceView: UIView {
         self.layer.borderWidth = 1
         self.layer.cornerRadius = 5
         self.clipsToBounds = true
+        
+        labelVerticalStack.isSkeletonable = true
+        itemLabel.isSkeletonable = true
+        balanceLabel.isSkeletonable = true
+    }
+    
+    func startLoadingAnimation() {
+        labelVerticalStack.showAnimatedGradientSkeleton()
+    }
+    
+    func stopLoadingAnimation() {
+        labelVerticalStack.hideSkeleton()
     }
 }

@@ -232,7 +232,7 @@ viewDidLayoutSubviews 會在 視圖的佈局過程完成後 被調用，這通�
 - filter: 過濾數據
 - merge: 將兩個 `Publisher` 的數據合併成一個
 - combineLatest: 將兩個 `Publisher` **最新的** 的數據合併成一個，任一個 Publisher 有最新的值就傳遞
-- flatMap: 根據原本的 Publisher 的數據**產生新的 Publisher**展開並合併 -> 我覺得不好理解
+- flatMap: 根據原本的 Publisher 的數據**產生新的 Publisher** 展開並合併 -> 我覺得不好理解
 ```swift
 // 1. 這個函數模擬 API 請求，每個數字對應不同的延遲時間
 func fetchValue(_ num: Int) -> AnyPublisher<String, Never> {
@@ -360,6 +360,7 @@ createRandomTransactionRecord() 在 global thread 被呼叫，function 內的 Co
 - NSManagedObject 不能跨執行緒使用：
     - NSManagedObject（例如你查詢出來的 TransactionRecord）只能在與它的 context 相同的執行緒上使用。
     - 如果你在背景執行緒中修改或讀取一個 從主執行緒 context 取得的 NSManagedObject，就可能發生 EXC_BAD_ACCESS。
+
 所以要確保 Core Data 有關的操作是在主執行緒執行的
 ```swift
 cancellable = CurrencyApi.shared.fetchSupportedCurrencies()

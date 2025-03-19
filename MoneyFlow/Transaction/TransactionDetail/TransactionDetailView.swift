@@ -19,6 +19,7 @@ class TransactionDetailView: UIView {
     var itemNameTextField: UITextField = UITextField()
     private let amountLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_AmountLabel_Title", comment: "金額"))
     var amountTextField: UITextField = UITextField()
+    let currencySelectionButton: UIButton = UIButton(configuration: .tinted())
     private let categoryLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_CategoryLabel_Title", comment: "類別"))
     var categorySelectionView: SingleSelectionExpandable = SingleSelectionExpandable()
     private let paymentMethodLabel: UILabel = createLabel(title: NSLocalizedString("TransactionDetailView_PaymentMethodLabel_Title", comment: "支付方式"))
@@ -118,10 +119,29 @@ class TransactionDetailView: UIView {
     private func setupAmountBlock() {
         let vstack = createVStack()
         vstack.addArrangedSubview(amountLabel)
-        vstack.addArrangedSubview(amountTextField)
+//        vstack.addArrangedSubview(amountTextField)
+        let containerView: UIView = UIView()
+        containerView.addSubview(amountTextField)
+        containerView.addSubview(currencySelectionButton)
+        amountTextField.translatesAutoresizingMaskIntoConstraints = false
+        currencySelectionButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            amountTextField.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            amountTextField.trailingAnchor.constraint(equalTo: currencySelectionButton.leadingAnchor, constant: -5),
+            amountTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor),
+            currencySelectionButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            currencySelectionButton.heightAnchor.constraint(equalTo: containerView.heightAnchor),
+            ])
+        vstack.addArrangedSubview(containerView)
+        
         amountTextField.isEnabled = false
         amountTextField.borderStyle = .roundedRect
         amountTextField.keyboardType = .decimalPad
+        
+        currencySelectionButton.tintColor = .black
+        currencySelectionButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        currencySelectionButton.isEnabled = false
+        
         let divider = createDivider()
         setupDivider(vstack, divider)
         pageStack.addArrangedSubview(vstack)
@@ -274,6 +294,7 @@ class TransactionDetailView: UIView {
         accountingDatePicker.isEnabled = status
         itemNameTextField.isEnabled = status
         amountTextField.isEnabled = status
+        currencySelectionButton.isEnabled = status
         noteTextField.isEnabled = status
         
         typeSelectionView.expand = status

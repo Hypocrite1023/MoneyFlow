@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A37F13242D6097C2001A8D6A /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = A37F13232D6097C2001A8D6A /* DGCharts */; };
 		A3DB6D042D38FF9B00857D26 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A3DB6D032D38FF9B00857D26 /* README.md */; };
+		A3DE13FE2D8A9D6700ECE32D /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = A3DE13FD2D8A9D6700ECE32D /* SkeletonView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3DE13FE2D8A9D6700ECE32D /* SkeletonView in Frameworks */,
 				A37F13242D6097C2001A8D6A /* DGCharts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +89,7 @@
 			name = MoneyFlow;
 			packageProductDependencies = (
 				A37F13232D6097C2001A8D6A /* DGCharts */,
+				A3DE13FD2D8A9D6700ECE32D /* SkeletonView */,
 			);
 			productName = MoneyFlow;
 			productReference = A3DB6CEB2D38FB2300857D26 /* MoneyFlow.app */;
@@ -118,6 +121,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A37F13222D6097C2001A8D6A /* XCRemoteSwiftPackageReference "Charts" */,
+				A3DE13FC2D8A9D6700ECE32D /* XCRemoteSwiftPackageReference "SkeletonView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A3DB6CEC2D38FB2300857D26 /* Products */;
@@ -362,6 +366,14 @@
 				minimumVersion = 5.1.0;
 			};
 		};
+		A3DE13FC2D8A9D6700ECE32D /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Juanpe/SkeletonView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.31.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -369,6 +381,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A37F13222D6097C2001A8D6A /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = DGCharts;
+		};
+		A3DE13FD2D8A9D6700ECE32D /* SkeletonView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3DE13FC2D8A9D6700ECE32D /* XCRemoteSwiftPackageReference "SkeletonView" */;
+			productName = SkeletonView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -33,20 +33,24 @@ class AccountingPageViewModel {
     private var bindings: Set<AnyCancellable> = []
     
     init() {
-        CurrencyApi.shared.fetchSupportedCurrencies()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                case .finished:
-                    break
-                }
-            }, receiveValue: { [weak self] value in
-                let currencies: CurrencyInformation = value
-                self?.currencies = currencies.response
-            })
-            .store(in: &bindings)
+        if CurrencyApi.shared.supportedCurrencies.isEmpty {
+            CurrencyApi.shared.fetchSupportedCurrencies()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        self.errorMessage = error.localizedDescription
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { [weak self] value in
+                    let currencies: CurrencyInformation = value
+                    self?.currencies = currencies.response
+                    CurrencyApi.shared.supportedCurrencies = currencies.response
+                })
+                .store(in: &bindings)
+        }
+        
         
 //        CurrencyApi.shared.fetchCurrenciesLatest(base: "TWD")
 //            .receive(on: DispatchQueue.main)

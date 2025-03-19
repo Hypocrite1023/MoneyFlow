@@ -33,7 +33,7 @@ class HomeViewController: UIViewController {
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.isHidden = true
         
-//        let _ = RandomGenerateTransaction()
+        let _ = RandomGenerateTransaction()
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
         homeView.setBudgetButton.addTarget(self, action: #selector(setBudget), for: .touchUpInside)
@@ -44,6 +44,8 @@ class HomeViewController: UIViewController {
         }
         homeView.segementControl.selectedSegmentIndex = 0
         setBindings()
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,20 +59,22 @@ class HomeViewController: UIViewController {
         func bindViewToViewModel() {
             homeView.segementControl.publisher(for: \.selectedSegmentIndex)
                 .receive(on: DispatchQueue.main)
-                .map { print($0); return $0 }
+                .map { self.homeView.totalSpent.startLoadingAnimation(); self.homeView.totalIncome.startLoadingAnimation(); return $0 }
                 .assign(to: \.selectedDateRange, on: viewModel)
                 .store(in: &bindings)
         }
         func bindViewModelToView() {
             viewModel.$expense
                 .map {
-                    AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
+                    self.homeView.totalSpent.stopLoadingAnimation()
+                    return AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
                 }
                 .assign(to: \.balanceLabel.text, on: homeView.totalSpent)
                 .store(in: &bindings)
             viewModel.$income
                 .map {
-                    AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
+                    self.homeView.totalIncome.stopLoadingAnimation()
+                    return AppFormatter.shared.currencyNumberFormatter.string(from: NSNumber(value: $0 ?? 0)) ?? ""
                 }
                 .assign(to: \.balanceLabel.text, on: homeView.totalIncome)
                 .store(in: &bindings)
