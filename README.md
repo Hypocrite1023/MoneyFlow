@@ -378,3 +378,38 @@ cancellable = CurrencyApi.shared.fetchSupportedCurrencies()
         self.currencies = currency.response // 也使這邊是在 main thread 執行
     }
 ```
+## 2025.3.24
+### 使用 SkeletonView 套件，在 HomeView 的兩個 Balance View 資料載入中會使用 showAnimatedGradientSkeleton，但兩個 Balance View 的 skeleton 高度卻不一樣
+- 這樣的情況可能與 佈局更新的時機 有關。尤其是在啟動骨架動畫時，SkeletonView 會動態調整視圖的高度，而這些變化可能會引發佈局錯誤，特別是當多個視圖同時或相繼啟動時。這是因為在啟動第二個骨架動畫時，第一個視圖的佈局還沒有完全更新，造成高度不一致。 -> 這是 chatgpt 給我的回覆
+```swift
+homeView.segementControl.publisher(for: \.selectedSegmentIndex)
+.removeDuplicates()
+.receive(on: DispatchQueue.main)
+.map {
+    return $0
+}
+.sink(receiveValue: { [weak self] index in
+    self?.viewModel.selectedDateRange = index
+    self?.homeView.totalIncome.startLoadingAnimation()
+    self?.homeView.totalSpent.startLoadingAnimation()
+    // 經過我測試 後啟動animation的skeleton會有問題
+})
+.store(in: &bindings)
+```
+- 因此將啟動動畫的時間錯開
+```swift
+homeView.segementControl.publisher(for: \.selectedSegmentIndex)
+.removeDuplicates()
+.receive(on: DispatchQueue.main)
+.map {
+    return $0
+}
+.sink(receiveValue: { [weak self] index in
+    self?.viewModel.selectedDateRange = index
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
+        self?.homeView.totalSpent.startLoadingAnimation() // 延後啟動animation -> 也就是讓第一個動畫啟動後有時間能夠更新佈局
+    }
+})
+.store(in: &bindings)
+```
+

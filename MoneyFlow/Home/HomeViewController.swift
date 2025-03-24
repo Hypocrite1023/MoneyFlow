@@ -33,7 +33,6 @@ class HomeViewController: UIViewController {
         // Do any additional setup after loading the view.
         navigationController?.navigationBar.isHidden = true
         
-        let _ = RandomGenerateTransaction()
         homeView.viewDetailButton.addTarget(self, action: #selector(jumpToDetailView), for: .touchUpInside)
         
         homeView.setBudgetButton.addTarget(self, action: #selector(setBudget), for: .touchUpInside)
@@ -50,6 +49,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
         viewModel.reloadExpenseAndIncomeData()
         viewModel.reloadTransactionData()
         resetChartDataSet()
@@ -58,9 +58,21 @@ class HomeViewController: UIViewController {
     private func setBindings() {
         func bindViewToViewModel() {
             homeView.segementControl.publisher(for: \.selectedSegmentIndex)
+                .removeDuplicates()
                 .receive(on: DispatchQueue.main)
-                .map { self.homeView.totalSpent.startLoadingAnimation(); self.homeView.totalIncome.startLoadingAnimation(); return $0 }
-                .assign(to: \.selectedDateRange, on: viewModel)
+                .map {
+                    return $0
+                }
+                .sink(receiveValue: { [weak self] index in
+                    self?.viewModel.selectedDateRange = index
+                    self?.homeView.totalIncome.startLoadingAnimation()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
+                        self?.homeView.totalSpent.startLoadingAnimation()
+                    }
+//                    self?.homeView.totalSpent.startLoadingAnimation()
+                    
+                })
+//                .assign(to: \.selectedDateRange, on: viewModel)
                 .store(in: &bindings)
         }
         func bindViewModelToView() {

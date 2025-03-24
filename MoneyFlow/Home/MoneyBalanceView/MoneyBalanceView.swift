@@ -29,7 +29,7 @@ class MoneyBalanceView: UIView {
         labelVerticalStack.translatesAutoresizingMaskIntoConstraints = false
         labelVerticalStack.axis = .vertical
         labelVerticalStack.spacing = 5
-        labelVerticalStack.distribution = .fillEqually
+        labelVerticalStack.distribution = .fillProportionally
         labelVerticalStack.addArrangedSubview(itemLabel)
         labelVerticalStack.addArrangedSubview(balanceLabel)
         

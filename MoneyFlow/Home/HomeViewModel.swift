@@ -86,7 +86,6 @@ final class HomeViewModel: ObservableObject {
                             if $1.currencyCode != self.baseCurrencyCode {
                                 let dateFormatter = DateFormatter()
                                 dateFormatter.dateFormat = "yyyy-MM-dd"
-                                print(dateFormatter.string(from: $1.date))
                                 if let rate = CurrencyRateCacheManager.shared.getCurrencyRatePair(forDate: dateFormatter.string(from: $1.date)) {
                                     if let tmp = rate.rates[$1.currencyCode] ?? 1 {
                                         return $0 + $1.amount / tmp
